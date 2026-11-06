@@ -17,6 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- Scripts do Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -62,6 +63,8 @@
     .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
     .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
     .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
+
+    .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
 
     .vitrine-banner-nova { background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
@@ -185,6 +188,25 @@
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+    /* IA CHAT */
+    .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
+    @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
+    @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    #tela-chat { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999; background: #fff; display: none; }
+    .chat-container { max-width: 450px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; position: relative; }
+    .chat-header { background: var(--cor-principal); color: #fff; padding: 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .chat-body { flex: 1; padding: 16px; padding-bottom: 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #E5DDD5; min-height: 0; }
+    .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
+    .msg-bot { background: #fff; align-self: flex-start; border-top-left-radius: 0; }
+    .msg-user { background: #DCF8C6; align-self: flex-end; border-top-right-radius: 0; }
+    .chat-input-area { position: absolute; bottom: 0; left: 0; right: 0; display: flex; padding: 10px; background: #f0f0f0; gap: 8px; z-index: 10; border-top: 1px solid #ddd; }
+    .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-family: inherit; }
+    .chat-input-area button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--cor-principal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+    
+    .btn-ia-acao { display: block; background: #fff; border: 1.5px solid var(--cor-principal); color: var(--cor-principal); padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; transition: all 0.2s; }
+    .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
+
     /* MODAIS E EDITORES */
     .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
@@ -250,6 +272,7 @@
     <div class="app-content" id="app-content">
 
       <div id="tela-inicio" class="tela ativa">
+        <div id="welcome-banner" class="welcome-banner">Olá, seja bem-vindo(a)!</div>
         <div id="home-sections"></div>
       </div>
 
@@ -351,6 +374,31 @@
 
     </div>
 
+    <!-- BOTÃO IA -->
+    <button class="assistente-ia-flutuante" onclick="abrirChat()" aria-label="Assistente IA">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </button>
+
+    <!-- TELA CHAT IA -->
+    <div id="tela-chat" class="tela">
+      <div class="chat-container">
+        <div class="chat-header">
+          <button onclick="fecharChat()" style="background:none; border:none; color:#fff; font-size:20px;"><i class="fa-solid fa-arrow-left"></i></button>
+          <i class="fa-solid fa-robot"></i>
+          <div><h3 style="font-size:14px;" id="ia-name-header">Assistente Ale</h3><p style="font-size:10px; opacity:0.8;">Online</p></div>
+        </div>
+        
+        <div class="chat-body" id="chat-body">
+          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸 Como posso te ajudar hoje?</div>
+        </div>
+        
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Digite sua dúvida aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
+          <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+
     <!-- MODAL DO CÓDIGO DO CLUBE -->
     <div id="modal-codigo-clube" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
@@ -444,7 +492,7 @@
       { id: 'links', nome: 'Links' },
       { id: 'contato', nome: 'Redes & Contato' },
       { id: 'ia', nome: 'Assistente IA' },
-      { id: 'clube', nome: 'Preços Planos' },
+      { id: 'clube', nome: 'Planos e Preços' },
       { id: 'vip', nome: 'Gerenciar Clube VIP' }
     ];
 
@@ -528,11 +576,13 @@
           renderizarHome();
           aplicarRestricoes();
           gerarCalendario();
+          verificarClienteLogado();
         } else {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(() => {
             renderizarHome();
             aplicarRestricoes();
             gerarCalendario();
+            verificarClienteLogado();
           });
         }
       });
@@ -547,7 +597,18 @@
       }
     }
 
-    // --- CADASTRO DE CLIENTE ---
+    // --- CLIENTE REGISTRO E WELCOME ---
+    function verificarClienteLogado() {
+      const nome = localStorage.getItem('clienteNome');
+      const banner = document.getElementById('welcome-banner');
+      if (nome && banner) {
+        banner.innerHTML = `<i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-right:5px;"></i> Olá, ${nome}! Seja bem-vinda. <i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-left:5px;"></i>`;
+        banner.style.display = 'block';
+      } else if (banner) {
+        banner.style.display = 'none';
+      }
+    }
+
     async function enviarCadastro(e) {
       e.preventDefault();
       const nome = document.getElementById('cad-nome').value;
@@ -563,11 +624,19 @@
           status: 'pendente'
         });
         
-        mostrarToast('✅ Cadastro realizado com sucesso!');
+        localStorage.setItem('clienteNome', nome); // Salva o nome para boas-vindas
         document.getElementById('modal-cadastro').style.display = 'none';
+        
+        mostrarToast('✅ Cadastro realizado com sucesso!');
+        
+        // Voltar para a tela inicial automaticamente
+        voltarInicio();
+        verificarClienteLogado(); // Atualiza o banner de boas vindas
+
         document.getElementById('cad-nome').value = '';
         document.getElementById('cad-email').value = '';
         document.getElementById('cad-tel').value = '';
+
       } catch (error) {
         console.error("Erro ao cadastrar:", error);
         alert("Erro ao cadastrar. Verifique sua internet.");
@@ -652,7 +721,6 @@
         if(loginAdmin) loginAdmin.style.display = 'none';
         if(grid) {
           grid.style.display = 'grid';
-          // O ERRO ESTAVA AQUI! Corrigido para mapear os objetos diretamente
           grid.innerHTML = todasPermissoes.map(p => {
             return `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`;
           }).join('');
@@ -664,6 +732,43 @@
           grid.innerHTML = '';
         }
       }
+    }
+
+    // --- ASSISTENTE IA ---
+    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
+    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
+    
+    function enviarMsgIA() { 
+      const inp = document.getElementById('chat-input'); 
+      const txt = inp.value.trim(); 
+      if(!txt) return;
+      
+      const body = document.getElementById('chat-body');
+      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); 
+      inp.value = '';
+      
+      // Resposta inteligente baseada em palavras-chave
+      const t = txt.toLowerCase();
+      let resposta = "";
+
+      if (t.includes('clube') || t.includes('vip') || t.includes('codigo')) {
+        resposta = "O Clube da Ale é exclusivo para clientes VIP! Você precisa de um código de convite para entrar. Se já tiver o seu, clique no banner rosa 'Clube da Ale' na tela inicial e digite o código. 💖";
+      } else if (t.includes('plano') || t.includes('preço') || t.includes('valor') || t.includes('assinar')) {
+        resposta = "Temos 3 planos incríveis: Essencial, Inteligente e Master. Você pode ver todos os benefícios e preços deslizando para a seção 'Planos' na tela inicial! 💎";
+      } else if (t.includes('whatsapp') || t.includes('contato') || t.includes('falar') || t.includes('alexandra') || t.includes('telefone')) {
+        resposta = "Para falar com a Alexandra ou agendar um horário, vá na seção 'Contato' (rolando a tela inicial para baixo) ou na aba 'Agenda'. Você pode clicar direto no botão do WhatsApp! 📱";
+      } else if (t.includes('cadastro') || t.includes('senha') || t.includes('conta')) {
+        resposta = "Para se cadastrar, clique no botão 'Cadastre-se' na vitrine. Se você for a administradora, a senha do Painel Master fica na aba Perfil. 🔐";
+      } else if (t.includes('oi') || t.includes('olá') || t.includes('bom dia') || t.includes('boa tarde') || t.includes('boa noite')) {
+        resposta = "Olá! Como posso te ajudar hoje? Você pode perguntar sobre o Clube VIP, Planos, Contato ou Agendamentos! 🌸";
+      } else {
+        resposta = "Desculpe, ainda estou aprendendo a responder isso. Mas você pode falar diretamente com a Alexandra clicando nos botões do WhatsApp na tela de Contato! 💬";
+      }
+
+      setTimeout(() => { 
+        body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">${resposta}</div>`); 
+        body.scrollTop = body.scrollHeight; 
+      }, 600);
     }
 
     // --- NAVEGAÇÃO E FUNÇÕES GERAIS ---
@@ -995,8 +1100,36 @@
         html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Supervisor</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
       }
       else if (id === 'clube') {
-        titulo.textContent = 'Preços dos Planos';
-        html = `<label>Essencial (R$)</label><input type="number" id="p1" value="${appState.precos.essencial}"><label>Inteligente (R$)</label><input type="number" id="p2" value="${appState.precos.inteligente}"><label>Master (R$)</label><input type="number" id="p3" value="${appState.precos.master}">`;
+        titulo.textContent = 'Planos e Preços';
+        let htmlPlanos = '';
+        
+        ['essencial', 'inteligente', 'master'].forEach(tipo => {
+            const p = appState.planos[tipo];
+            let featuresHtml = p.features.map(f => `
+                <div class="config-item-row feat-row" style="margin-bottom:4px;">
+                    <input type="text" class="feat-input" value="${f}" style="padding:6px;">
+                    <button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button>
+                </div>
+            `).join('');
+
+            htmlPlanos += `
+            <div class="config-plan-box" style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;">
+                <h4 style="text-transform:uppercase; font-size:12px; margin-bottom:10px; color:var(--cor-principal); border-bottom:1px solid #ccc; padding-bottom:5px;">Plano ${p.titulo}</h4>
+                
+                <label style="font-size:11px; font-weight:700;">Preço (R$)</label>
+                <input type="number" id="preco-${tipo}" value="${appState.precos[tipo]}" style="margin-bottom:5px; padding:6px;">
+                
+                <label style="font-size:11px; font-weight:700;">Subtítulo</label>
+                <input type="text" id="sub-${tipo}" value="${p.subtitulo}" style="margin-bottom:5px; padding:6px;">
+                
+                <label style="font-size:11px; font-weight:700; display:block; margin-top:10px; margin-bottom:5px;">Itens inclusos:</label>
+                <div id="features-${tipo}" style="margin-bottom:8px;">${featuresHtml}</div>
+                
+                <button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')" style="padding:6px; font-size:11px; margin-bottom:0;">+ Adicionar Item</button>
+            </div>
+            `;
+        });
+        html = htmlPlanos;
       }
       else if (id === 'links') {
         titulo.textContent = 'Links dos Ambientes';
@@ -1064,6 +1197,16 @@
          document.getElementById('btn-voltar-editor').textContent = '↩ Desfazer';
          document.getElementById('btn-voltar-editor').onclick = desfazerConfig;
       }
+    }
+
+    // Função Auxiliar para adicionar linha de item no plano
+    function addFeatureRow(tipo) {
+        document.getElementById(`features-${tipo}`).insertAdjacentHTML('beforeend', `
+            <div class="config-item-row feat-row" style="margin-bottom:4px;">
+                <input type="text" class="feat-input" value="" placeholder="Novo item" style="padding:6px;">
+                <button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button>
+            </div>
+        `);
     }
 
     function abrirEditorPublicidade(index) {
@@ -1201,7 +1344,19 @@
         if (nome && senha) { appState.equipe.push({ id: Date.now(), nome, cargo, senha, perms: ['mensagens'] }); salvarEstado(); alert('Adicionado!'); abrirConfiguracao('equipe'); }
         else alert('Preencha tudo.');
       }
-      else if (id === 'clube') { appState.precos.essencial = document.getElementById('p1').value; appState.precos.inteligente = document.getElementById('p2').value; appState.precos.master = document.getElementById('p3').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'clube') { 
+        ['essencial', 'inteligente', 'master'].forEach(tipo => {
+            appState.precos[tipo] = document.getElementById(`preco-${tipo}`).value;
+            appState.planos[tipo].subtitulo = document.getElementById(`sub-${tipo}`).value;
+            
+            const feats = [];
+            document.querySelectorAll(`#features-${tipo} .feat-input`).forEach(inp => {
+                if(inp.value.trim() !== '') feats.push(inp.value.trim());
+            });
+            appState.planos[tipo].features = feats;
+        });
+        salvarEstado(); renderizarHome(); 
+      }
       else if (id === 'links') { appState.clubeLink = document.getElementById('edit-link-clube').value; appState.renovaseLink = document.getElementById('edit-link-renovase').value; salvarEstado(); renderizarHome(); }
       else if (id === 'contato') {
         appState.contato.endereco = document.getElementById('edit-endereco').value;
