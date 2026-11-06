@@ -233,7 +233,6 @@
 
   <div class="app-container" id="app-container">
 
-    <!-- SIMULADOR DE ACESSO (APENAS PARA TESTES) -->
     <div class="debug-switcher">
       <div>
         Simular Visão: 
@@ -356,7 +355,7 @@
       <div class="cartao-cadastro">
         <h3>Clube da Ale 🤫</h3>
         <p style="font-size:12px; text-align:center; margin-bottom:15px;">Este espaço é exclusivo. Digite seu código de convite para liberar o acesso.</p>
-        <input type="text" id="input-codigo-clube" placeholder="Ex: ALE2026" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
+        <input type="text" id="input-codigo-clube" placeholder="Ex: VIP-A3F9" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
         <button onclick="verificarCodigoClube()" class="btn-enviar-cadastro">Verificar Código</button>
         <button onclick="document.getElementById('modal-codigo-clube').style.display='none'" class="btn-undo">Cancelar</button>
       </div>
@@ -444,7 +443,8 @@
       { id: 'links', nome: 'Links' },
       { id: 'contato', nome: 'Redes & Contato' },
       { id: 'ia', nome: 'Assistente IA' },
-      { id: 'clube', nome: 'Preços Planos' }
+      { id: 'clube', nome: 'Preços Planos' },
+      { id: 'vip', nome: 'Gerenciar Clube VIP' }
     ];
 
     const estadoPadrao = {
@@ -550,12 +550,12 @@
       const telefone = document.getElementById('cad-tel').value;
 
       try {
-        // Salva o cliente numa coleção separada no Firebase
         await db.collection("clientes").add({
           nome: nome,
           email: email,
           telefone: telefone,
-          dataCadastro: new Date().toISOString()
+          dataCadastro: new Date().toISOString(),
+          status: 'pendente' // Começa pendente até pagar
         });
         
         mostrarToast('✅ Cadastro realizado com sucesso!');
@@ -579,16 +579,11 @@
       if (!codigo) return alert('Digite um código.');
 
       try {
-        // Procura o código na coleção "codigos_clube" do Firebase
         const doc = await db.collection("codigos_clube").doc(codigo).get();
-        
         if (doc.exists) {
-          // Código válido!
           mostrarToast('✅ Código válido! Bem-vinda ao Clube.');
           document.getElementById('modal-codigo-clube').style.display = 'none';
           document.getElementById('input-codigo-clube').value = '';
-          
-          // Chama a função original que abre o link do clube
           abrirLinkAmbiente('clube'); 
         } else {
           alert('❌ Código inválido ou expirado. Verifique com a Alexandra.');
@@ -599,13 +594,47 @@
       }
     }
 
+    // Função para gerar o código e liberar o acesso do cliente (Chamada pela Dona)
+    async function liberarAcessoVIP(idCliente, nomeCliente, telefoneCliente) {
+      if (!confirm(`Confirmar pagamento e liberar acesso para ${nomeCliente}?`)) return;
+
+      // Gera um código único (ex: VIP-A3F9)
+      const novoCodigo = 'VIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      try {
+        // 1. Atualiza o documento do cliente com o código
+        await db.collection("clientes").doc(idCliente).update({
+          status: 'pago',
+          codigoAcesso: novoCodigo,
+          dataPagamento: new Date().toISOString()
+        });
+
+        // 2. Cria o código na coleção que o app verifica
+        await db.collection("codigos_clube").doc(novoCodigo).set({
+          liberadoPara: nomeCliente,
+          telefone: telefoneCliente,
+          dataCriacao: new Date().toISOString()
+        });
+
+        // 3. Mostra o código na tela para a Dona copiar
+        alert(`✅ Acesso Liberado!\n\nCódigo de ${nomeCliente}: \n\n👉 ${novoCodigo} 👈\n\nCopie e envie para a cliente no WhatsApp.`);
+        
+        // Recarrega a tela para mostrar como "Liberado"
+        abrirConfiguracao('vip');
+
+      } catch (error) {
+        console.error("Erro ao liberar acesso:", error);
+        alert("Erro ao gerar o código. Verifique a internet.");
+      }
+    }
+
     // --- LÓGICA DE ACESSO ADMIN ---
     function verificarSenhaAdmin() {
       const senha = document.getElementById('senha-admin').value;
       if (senha === appState.senhaAdmin) {
         document.getElementById('area-login-admin').style.display = 'none';
         document.getElementById('master-grid-botoes').style.display = 'grid';
-        document.getElementById('role-select').value = 'dona'; // Simula que a dona está logada
+        document.getElementById('role-select').value = 'dona'; 
         aplicarRestricoes();
         mostrarToast('Acesso liberado!');
       } else {
@@ -614,9 +643,7 @@
     }
 
     function aplicarRestricoes() {
-      // Se o usuário já desbloqueou a senha, ele vê os botões
       const isDona = document.getElementById('role-select').value === 'dona';
-      
       const grid = document.getElementById('master-grid-botoes');
       if (isDona) {
         grid.innerHTML = todasPermissoes.map(id => {
@@ -970,11 +997,58 @@
         titulo.textContent = 'Links dos Ambientes';
         html = `<label style="font-size:11px; font-weight:700;">Link do Clube (Opcional)</label><input type="url" id="edit-link-clube" value="${appState.clubeLink || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Link do Renova-se (Opcional)</label><input type="url" id="edit-link-renovase" value="${appState.renovaseLink || ''}" placeholder="https://...">`;
       }
+      else if (id === 'vip') {
+        titulo.textContent = 'Gerenciar Clube VIP';
+        
+        let clientesHTML = '<p style="text-align:center; font-size:12px;">Carregando clientes...</p>';
+        content.innerHTML = `<div id="lista-clientes-vip" style="max-height: 400px; overflow-y:auto;">${clientesHTML}</div>`;
+        
+        db.collection("clientes").get().then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            document.getElementById('lista-clientes-vip').innerHTML = '<p style="text-align:center; font-size:12px; color:#777;">Nenhum cliente cadastrado ainda.</p>';
+            return;
+          }
+          
+          let htmlClientes = '';
+          querySnapshot.forEach((doc) => {
+            const cliente = doc.data();
+            const idCliente = doc.id;
+            const temAcesso = cliente.codigoAcesso ? true : false;
+            
+            const btnAcao = temAcesso 
+              ? `<button disabled style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700; width:100%;">✅ Liberado</button>
+                 <p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${cliente.codigoAcesso}</b></p>`
+              : `<button onclick="liberarAcessoVIP('${idCliente}', '${cliente.nome}', '${cliente.telefone}')" style="background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; width:100%; cursor:pointer;">Liberar Acesso</button>`;
 
-      content.innerHTML = html;
+            htmlClientes += `
+              <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                  <div>
+                    <strong style="font-size:13px; color:var(--cor-principal);">${cliente.nome}</strong><br>
+                    <span style="font-size:11px; color:#666;">${cliente.telefone}</span><br>
+                    <span style="font-size:10px; color:#999;">${cliente.email}</span>
+                  </div>
+                </div>
+                ${btnAcao}
+              </div>
+            `;
+          });
+          document.getElementById('lista-clientes-vip').innerHTML = htmlClientes;
+        }).catch((error) => {
+          console.error("Erro ao buscar clientes: ", error);
+          document.getElementById('lista-clientes-vip').innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar clientes. Verifique a internet.</p>';
+        });
+      }
+
+      if(id !== 'vip') { content.innerHTML = html; }
+      
       document.getElementById('modal-editor').style.display = 'flex';
       
       if (id === 'integracoes') {
+         document.getElementById('btn-salvar-editor').style.display = 'none';
+         document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
+         document.getElementById('btn-voltar-editor').onclick = fecharEditor;
+      } else if (id === 'vip') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -984,6 +1058,34 @@
          document.getElementById('btn-salvar-editor').onclick = salvarConfigAtual;
          document.getElementById('btn-voltar-editor').textContent = '↩ Desfazer';
          document.getElementById('btn-voltar-editor').onclick = desfazerConfig;
+      }
+    }
+
+    async function liberarAcessoVIP(idCliente, nomeCliente, telefoneCliente) {
+      if (!confirm(`Confirmar pagamento e liberar acesso para ${nomeCliente}?`)) return;
+
+      const novoCodigo = 'VIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      try {
+        await db.collection("clientes").doc(idCliente).update({
+          status: 'pago',
+          codigoAcesso: novoCodigo,
+          dataPagamento: new Date().toISOString()
+        });
+
+        await db.collection("codigos_clube").doc(novoCodigo).set({
+          liberadoPara: nomeCliente,
+          telefone: telefoneCliente,
+          dataCriacao: new Date().toISOString()
+        });
+
+        alert(`✅ Acesso Liberado!\n\nCódigo de ${nomeCliente}: \n\n👉 ${novoCodigo} 👈\n\nCopie e envie para a cliente no WhatsApp.`);
+        
+        abrirConfiguracao('vip');
+
+      } catch (error) {
+        console.error("Erro ao liberar acesso:", error);
+        alert("Erro ao gerar o código. Verifique a internet.");
       }
     }
 
