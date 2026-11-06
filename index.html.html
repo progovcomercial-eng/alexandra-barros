@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Meta tags PWA -->
+  <meta name="theme-color" content="#9D174D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AleClub">
+  <link rel="apple-touch-icon" href="logo_login.png">
+
+  <title>Alexandra Barros - App Oficial</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --cor-fundo: #FFF2F6;
+      --cor-card-fundo: #FFFFFF;
+      --cor-principal: #9D174D;
+      --cor-dourada: #D4AF37;
+      --cor-texto-escuro: #333333;
+      --cor-texto-mutado: #777777;
+      --cor-whatsapp: #00BB2D;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #E8DCE0;
+      color: var(--cor-texto-escuro);
+      display: flex; justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%; max-width: 450px;
+      background-color: var(--cor-fundo);
+      min-height: 100vh;
+      position: relative;
+      display: flex; flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .app-content {
+      flex: 1; overflow-y: auto;
+      padding: 20px;
+      padding-bottom: 100px; 
+    }
+
+    /* TELA DE LOGIN */
+    #tela-login {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;
+      background: linear-gradient(135deg, var(--cor-principal), #4C0519);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; padding: 20px;
+    }
+    .login-logo-img {
+      width: 250px; max-width: 85%; height: auto; margin-bottom: 30px;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+      border-radius: 20px; /* Caso a imagem tenha bordas quadradas, isso arredonda */
+    }
+    .login-sub { font-size: 12px; opacity: 0.8; margin-bottom: 30px; letter-spacing: 1px; }
+    .login-input { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: #fff; text-align: center; font-size: 18px; letter-spacing: 5px; margin-bottom: 15px; outline: none; }
+    .login-input::placeholder { letter-spacing: normal; font-size: 14px; }
+    .login-btn { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: var(--cor-dourada); color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+    .login-btn:active { transform: scale(0.96); }
+
+    /* BARRA DE SIMULAÇÃO */
+    .debug-switcher {
+      background: #222; color: #fff; padding: 10px; font-size: 11px;
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around;
+      border-bottom: 2px solid var(--cor-principal); z-index: 100;
+    }
+    .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
+
+    /* HEADER */
+    .app-header {
+      background-color: var(--cor-principal); padding: 20px 16px;
+      text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
+    .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
+    .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
+
+    /* HOME - BANNER */
+    .vitrine-banner-nova {
+      background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519);
+      border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF;
+      margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2);
+      position: relative; overflow: hidden;
+    }
+    .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
+    .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
+
+    /* PUBLICIDADE DINÂMICA */
+    .pub-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
+    .pub-scroll::-webkit-scrollbar { display: none; }
+    .pub-card { flex-shrink: 0; width: 260px; scroll-snap-align: start; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid rgba(157, 23, 77, 0.1); position: relative; }
+    .pub-media { width: 100%; height: 130px; background: #eee; position: relative; }
+    .pub-media img, .pub-media video { width: 100%; height: 100%; object-fit: cover; }
+    .pub-info { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+    .pub-info h4 { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
+    .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
+    .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
+
+    /* CTA CADASTRO */
+    .cta-cadastro { background: linear-gradient(135deg, #FFF8FA, #FFE4EE); border: 1.5px solid var(--cor-dourada); border-radius: 18px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
+    .cta-cadastro-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .cta-cadastro-texto { flex: 1; }
+    .cta-cadastro-texto h3 { font-size: 13px; color: var(--cor-principal); font-weight: 700; margin-bottom: 2px; }
+    .cta-cadastro-texto p { font-size: 10.5px; color: var(--cor-texto-mutado); }
+    .btn-cadastrar-agora { background: var(--cor-principal); color: #fff; border: none; padding: 10px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+
+    /* BANNER INDIQUE */
+    .banner-indique { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); color: #4A2300; }
+    .banner-indique h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .banner-indique p { font-size: 11px; opacity: 0.8; }
+    .banner-indique i { font-size: 24px; color: #fff; }
+
+    /* SEÇÕES */
+    .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
+    .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
+
+    /* PLANOS */
+    .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
+    .planos-scroll::-webkit-scrollbar { display: none; }
+    .plano-card { flex-shrink: 0; width: 172px; scroll-snap-align: start; background: var(--cor-card-fundo); border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 18px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; }
+    .plano-card.destaque { border-color: var(--cor-dourada); background: linear-gradient(160deg, #FFFCF2, #FFF2F6); }
+    .plano-badge { position: absolute; top: -10px; left: 12px; background: var(--cor-dourada); color: #fff; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; }
+    .plano-nome { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--cor-principal); font-weight: 700; display: block; margin-bottom: 2px; }
+    .plano-preco { font-size: 20px; font-weight: 700; color: var(--cor-texto-escuro); display: block; margin-bottom: 12px; }
+    .plano-preco small { font-size: 10px; color: var(--cor-texto-mutado); font-weight: 600; }
+    .plano-features { list-style: none; font-size: 10.5px; color: var(--cor-texto-mutado); line-height: 1.5; margin-bottom: 14px; }
+    .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
+    .plano-btn { width: 100%; padding: 9px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+    /* ESPAÇOS (CLUBE / RENOVA-SE) */
+    .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
+    .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
+    .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); }
+    .espaco-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; position: relative; z-index: 1; }
+    .espaco-icon { width: 56px; height: 56px; flex-shrink: 0; border-radius: 18px; background: rgba(255, 255, 255, 0.20); display: flex; align-items: center; justify-content: center; font-size: 28px; overflow: hidden; }
+    .espaco-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .espaco-titulo-wrap { flex: 1; }
+    .espaco-selo { display: inline-block; font-size: 8.5px; font-weight: 700; background: rgba(255, 255, 255, 0.22); padding: 3px 9px; border-radius: 999px; margin-bottom: 5px; text-transform: uppercase; }
+    .espaco-titulo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #FFE4A8; margin-bottom: 3px; }
+    .espaco-sub { font-size: 11px; opacity: 0.88; }
+    .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
+    .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
+
+    /* CONTATO COMPACTO */
+    .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .contato-info-mini { font-size: 11px; color: var(--cor-texto-mutado); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 13px; }
+    .contato-redes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .rede-btn { flex: 1 1 calc(25% - 8px); min-width: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; border-radius: 12px; font-size: 9.5px; font-weight: 700; text-decoration: none; color: #fff; transition: transform 0.2s; cursor: pointer; background: #555; }
+    .rede-btn:active { transform: scale(0.95); }
+    .rede-btn.wa { background: var(--cor-whatsapp); }
+    .rede-btn.ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+    .rede-btn.em { background: #333333; }
+    .rede-btn.canal { background: #128C7E; flex: 1 1 100%; flex-direction: row; gap: 10px; padding: 14px 0; font-size: 13px; margin-top: 5px; }
+
+    /* TELA DE CANAIS EXCLUSIVA */
+    .canal-item-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-decoration: none; color: inherit; border: 1px solid rgba(0,0,0,0.03); transition: transform 0.2s; }
+    .canal-item-card:active { transform: scale(0.98); }
+    .canal-item-icon { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #128C7E, #25D366); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
+    .canal-item-info { flex: 1; }
+    .canal-item-info h4 { font-size: 14px; color: var(--cor-texto-escuro); margin-bottom: 2px; }
+    .canal-item-info p { font-size: 11px; color: var(--cor-texto-mutado); }
+    .canal-item-arrow { color: #ccc; }
+
+    /* BOUTIQUE */
+    .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
+    .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
+    .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
+    .product-img-box-nova img { width: 100%; height: 100%; object-fit: cover; }
+    .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
+    .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
+
+    /* VÍDEO */
+    .video-container { display: none; margin-bottom: 24px; }
+    .video-container video { width: 100%; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+    /* AGENDA */
+    .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .calendario-header h3 { font-size: 16px; color: var(--cor-principal); }
+    .calendario-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 24px; }
+    .dia-semana { text-align: center; font-size: 11px; font-weight: 700; color: var(--cor-texto-mutado); margin-bottom: 4px; }
+    .dia-btn { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 0; font-family: inherit; font-weight: 600; font-size: 13px; cursor: pointer; transition: all .2s; }
+    .dia-btn.selecionado { background: var(--cor-principal); color: #fff; border-color: var(--cor-principal); }
+    .dia-btn.indisponivel { background: #f5f5f5; color: #ccc; cursor: not-allowed; text-decoration: line-through; }
+    .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+    .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; }
+    .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
+
+    /* INDIQUE */
+    .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    .indique-box i { font-size: 48px; color: var(--cor-dourada); margin-bottom: 16px; }
+    .indique-box h3 { font-size: 18px; color: var(--cor-principal); margin-bottom: 8px; }
+    .indique-box p { font-size: 12px; color: var(--cor-texto-mutado); margin-bottom: 20px; }
+    .link-indique { display: flex; background: #f5f5f5; border-radius: 8px; padding: 4px; margin-bottom: 16px; }
+    .link-indique input { flex: 1; border: none; background: transparent; padding: 8px; font-family: inherit; font-size: 12px; color: #555; }
+    .link-indique button { background: var(--cor-principal); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+    /* BOTÕES GERAIS */
+    .btn-cta-grande { width: 100%; padding: 16px; background: var(--cor-principal); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); padding: 8px 14px; border-radius: 999px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-bottom: 18px; }
+
+    /* PERFIL E PAINEL MASTER */
+    .perfil-hero { background: linear-gradient(135deg, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
+    .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
+    .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
+    .perfil-cargo { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.85; }
+
+    .painel-master-box { background: #FFF8FA; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 16px; margin-top: 10px; }
+    .master-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .master-card { background: #fff; border: 1px solid rgba(157, 23, 77, 0.2); border-radius: 10px; padding: 12px 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: left; }
+    .master-card:hover { border-color: var(--cor-principal); }
+    .master-card:active { transform: scale(.96); }
+    .master-card h4 { font-size: 11px; color: var(--cor-principal); font-weight: 700; margin: 0; line-height: 1.2; }
+    .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
+
+    /* TELAS E ANIMAÇÕES */
+    .tela { display: none; }
+    .tela.ativa { display: block; animation: fadeIn .25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* IA CHAT */
+    .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
+    @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
+    @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    #tela-chat { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999; background: #fff; display: none; }
+    .chat-container { max-width: 450px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; position: relative; }
+    .chat-header { background: var(--cor-principal); color: #fff; padding: 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .chat-body { flex: 1; padding: 16px; padding-bottom: 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #E5DDD5; min-height: 0; }
+    .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
+    .msg-bot { background: #fff; align-self: flex-start; border-top-left-radius: 0; }
+    .msg-user { background: #DCF8C6; align-self: flex-end; border-top-right-radius: 0; }
+    .chat-input-area { position: absolute; bottom: 0; left: 0; right: 0; display: flex; padding: 10px; background: #f0f0f0; gap: 8px; z-index: 10; border-top: 1px solid #ddd; }
+    .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-family: inherit; }
+    .chat-input-area button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--cor-principal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+    
+    .btn-ia-acao { display: block; background: #fff; border: 1.5px solid var(--cor-principal); color: var(--cor-principal); padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; transition: all 0.2s; }
+    .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
+
+    /* MODAIS E EDITORES */
+    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
+    .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
+    .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #D4AF37; border-radius: 8px; font-family: inherit; font-size: 13px; }
+
+    .btn-enviar-cadastro { background: #9D174D; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    .btn-undo { background: #f5f5f5; color: #555; border: 1px solid #ccc; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+
+    /* CONFIG ITEM ROWS */
+    .config-item-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+    .config-item-row input { margin: 0; flex: 1; }
+    .config-item-row .btn-del { background: #ffebee; color: #c62828; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-add-item { background: #e0e0e0; color: #333; border: none; padding: 8px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer; margin-bottom: 15px; }
+
+    /* CENTRAL DE INTEGRAÇÕES */
+    .integracoes-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+    .integ-left { display: flex; align-items: center; gap: 12px; }
+    .integ-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: bold; }
+    .integ-info h4 { font-size: 13px; margin-bottom: 2px; color: var(--cor-texto-escuro); }
+    .integ-info p { font-size: 10px; color: var(--cor-texto-mutado); }
+    .btn-conectar { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; }
+    .btn-conectar.on { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .btn-conectar.off { background: var(--cor-principal); color: #fff; }
+    .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
+
+    /* PALETAS E EMOJIS */
+    .paleta-cores { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+    .cor-opcao { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+    .cor-opcao:hover { transform: scale(1.1); border-color: #333; }
+    .emoji-grid { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    .emoji-opcao { font-size: 24px; padding: 8px; background: #f5f5f5; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; }
+    .emoji-opcao:hover { background: #e0e0e0; }
+
+    /* NAV INFERIOR */
+    .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
+    .nav-item.active { color: var(--cor-principal); }
+    .nav-item i { font-size: 18px; }
+
+    /* TELA PLANO E PRODUTO */
+    .pagina-hero {
+      border-radius: 22px; padding: 26px 20px; text-align: center;
+      color: #fff; margin-bottom: 20px;
+      box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22);
+    }
+    .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
+    .pagina-titulo {
+      font-family: 'Playfair Display', serif; font-size: 24px;
+      color: var(--cor-dourada); margin-bottom: 6px;
+    }
+    .pagina-subtitulo { font-size: 12px; opacity: 0.88; }
+
+    .beneficios-lista { list-style: none; padding: 0; margin: 0 0 24px 0; }
+    .beneficios-lista li {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 8px;
+      font-size: 12.5px; color: var(--cor-texto-escuro);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .beneficio-icone {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--cor-dourada); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+
+    .produto-nome { text-align: center; color: var(--cor-principal); margin-bottom: 8px; font-family: 'Playfair Display', serif; font-size: 22px; }
+    .produto-preco { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--cor-texto-escuro); }
+    .produto-desc { text-align: center; color: var(--cor-texto-mutado); margin-bottom: 24px; line-height: 1.6; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE LOGIN -->
+  <div id="tela-login">
+    <img src="logo_login.png" alt="Logo AleClube" class="login-logo-img">
+    <div class="login-sub">Acesso Restrito ao Painel</div>
+    <input type="password" id="login-senha" class="login-input" placeholder="Digite a senha" maxlength="4">
+    <button class="login-btn" onclick="fazerLogin()">Entrar no App</button>
+    <p style="font-size:10px; margin-top:20px; opacity:0.6;">Senha padrão: 1234</p>
+  </div>
+
+  <div class="app-container" id="app-container" style="display:none;">
+
+    <!-- SIMULADOR -->
+    <div class="debug-switcher">
+      <div>
+        Simular Acesso:
+        <select id="role-select" onchange="aplicarRestricoes()">
+          <option value="dona" selected>Dona (Comando Geral)</option>
+          <option value="gerente">Gerente (Maria)</option>
+          <option value="supervisor">Supervisor (João)</option>
+          <option value="cliente">Cliente (Sem acesso)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="app-header">
+      <div class="avatar-ab" id="app-logo">AB</div>
+      <div class="header-title" id="app-name">Alexandra Barros</div>
+    </div>
+
+    <div class="app-content" id="app-content">
+
+      <!-- ============ TELA INÍCIO ============ -->
+      <div id="tela-inicio" class="tela ativa">
+        <div id="home-sections"></div>
+      </div>
+
+      <!-- ============ TELA DE CANAIS ============ -->
+      <div id="tela-canais" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="section-title-nova" style="margin-top:0;">Nossos Canais</div>
+        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades, ofertas e novidades exclusivas.</p>
+        <div id="canais-lista-container"></div>
+      </div>
+
+      <!-- ============ TELA AGENDA ============ -->
+      <div id="tela-agenda" class="tela">
+        <div class="section-title-nova" style="margin-top:0;">Escolha o dia</div>
+        <div class="calendario-header"><h3>Novembro 2026</h3></div>
+
+        <div class="calendario-grid" id="calendario-grid"></div>
+
+        <div id="horarios-container" style="display:none;">
+          <div class="section-title-nova" style="margin-top:16px;">Horários disponíveis</div>
+          <div class="horarios-grid" id="horarios-grid"></div>
+          <button class="btn-cta-grande" onclick="confirmarAgendamento()" style="margin-top:20px;">
+            <i class="fa-brands fa-whatsapp"></i> Confirmar no WhatsApp
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ TELA INDIQUE ============ -->
+      <div id="tela-indique" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="indique-box">
+          <i class="fa-solid fa-gift"></i>
+          <h3>Indique e Ganhe</h3>
+          <p>Compartilhe seu link com suas amigas. Quando elas fizerem a primeira compra, vocês duas ganham 15% de desconto!</p>
+          <div class="link-indique">
+            <input type="text" id="link-indicacao" readonly>
+            <button onclick="copiarLink()">Copiar</button>
+          </div>
+          <a id="btn-share-indique" href="#" target="_blank" class="btn-cta-grande" style="text-decoration:none; background:#00BB2D;" onclick="mostrarToast('Abrindo WhatsApp...')">
+            <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
+          </a>
+          <p style="font-size:11px; color:var(--cor-texto-mutado); margin-top:14px;">
+            Seu código: <b id="codigo-indicacao" style="color:var(--cor-principal);"></b>
+          </p>
+        </div>
+      </div>
+
+      <!-- ============ TELA PLANO ============ -->
+      <div id="tela-plano" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" id="plano-hero" style="background: linear-gradient(135deg, #9D174D 0%, #560021 100%);">
+          <span class="pagina-emoji" id="plano-emoji">🌱</span>
+          <h1 class="pagina-titulo" id="plano-titulo">Plano</h1>
+          <p class="pagina-subtitulo" id="plano-subtitulo">Descrição do plano</p>
+        </div>
+        <div class="preco-destaque" style="background: linear-gradient(135deg, #FFFCF2, #FFE4EE); border: 1.5px solid var(--cor-dourada); border-radius: 20px; padding: 22px; text-align: center; margin-bottom: 24px;">
+          <span class="preco-valor" id="plano-preco" style="font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--cor-principal);">R$ 29</span>
+          <span class="preco-periodo" id="plano-periodo" style="font-size: 14px; color: var(--cor-texto-mutado); font-weight: 600;">/mês</span>
+        </div>
+        <div class="section-title-nova">O que está incluso</div>
+        <ul class="beneficios-lista" id="plano-beneficios"></ul>
+        <button class="btn-cta-grande" id="plano-btn-acao" onclick="abrirModalCadastro()"><i class="fa-solid fa-bolt"></i> Assinar agora</button>
+      </div>
+
+      <!-- ============ TELA PRODUTO ============ -->
+      <div id="tela-produto" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div id="produto-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🛍️</div>
+        <h1 class="produto-nome" id="produto-nome">Produto</h1>
+        <p class="produto-preco" id="produto-preco">R$ 00,00</p>
+        <p class="produto-desc" id="produto-desc">Descrição do produto</p>
+        <button class="btn-cta-grande" onclick="abrirModalCadastro()"><i class="fa-solid fa-bag-shopping"></i> Comprar agora</button>
+      </div>
+
+      <!-- ============ TELA PERFIL ============ -->
+      <div id="tela-perfil" class="tela">
+        <div class="perfil-hero">
+          <div class="perfil-avatar" id="perfil-avatar">AB</div>
+          <div class="perfil-nome" id="perfil-nome">Alexandra Barros</div>
+          <div class="perfil-cargo" id="perfil-cargo">Proprietária</div>
+        </div>
+
+        <div id="acesso-configuracoes-master">
+          <div class="section-title-nova">Configurações</div>
+          <div class="painel-master-box">
+            <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
+            <div class="master-grid" id="master-grid-botoes"></div>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top: 30px;">
+          <button onclick="resetarApp()" style="background:none; border:none; color:#ccc; font-size:11px; text-decoration:underline; cursor:pointer;">Apagar todas as configurações e voltar ao padrão</button>
+        </div>
+      </div>
+
+    </div><!-- /app-content -->
+
+    <!-- BOTÃO IA -->
+    <button class="assistente-ia-flutuante" onclick="abrirChat()" aria-label="Assistente IA">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </button>
+
+    <!-- CHAT IA -->
+    <div id="tela-chat" class="tela">
+      <div class="chat-container">
+        <div class="chat-header">
+          <button onclick="fecharChat()" style="background:none; border:none; color:#fff; font-size:20px;"><i class="fa-solid fa-arrow-left"></i></button>
+          <i class="fa-solid fa-robot"></i>
+          <div><h3 style="font-size:14px;" id="ia-name-header">Assistente Ale</h3><p style="font-size:10px; opacity:0.8;">Online</p></div>
+        </div>
+        
+        <div class="chat-body" id="chat-body">
+          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸</div>
+          <div class="msg msg-bot" style="border:1px solid #eee; padding:14px;">
+            <b>💡 Dica:</b> Eu posso te ensinar a configurar todo o seu aplicativo!<br>
+            <button type="button" class="btn-ia-acao" onclick="iniciarAula()">🎓 Quero fazer a aula de configuração</button>
+          </div>
+        </div>
+        
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Digite aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
+          <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CADASTRO -->
+    <div id="modal-cadastro" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro">
+        <h3>Bem-vindo(a) à Vitrine Ale</h3>
+        <form onsubmit="enviarCadastro(event)">
+          <input type="text" placeholder="Seu nome completo" required>
+          <input type="tel" id="cad-tel" placeholder="WhatsApp (com DDD)" required>
+          <button type="submit" class="btn-enviar-cadastro">Criar minha conta</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL EDITOR -->
+    <div id="modal-editor" class="modal-cadastro-fixo" style="align-items: center;">
+      <div class="cartao-cadastro" style="background: #fff;">
+        <h3 id="editor-titulo">Editar</h3>
+        <div id="editor-content" style="text-align: left;"></div>
+        <button id="btn-salvar-editor" class="btn-enviar-cadastro" onclick="salvarConfigAtual()">Salvar Alterações</button>
+        <button id="btn-voltar-editor" class="btn-undo" onclick="desfazerConfig()">↩ Desfazer / Voltar</button>
+      </div>
+    </div>
+
+    <!-- NAV INFERIOR -->
+    <nav class="nav-bottom">
+      <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
+      <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
+      <button class="nav-item" data-tab="indique" onclick="trocarTela(this, 'indique')"><i class="fa-solid fa-gift"></i> Indique</button>
+      <button class="nav-item" data-tab="perfil" onclick="trocarTela(this, 'perfil')"><i class="fa-regular fa-user"></i> Perfil</button>
+    </nav>
+
+  </div>
+
+  <script>
+    // =====================================================
+    // CONFIGURAÇÃO PWA (MANIFEST)
+    // =====================================================
+    const manifest = {
+      name: "AleClube App",
+      short_name: "AleClube",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#FFF2F6",
+      theme_color: "#9D174D",
+      icons: [{ src: "logo_login.png", sizes: "512x512", type: "image/png" }]
+    };
+    const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'}));
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+
+    // =====================================================
+    // PERMISSÕES E ESTADO
+    // =====================================================
+    const todasPermissoes = [
+      { id: 'identidade', nome: 'Nome & Senha' },
+      { id: 'cores', nome: 'Cores' },
+      { id: 'logo', nome: 'Logo' },
+      { id: 'fundo', nome: 'Plano de Fundo' },
+      { id: 'tela-inicial', nome: 'Clube e Renova-se' },
+      { id: 'boutique', nome: 'Boutique / Loja' },
+      { id: 'integracoes', nome: 'Integrações' },
+      { id: 'layout', nome: 'Organizar Tela' },
+      { id: 'videos', nome: 'Vídeos' },
+      { id: 'publicidade', nome: 'Patrocinadores' },
+      { id: 'equipe', nome: 'Equipe' },
+      { id: 'links', nome: 'Links' },
+      { id: 'contato', nome: 'Redes & Contato' },
+      { id: 'ia', nome: 'Assistente IA' },
+      { id: 'clube', nome: 'Preços Planos' }
+    ];
+
+    const estadoPadrao = {
+      senhaAdmin: '1234',
+      appName: 'Alexandra Barros',
+      logo: 'AB',
+      logoImage: null,
+      colorPrimary: '#9D174D',
+      colorGold: '#D4AF37',
+      colorText: '#333333',
+      bgColor: '#FFF2F6',
+      bgGradient: null,
+      bgImage: null,
+      video: null,
+      whatsapp: '5511997450293',
+      mensagem: 'Ganhe pontos e ofertas exclusivas',
+      vitrineName: 'VITRINE ALE',
+      clubeName: 'Clube da Ale',
+      clubeColor: '#C2185B',
+      clubeImage: null,
+      clubeLink: null,
+      renovaseName: 'Renova-se',
+      renovaseColor: '#B8852E',
+      renovaseImage: null,
+      renovaseLink: null,
+      boutiqueName: 'Boutique do Alê',
+      boutiqueProdutos: [
+        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', imagem: null },
+        { id: 2, nome: 'Brincos AleClube', preco: '99,90', imagem: null }
+      ],
+      iaName: 'Assistente Ale',
+      iaWelcome: 'Olá, Alexandra! Eu sou a Assistente Ale. 🌸',
+      iaApiKey: '',
+      publicidades: [],
+      planoAtual: 'master',
+      integracoes: [
+        { id: 'hotmart', nome: 'Hotmart', desc: 'Venda produtos digitais', icone: 'fa-fire', cor: '#E24A33', conectada: false },
+        { id: 'kiwify', nome: 'Kiwify', desc: 'Checkout e afiliados', icone: 'fa-bolt', cor: '#00A8FF', conectada: false },
+        { id: 'shopee', nome: 'Shopee', desc: 'Integração de catálogo', icone: 'fa-shopping-bag', cor: '#EE4D2D', conectada: false },
+        { id: 'ml', nome: 'Mercado Livre', desc: 'Sincronizar estoque', icone: 'fa-handshake', cor: '#F2C200', conectada: false },
+        { id: 'eduzz', nome: 'Eduzz', desc: 'Produtos e assinaturas', icone: 'fa-graduation-cap', cor: '#FF5722', conectada: false },
+        { id: 'openai', nome: 'OpenAI (IA)', desc: 'Inteligência Artificial', icone: 'fa-robot', cor: '#10A37F', conectada: false }
+      ],
+      contato: {
+        endereco: 'Rua Silvio Donini 223 - Centro, Diadema',
+        horario: 'Segunda a sexta, das 9h às 18h',
+        telefone: '(11) 99745-0293',
+        redesSociais: [
+          { nome: 'WhatsApp', link: 'https://wa.me/5511997450293', icone: 'fa-whatsapp', classe: 'wa' },
+          { nome: 'Instagram', link: 'https://instagram.com/dra.alexandrabarrosofc', icone: 'fa-instagram', classe: 'ig' },
+          { nome: 'E-mail', link: 'mailto:estetica.alexandria@gmail.com', icone: 'fa-envelope', classe: 'em' }
+        ],
+        canais: [
+          { nome: 'Canal Bio Ale', link: 'https://wa.me/5511997450293?text=Quero%20seguir%20o%20canal', descricao: 'Novidades e ofertas no WhatsApp' }
+        ]
+      },
+      layoutOrder: ['banner', 'publicidade', 'cta', 'indique', 'videos', 'planos', 'espacos', 'boutique', 'contato'],
+      equipe: [
+        { id: 1, nome: 'Maria', cargo: 'gerente', senha: '123', perms: ['identidade', 'cores', 'logo', 'mensagens', 'clube'] },
+        { id: 2, nome: 'João', cargo: 'supervisor', senha: '123', perms: ['publicidade', 'mensagens'] }
+      ],
+      precos: { essencial: '29', inteligente: '59', master: '99' },
+      planos: {
+        essencial: { titulo: 'Essencial', subtitulo: 'O básico', features: ['Vitrine básica', 'Cadastro de produtos'] },
+        inteligente: { titulo: 'Inteligente', subtitulo: 'O mais escolhido', features: ['Shopee + ML', 'Relatórios'] },
+        master: { titulo: 'Master', subtitulo: 'Completo', features: ['Tudo incluso', 'Assistente IA'] }
+      }
+    };
+
+    let appState = JSON.parse(JSON.stringify(estadoPadrao));
+    let backupState = null;
+    let configAtualAberta = '';
+    let indexPubEditando = -1;
+    let indexProdEditando = -1;
+    let diaSelecionado = null;
+    let horarioSelecionado = null;
+    let aulaIniciada = false;
+
+    // =====================================================
+    // LOGIN E PERSISTÊNCIA
+    // =====================================================
+    function fazerLogin() {
+      const senha = document.getElementById('login-senha').value;
+      if (senha === appState.senhaAdmin) {
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('app-container').style.display = 'flex';
+        carregarEstado(); 
+        renderizarHome();
+        aplicarRestricoes();
+        gerarCalendario();
+        inicializarIndicacao();
+      } else {
+        alert('Senha incorreta! Tente novamente.');
+        document.getElementById('login-senha').value = '';
+      }
+    }
+
+    function salvarEstado() {
+      try { localStorage.setItem('appStateAlexandra', JSON.stringify(appState)); } 
+      catch (e) { alert('Aviso: Memória do navegador cheia. Tente usar imagens mais leves.'); }
+    }
+
+    function carregarEstado() {
+      try {
+        const salvo = localStorage.getItem('appStateAlexandra');
+        if (salvo) {
+          const parsed = JSON.parse(salvo);
+          appState = { ...estadoPadrao, ...parsed };
+        }
+      } catch (e) { console.warn('Erro ao carregar', e); }
+    }
+
+    function resetarApp() {
+      if (confirm('Apagar tudo e voltar ao padrão?')) {
+        try { localStorage.removeItem('appStateAlexandra'); } catch(e) {}
+        appState = JSON.parse(JSON.stringify(estadoPadrao));
+        renderizarHome(); aplicarRestricoes(); voltarInicio();
+      }
+    }
+
+    // =====================================================
+    // NAVEGAÇÃO
+    // =====================================================
+    function abrirTela(id) {
+      document.getElementById('tela-chat').style.display = 'none';
+      document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
+      const tela = document.getElementById('tela-' + id);
+      if (tela) tela.classList.add('ativa');
+      document.querySelector('.app-content').scrollTop = 0;
+    }
+
+    function trocarTela(btn, tab) {
+      document.querySelectorAll('.nav-item').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      abrirTela(tab);
+    }
+
+    function voltarInicio() {
+      abrirTela('inicio');
+      document.querySelectorAll('.nav-item').forEach((b) => b.classList.remove('active'));
+      document.querySelector('.nav-item[data-tab="inicio"]').classList.add('active');
+    }
+
+    // =====================================================
+    // AMBIENTES E PLANOS (RESTAURADOS)
+    // =====================================================
+    function abrirPlano(tipo) {
+      const p = appState.planos[tipo] || estadoPadrao.planos[tipo];
+      const emojis = { essencial: '🌱', inteligente: '🚀', master: '👑' };
+      document.getElementById('plano-emoji').innerHTML = emojis[tipo];
+      document.getElementById('plano-titulo').textContent = 'Plano ' + p.titulo;
+      document.getElementById('plano-subtitulo').textContent = p.subtitulo;
+      document.getElementById('plano-hero').style.background = 'linear-gradient(135deg, #9D174D 0%, #560021 100%)';
+      document.getElementById('plano-preco').textContent = `R$ ${appState.precos[tipo] || '0'}`;
+      document.getElementById('plano-periodo').textContent = '/mês';
+      document.getElementById('plano-beneficios').innerHTML = p.features.map(f => `<li><span class="beneficio-icone">✓</span> ${f}</li>`).join('');
+      const btn = document.getElementById('plano-btn-acao');
+      btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Assinar agora';
+      btn.onclick = abrirModalCadastro;
+      abrirTela('plano');
+    }
+
+    function abrirLinkAmbiente(tipo) {
+      const toast = (msg) => {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 22px;border-radius:999px;font-size:12px;z-index:99999;font-family:Montserrat,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3);';
+        document.body.appendChild(t); setTimeout(() => t.remove(), 1800);
+      };
+      try {
+        const link = tipo === 'clube' ? appState.clubeLink : appState.renovaseLink;
+        if (link && String(link).trim() !== '') { toast('Abrindo site...'); window.open(link, '_blank'); return; }
+        toast(tipo === 'clube' ? 'Abrindo Clube da Ale...' : 'Abrindo Renova-se...');
+        const dados = tipo === 'clube'
+          ? { emoji: appState.clubeImage ? `<img src="${appState.clubeImage}" style="width:80px;height:80px;border-radius:18px;object-fit:cover;">` : '🌸', titulo: appState.clubeName || 'Clube da Ale', sub: 'Experiências & Benefícios', cor: appState.clubeColor || '#C2185B', itens: ['Descontos progressivos', 'Brindes em datas especiais', 'Convites para eventos', 'Atendimento prioritário'] }
+          : { emoji: appState.renovaseImage ? `<img src="${appState.renovaseImage}" style="width:80px;height:80px;border-radius:18px;object-fit:cover;">` : '✨', titulo: appState.renovaseName || 'Renova-se', sub: 'Transformação & Autoestima', cor: appState.renovaseColor || '#B8852E', itens: ['Consultoria personalizada', 'Produtos selecionados', 'Acompanhamento contínuo', 'Comunidade exclusiva'] };
+        const set = (id, val, isHTML) => { const el = document.getElementById(id); if (el) { if (isHTML) el.innerHTML = val; else el.textContent = val; } };
+        set('plano-emoji', dados.emoji, true); set('plano-titulo', dados.titulo); set('plano-subtitulo', dados.sub); set('plano-preco', 'Exclusivo'); set('plano-periodo', '');
+        set('plano-beneficios', dados.itens.map(i => `<li><span class="beneficio-icone">✓</span> ${i}</li>`).join(''), true);
+        const hero = document.getElementById('plano-hero'); if (hero) hero.style.background = `linear-gradient(135deg, ${dados.cor} 0%, #4C0519 100%)`;
+        const btn = document.getElementById('plano-btn-acao');
+        if (btn) {
+          btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Quero fazer parte';
+          btn.onclick = () => { window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá! Tenho interesse no ' + dados.titulo)}`, '_blank'); };
+        }
+        abrirTela('plano');
+      } catch (err) { console.error(err); }
+    }
+
+    function abrirTelaCanais() {
+      const c = appState.contato.canais || [];
+      document.getElementById('canais-lista-container').innerHTML = c.length === 0 ? '<p>Nenhum canal.</p>' : c.map(can => `
+        <a href="${can.link}" target="_blank" class="canal-item-card">
+          <div class="canal-item-icon"><i class="fa-brands fa-whatsapp"></i></div>
+          <div class="canal-item-info"><h4>${can.nome}</h4><p>${can.descricao}</p></div>
+          <i class="fa-solid fa-chevron-right canal-item-arrow"></i>
+        </a>`).join('');
+      abrirTela('canais');
+    }
+
+    // =====================================================
+    // INTEGRAÇÕES E AGENDA (RESTAURADOS)
+    // =====================================================
+    function toggleIntegracao(id) {
+      const integ = appState.integracoes.find(i => i.id === id);
+      if (!integ) return;
+      if (integ.conectada) { integ.conectada = false; mostrarToast(`❌ ${integ.nome} desconectado.`); } 
+      else {
+        const conectadas = appState.integracoes.filter(i => i.conectada).length;
+        let limite = 99;
+        if (appState.planoAtual === 'basico') limite = 2;
+        else if (appState.planoAtual === 'intermediario') limite = 5;
+        if (conectadas >= limite) { alert(`Atenção: Seu plano atual (${appState.planoAtual.toUpperCase()}) permite conectar apenas ${limite} integrações.`); return; }
+        integ.conectada = true; mostrarToast(`✅ ${integ.nome} conectado!`);
+      }
+      salvarEstado(); abrirConfiguracao('integracoes'); 
+    }
+    function mudarPlanoSimulado(plano) { appState.planoAtual = plano; salvarEstado(); abrirConfiguracao('integracoes'); }
+
+    function gerarCalendario() {
+      const grid = document.getElementById('calendario-grid');
+      if(!grid) return;
+      let html = `<div class="dia-semana">D</div><div class="dia-semana">S</div><div class="dia-semana">T</div><div class="dia-semana">Q</div><div class="dia-semana">Q</div><div class="dia-semana">S</div><div class="dia-semana">S</div>`;
+      for (let i = 1; i <= 30; i++) {
+        const indisponivel = (i % 7 === 0 || i % 7 === 6);
+        html += `<button class="dia-btn ${indisponivel ? 'indisponivel' : ''}" ${indisponivel ? 'disabled' : `onclick="selecionarDia(${i}, this)"`}>${i}</button>`;
+      }
+      grid.innerHTML = html;
+    }
+    function selecionarDia(dia, btn) {
+      document.querySelectorAll('.dia-btn').forEach(b => b.classList.remove('selecionado'));
+      btn.classList.add('selecionado'); diaSelecionado = dia;
+      document.getElementById('horarios-container').style.display = 'block';
+      document.getElementById('horarios-grid').innerHTML = `<button class="horario-btn" onclick="selecionarHorario('09:00', this)">09:00</button><button class="horario-btn" onclick="selecionarHorario('10:30', this)">10:30</button><button class="horario-btn" onclick="selecionarHorario('14:00', this)">14:00</button>`;
+    }
+    function selecionarHorario(hr, btn) { document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('selecionado')); btn.classList.add('selecionado'); horarioSelecionado = hr; }
+    function confirmarAgendamento() {
+      if (!diaSelecionado || !horarioSelecionado) return alert('Selecione um dia e um horário.');
+      window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de agendar no dia ${diaSelecionado} às ${horarioSelecionado}.`)}`, '_blank');
+    }
+
+    // =====================================================
+    // HOME E PRODUTOS
+    // =====================================================
+    function renderizarHome() {
+      document.documentElement.style.setProperty('--cor-principal', appState.colorPrimary || '#9D174D');
+      document.documentElement.style.setProperty('--cor-dourada', appState.colorGold || '#D4AF37');
+      document.documentElement.style.setProperty('--cor-texto-escuro', appState.colorText || '#333333');
+
+      const container = document.getElementById('app-container');
+      container.style.backgroundColor = appState.bgColor || '#FFF2F6';
+      container.style.backgroundImage = appState.bgImage ? `url(${appState.bgImage})` : (appState.bgGradient || 'none');
+
+      document.getElementById('app-name').textContent = appState.appName || 'Alexandra Barros';
+      document.getElementById('app-logo').innerHTML = appState.logoImage ? `<img src="${appState.logoImage}">` : (appState.logo || 'AB');
+
+      const homeSections = document.getElementById('home-sections');
+      homeSections.innerHTML = '';
+
+      const safeLayout = Array.isArray(appState.layoutOrder) ? appState.layoutOrder : estadoPadrao.layoutOrder;
+
+      safeLayout.forEach(secao => {
+        let html = '';
+        if (secao === 'banner') html = `<div class="vitrine-banner-nova"><h2>${appState.vitrineName}</h2><p>MODA | BELEZA | EXPERIÊNCIAS</p></div>`;
+        else if (secao === 'publicidade' && appState.publicidades.length > 0) {
+          let pubHtml = '';
+          appState.publicidades.forEach(pub => {
+            let media = pub.video ? `<div class="pub-media"><video src="${pub.video}" muted autoplay loop playsinline></video></div>` : (pub.imagem ? `<div class="pub-media"><img src="${pub.imagem}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
+            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p>${pub.link ? `<a href="${pub.link}" target="_blank" class="pub-btn">Aproveitar</a>` : `<button class="pub-btn">Aproveitar</button>`}</div></div>`;
+          });
+          html = `<div class="section-title-nova">Ofertas</div><div class="pub-scroll">${pubHtml}</div>`;
+        }
+        else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${appState.mensagem}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
+        else if (secao === 'indique') html = `<div class="banner-indique" onclick="abrirTela('indique'); document.querySelector('[data-tab=indique]').click();"><div><h3>Indique e Ganhe!</h3><p>Convide amigas</p></div><i class="fa-solid fa-gift"></i></div>`;
+        else if (secao === 'videos' && appState.video) html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><video src="${appState.video}" controls></video></div>`;
+        else if (secao === 'planos') {
+          let planosHtml = '';
+          ['essencial', 'inteligente', 'master'].forEach(id => {
+            const data = appState.planos[id];
+            const destaque = id === 'inteligente';
+            planosHtml += `<div class="plano-card ${destaque ? 'destaque' : ''}" onclick="abrirPlano('${id}')">${destaque ? '<span class="plano-badge">Mais vendido</span>' : ''}<span class="plano-nome">${data.titulo}</span><span class="plano-preco">R$ ${appState.precos[id]}<small>/mês</small></span><ul class="plano-features">${data.features.map(f => `<li>${f}</li>`).join('')}</ul><button class="plano-btn">Ver detalhes</button></div>`;
+          });
+          html = `<div class="section-title-nova">Planos</div><div class="planos-scroll">${planosHtml}</div>`;
+        }
+        else if (secao === 'espacos') {
+          const bgClube = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.clubeImage}');` : `background: linear-gradient(135deg, ${appState.clubeColor} 0%, #4C0519 100%);`;
+          const bgRenova = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.renovaseImage}');` : `background: linear-gradient(135deg, ${appState.renovaseColor} 0%, #4A2300 100%);`;
+          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="abrirLinkAmbiente('clube')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
+        }
+        else if (secao === 'boutique') {
+          const prods = appState.boutiqueProdutos || [];
+          let prodsHtml = prods.map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i})"><div class="product-img-box-nova">${p.imagem ? `<img src="${p.imagem}">` : '🛍️'}</div><h4>${p.nome}</h4><p class="price">R$ ${p.preco}</p></button>`).join('');
+          html = `<div class="section-title-nova">${appState.boutiqueName}</div><div class="boutique-grid-nova">${prodsHtml}</div>`;
+        }
+        else if (secao === 'contato') {
+          const c = appState.contato;
+          let redesHtml = (c.redesSociais || []).map(r => `<a href="${r.link}" target="_blank" class="rede-btn ${r.classe || 'custom'}"><i class="fa-brands ${r.icone || 'fa-link'}"></i> ${r.nome}</a>`).join('');
+          if (c.canais?.length) redesHtml += `<button onclick="abrirTelaCanais()" class="rede-btn canal"><i class="fa-solid fa-bullhorn"></i> Canais (${c.canais.length})</button>`;
+          html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${c.endereco}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${c.horario}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${c.telefone}</div><div class="contato-redes">${redesHtml}</div></div>`;
+        }
+        if (html) homeSections.innerHTML += html;
+      });
+    }
+
+    function abrirProduto(index) {
+      const p = appState.boutiqueProdutos[index];
+      if (!p) return;
+      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${p.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🛍️';
+      document.getElementById('produto-nome').textContent = p.nome;
+      document.getElementById('produto-preco').textContent = `R$ ${p.preco}`;
+      document.getElementById('produto-desc').textContent = 'Produto exclusivo da nossa loja.';
+      abrirTela('produto');
+    }
+
+    // =====================================================
+    // CONFIGURAÇÕES MASTER (RESTAURADO)
+    // =====================================================
+    function abrirConfiguracao(id) {
+      configAtualAberta = id;
+      backupState = JSON.parse(JSON.stringify(appState));
+      const content = document.getElementById('editor-content');
+      const titulo = document.getElementById('editor-titulo');
+      let html = '';
+
+      if (id === 'integracoes') {
+        titulo.textContent = 'Central de Integrações';
+        const conectadas = appState.integracoes.filter(i => i.conectada).length;
+        let limiteTxt = appState.planoAtual === 'basico' ? '2' : (appState.planoAtual === 'intermediario' ? '5' : 'Ilimitado');
+        let cardsHtml = appState.integracoes.map(integ => {
+          let btnClass = 'btn-conectar off', btnTxt = 'Conectar', disabled = '';
+          if (integ.conectada) { btnClass = 'btn-conectar on'; btnTxt = 'Conectado'; } 
+          else {
+            let limit = appState.planoAtual === 'basico' ? 2 : (appState.planoAtual === 'intermediario' ? 5 : 99);
+            if (conectadas >= limit) { btnClass = 'btn-conectar limit'; btnTxt = 'Limite'; disabled = 'disabled'; }
+          }
+          return `<div class="integracoes-card"><div class="integ-left"><div class="integ-icon" style="background: ${integ.cor};"><i class="fa-solid ${integ.icone}"></i></div><div class="integ-info"><h4>${integ.nome}</h4><p>${integ.desc}</p></div></div><button class="${btnClass}" onclick="toggleIntegracao('${integ.id}')" ${disabled}>${btnTxt}</button></div>`;
+        }).join('');
+        html = `<div style="background:#fff; border-radius:10px; padding:12px; margin-bottom:15px; border:1px solid #ddd;"><p style="font-size:12px; font-weight:700; margin-bottom:8px;">Simular Plano:</p><div style="display:flex; gap:5px;"><button onclick="mudarPlanoSimulado('basico')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'basico' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'basico' ? '#fff' : '#333'}">Básico (2)</button><button onclick="mudarPlanoSimulado('intermediario')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'intermediario' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'intermediario' ? '#fff' : '#333'}">Inter (5)</button><button onclick="mudarPlanoSimulado('master')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'master' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'master' ? '#fff' : '#333'}">Master (∞)</button></div><p style="font-size:10px; color:#666; margin-top:8px; text-align:center;">Conectadas: ${conectadas} de ${limiteTxt}</p></div>${cardsHtml}`;
+      }
+      else if (id === 'boutique') {
+        titulo.textContent = 'Gerenciar Boutique';
+        let listaHTML = appState.boutiqueProdutos.map((prod, i) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;"><div style="font-size:12px; font-weight:600;">${prod.nome}</div><div style="display:flex; gap:5px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">X</button></div></div>`).join('');
+        html = `<label style="font-size:11px; font-weight:700;">Nome da Loja</label><input type="text" id="edit-boutique-name" value="${appState.boutiqueName}"><div style="margin-top:15px; margin-bottom:15px;">${listaHTML}</div><button onclick="abrirEditorProduto(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Adicionar Produto</button>`;
+      }
+      else if (id === 'identidade') {
+        titulo.textContent = 'Nome & Senha';
+        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Senha de Acesso (Admin)</label><input type="text" id="edit-senha" value="${appState.senhaAdmin || '1234'}" maxlength="4">`;
+      }
+      else if (id === 'cores') {
+        titulo.textContent = 'Cores do App';
+        html = `<label style="font-size:11px; font-weight:700;">Cor Principal</label><input type="color" id="edit-c1" value="${appState.colorPrimary}" style="height:40px;"><label style="font-size:11px; font-weight:700;">Cor Dourada</label><input type="color" id="edit-c2" value="${appState.colorGold}" style="height:40px;">`;
+      }
+      else if (id === 'logo') {
+        titulo.textContent = 'Logo';
+        html = `<input type="text" id="edit-logo-text" value="${appState.logo}"><input type="file" id="edit-logo-file" accept="image/*">`;
+      }
+      else if (id === 'fundo') {
+        titulo.textContent = 'Plano de Fundo';
+        html = `<label>Cor Sólida</label><input type="color" id="edit-bg-color" value="${appState.bgColor}"><input type="file" id="edit-bg-file" accept="image/*">`;
+      }
+      else if (id === 'tela-inicial') {
+        titulo.textContent = 'Clube e Renova-se';
+        html = `<h4 style="font-size:12px; color:#9D174D;">🌸 Clube</h4><input type="text" id="edit-clube-name" value="${appState.clubeName}"><input type="file" id="edit-clube-img" accept="image/*"><h4 style="font-size:12px; color:#9D174D; margin-top:10px;">✨ Renova-se</h4><input type="text" id="edit-renovase-name" value="${appState.renovaseName}"><input type="file" id="edit-renovase-img" accept="image/*">`;
+      }
+      else if (id === 'contato') {
+        titulo.textContent = 'Redes & Contato';
+        const c = appState.contato;
+        let redesForm = c.redesSociais.map(r => `<div class="config-item-row"><input type="text" class="rede-nome" value="${r.nome}"><input type="url" class="rede-link" value="${r.link}"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join('');
+        let canaisForm = c.canais.map(can => `<div class="config-item-row" style="flex-direction:column; background:#f9f9f9; padding:8px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><span style="font-size:11px; font-weight:700;">Canal</span><button type="button" class="btn-del" onclick="this.closest('.config-item-row').remove()">X</button></div><input type="text" class="canal-nome" value="${can.nome}"><input type="url" class="canal-link" value="${can.link}"><input type="text" class="canal-desc" value="${can.descricao || ''}"></div>`).join('');
+        html = `<input type="text" id="edit-endereco" value="${c.endereco}" placeholder="Endereço"><input type="text" id="edit-horario" value="${c.horario}" placeholder="Horário"><input type="text" id="edit-telefone" value="${c.telefone}" placeholder="Telefone"><h4 style="font-size:12px; color:#9D174D; margin-top:10px;">Redes</h4><div id="redes-container">${redesForm}</div><button type="button" class="btn-add-item" onclick="addRedeConfig()">+ Rede</button><h4 style="font-size:12px; color:#9D174D;">Canais</h4><div id="canais-config-container">${canaisForm}</div><button type="button" class="btn-add-item" onclick="addCanalConfig()">+ Canal</button>`;
+      }
+      else if (id === 'ia') {
+        titulo.textContent = 'Assistente IA';
+        html = `<label style="font-size:11px; font-weight:700;">Nome da IA</label><input type="text" id="edit-ia-name" value="${appState.iaName}"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Chave OpenAI (Opcional)</label><input type="text" id="edit-ia-key" value="${appState.iaApiKey || ''}" placeholder="sk-..."><p style="font-size:10px; color:#666; margin-top:5px;">Se deixar em branco, a IA usará respostas pré-programadas.</p>`;
+      }
+      else if (id === 'publicidade') {
+        titulo.textContent = 'Gerenciar Publicidades';
+        let listaHTML = appState.publicidades.map((pub, i) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between;"><div style="font-size:12px; font-weight:600;">${pub.titulo}</div><div style="display:flex; gap:5px;"><button onclick="abrirEditorPublicidade(${i})" style="background:#9D174D; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">Editar</button><button onclick="removerPublicidade(${i})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">X</button></div></div>`).join('');
+        html = `<div style="margin-bottom:15px;">${listaHTML}</div>${appState.publicidades.length < 5 ? `<button onclick="abrirEditorPublicidade(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Nova Publicidade</button>` : '<p style="color:red; font-size:11px;">Limite atingido.</p>'}`;
+      }
+      else if (id === 'layout') {
+        titulo.textContent = 'Organizar Tela';
+        let listaHTML = appState.layoutOrder.map((secao, index) => {
+          const nomes = { banner: 'Banner', publicidade: 'Publicidade', cta: 'Cadastro', indique: 'Indique', videos: 'Vídeo', planos: 'Planos', espacos: 'Espaços', contato: 'Contato', boutique: 'Boutique' };
+          return `<div style="display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px; border-radius:6px; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">${nomes[secao]}</span><div><button onclick="moverSecao(${index}, -1)" style="background:#fff; border:1px solid #ccc; border-radius:4px; padding:2px 8px;">↑</button><button onclick="moverSecao(${index}, 1)" style="background:#fff; border:1px solid #ccc; border-radius:4px; padding:2px 8px;">↓</button></div></div>`;
+        }).join('');
+        html = `<p style="font-size:11px; margin-bottom:10px;">Use as setas para mudar a ordem:</p>${listaHTML}`;
+      }
+      else if (id === 'videos') {
+        titulo.textContent = 'Configuração de Vídeos';
+        html = `<label style="font-size:11px; font-weight:700;">Envie um vídeo</label><input type="file" id="edit-video-file" accept="video/*">${appState.video ? `<div style="margin-top:10px;"><video src="${appState.video}" controls style="width:100%; border-radius:8px; margin-bottom:10px;"></video></div>` : ''}`;
+      }
+      else if (id === 'equipe') {
+        titulo.textContent = 'Gerenciar Equipe';
+        let listaHTML = appState.equipe.map((emp) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><strong>${emp.nome} (${emp.cargo})</strong><button onclick="removerMembro(${emp.id})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Cessar</button></div><div style="font-size:11px; color:#666; margin-bottom:8px;">Senha: <b>${emp.senha}</b></div><button onclick="editarPermissoesMembro(${emp.id})" style="background:#9D174D; color:#fff; border:none; padding:6px; border-radius:4px; font-size:11px; width:100%; cursor:pointer;">Configurar Acessos</button></div>`).join('');
+        html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Supervisor</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
+      }
+      else if (id === 'clube') {
+        titulo.textContent = 'Preços dos Planos';
+        html = `<label>Essencial (R$)</label><input type="number" id="p1" value="${appState.precos.essencial}"><label>Inteligente (R$)</label><input type="number" id="p2" value="${appState.precos.inteligente}"><label>Master (R$)</label><input type="number" id="p3" value="${appState.precos.master}">`;
+      }
+      else if (id === 'links') {
+        titulo.textContent = 'Links dos Ambientes';
+        html = `<label style="font-size:11px; font-weight:700;">Link do Clube (Opcional)</label><input type="url" id="edit-link-clube" value="${appState.clubeLink || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Link do Renova-se (Opcional)</label><input type="url" id="edit-link-renovase" value="${appState.renovaseLink || ''}" placeholder="https://...">`;
+      }
+
+      content.innerHTML = html;
+      document.getElementById('modal-editor').style.display = 'flex';
+      
+      if (id === 'integracoes') {
+         document.getElementById('btn-salvar-editor').style.display = 'none';
+         document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
+         document.getElementById('btn-voltar-editor').onclick = fecharEditor;
+      } else {
+         document.getElementById('btn-salvar-editor').style.display = 'block';
+         document.getElementById('btn-salvar-editor').textContent = 'Salvar Alterações';
+         document.getElementById('btn-salvar-editor').onclick = salvarConfigAtual;
+         document.getElementById('btn-voltar-editor').textContent = '↩ Desfazer';
+         document.getElementById('btn-voltar-editor').onclick = desfazerConfig;
+      }
+    }
+
+    // EDITORES DE PUBLICIDADE E PRODUTO
+    function abrirEditorPublicidade(index) {
+      indexPubEditando = index;
+      configAtualAberta = 'publicidade-edit';
+      const pub = index === -1 ? { titulo: '', descricao: '', imagem: null, video: null, link: '' } : appState.publicidades[index];
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Nova Publicidade' : 'Editar Publicidade';
+      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título da Oferta</label><input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Frete Grátis Hoje!"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><textarea id="pub-descricao" rows="2" placeholder="Ex: Válido para compras acima de R$100">${pub.descricao || ''}</textarea><label style="font-size:11px; font-weight:700;">Link de Destino (Opcional)</label><input type="url" id="pub-link" value="${pub.link || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Imagem (Opcional)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700;">Vídeo (Opcional - substitui a imagem)</label><input type="file" id="pub-video" accept="video/*"></div>`;
+      document.getElementById('modal-editor').style.display = 'flex';
+      document.getElementById('btn-salvar-editor').style.display = 'block';
+      document.getElementById('btn-salvar-editor').textContent = 'Salvar Publicidade';
+      document.getElementById('btn-salvar-editor').onclick = salvarPublicidade;
+      document.getElementById('btn-voltar-editor').onclick = () => { abrirConfiguracao('publicidade'); };
+    }
+
+    function salvarPublicidade() {
+      const tituloVal = document.getElementById('pub-titulo').value;
+      const descVal = document.getElementById('pub-descricao').value;
+      const linkVal = document.getElementById('pub-link').value;
+      const imgInput = document.getElementById('pub-imagem');
+      const vidInput = document.getElementById('pub-video');
+      const novaPub = indexPubEditando === -1 ? { id: Date.now() } : appState.publicidades[indexPubEditando];
+      novaPub.titulo = tituloVal; novaPub.descricao = descVal; novaPub.link = linkVal;
+      const salvarFinal = () => {
+        if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
+        salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
+      };
+      const pendentes = [];
+      if (vidInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-video', v => { if (v) { novaPub.video = v; novaPub.imagem = null; } r(); })));
+      else if (imgInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-imagem', v => { if (v) { novaPub.imagem = v; novaPub.video = null; } r(); })));
+      if (pendentes.length) Promise.all(pendentes).then(salvarFinal); else salvarFinal();
+    }
+
+    function removerPublicidade(index) { if (confirm('Excluir?')) { appState.publicidades.splice(index, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); } }
+
+    function abrirEditorProduto(index) {
+      indexProdEditando = index;
+      configAtualAberta = 'boutique-edit';
+      const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index];
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar Produto';
+      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto</label><input type="file" id="prod-imagem" accept="image/*">`;
+      document.getElementById('modal-editor').style.display = 'flex';
+      document.getElementById('btn-salvar-editor').style.display = 'block';
+      document.getElementById('btn-salvar-editor').textContent = 'Salvar Produto';
+      document.getElementById('btn-salvar-editor').onclick = salvarProdutoBoutique;
+      document.getElementById('btn-voltar-editor').onclick = () => { abrirConfiguracao('boutique'); };
+    }
+
+    function salvarProdutoBoutique() {
+      const nome = document.getElementById('prod-nome').value;
+      const preco = document.getElementById('prod-preco').value;
+      const img = document.getElementById('prod-imagem');
+      if(!nome || !preco) return alert('Preencha nome e preço.');
+      const novo = indexProdEditando === -1 ? { id: Date.now() } : appState.boutiqueProdutos[indexProdEditando];
+      novo.nome = nome; novo.preco = preco;
+      const finalizar = () => { if(indexProdEditando === -1) appState.boutiqueProdutos.push(novo); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); };
+      if(img.files.length) lerArquivoComprimido('prod-imagem', v => { novo.imagem = v; finalizar(); }); else finalizar();
+    }
+
+    function removerProdutoBoutique(i) { if(confirm('Excluir produto?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
+
+    function mascaraPreco(input) {
+      let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; }
+      v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v;
+    }
+
+    function moverSecao(index, direcao) {
+      const arr = appState.layoutOrder;
+      if (direcao === -1 && index > 0) [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+      if (direcao === 1 && index < arr.length - 1) [arr[index + 1], arr[index]] = [arr[index], arr[index + 1]];
+      salvarEstado(); renderizarHome(); abrirConfiguracao('layout');
+    }
+
+    function removerMembro(id) { if (confirm('Cessar acesso?')) { appState.equipe = appState.equipe.filter(e => e.id !== id); salvarEstado(); abrirConfiguracao('equipe'); } }
+
+    function editarPermissoesMembro(id) {
+      const emp = appState.equipe.find(e => e.id === id); if (!emp) return;
+      document.getElementById('editor-titulo').textContent = `Acessos de ${emp.nome}`;
+      let checkboxes = todasPermissoes.map(p => `<label style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px; background:#f5f5f5; padding:6px; border-radius:6px;"><input type="checkbox" id="perm-${p.id}" ${emp.perms.includes(p.id) ? 'checked' : ''}>${p.nome}</label>`).join('');
+      document.getElementById('editor-content').innerHTML = `<div style="max-height: 300px; overflow-y: auto; margin-bottom:15px;">${checkboxes}</div><button onclick="salvarPermissoesMembro(${id})" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700; margin-bottom:8px;">Salvar Permissões</button><button onclick="abrirConfiguracao('equipe')" style="width:100%; padding:10px; background:#ccc; color:#333; border:none; border-radius:6px; font-weight:700;">Voltar</button>`;
+      document.getElementById('modal-editor').style.display = 'flex';
+      document.getElementById('btn-salvar-editor').style.display = 'none';
+      document.getElementById('btn-voltar-editor').textContent = '↩ Fechar'; document.getElementById('btn-voltar-editor').onclick = fecharEditor;
+    }
+
+    function salvarPermissoesMembro(id) { const emp = appState.equipe.find(e => e.id === id); if (emp) emp.perms = todasPermissoes.filter(p => document.getElementById(`perm-${p.id}`).checked).map(p => p.id); salvarEstado(); abrirConfiguracao('equipe'); }
+
+    function salvarConfigAtual() {
+      const id = configAtualAberta;
+      if (id === 'boutique') { appState.boutiqueName = document.getElementById('edit-boutique-name').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; appState.senhaAdmin = document.getElementById('edit-senha').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'cores') { appState.colorPrimary = document.getElementById('edit-c1').value; appState.colorGold = document.getElementById('edit-c2').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'tela-inicial') { 
+        appState.clubeName = document.getElementById('edit-clube-name').value; appState.renovaseName = document.getElementById('edit-renovase-name').value; 
+        const p1 = document.getElementById('edit-clube-img'); const p2 = document.getElementById('edit-renovase-img'); const pend = [];
+        if(p1.files.length) pend.push(new Promise(r => lerArquivoComprimido('edit-clube-img', v => {appState.clubeImage = v; r();})));
+        if(p2.files.length) pend.push(new Promise(r => lerArquivoComprimido('edit-renovase-img', v => {appState.renovaseImage = v; r();})));
+        Promise.all(pend).then(() => { salvarEstado(); renderizarHome(); });
+      }
+      else if (id === 'ia') { appState.iaName = document.getElementById('edit-ia-name').value; appState.iaApiKey = document.getElementById('edit-ia-key').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'equipe') {
+        const nome = document.getElementById('add-nome').value; const cargo = document.getElementById('add-cargo').value; const senha = document.getElementById('add-senha').value;
+        if (nome && senha) { appState.equipe.push({ id: Date.now(), nome, cargo, senha, perms: ['mensagens'] }); salvarEstado(); alert('Adicionado!'); abrirConfiguracao('equipe'); }
+        else alert('Preencha tudo.');
+      }
+      else if (id === 'clube') { appState.precos.essencial = document.getElementById('p1').value; appState.precos.inteligente = document.getElementById('p2').value; appState.precos.master = document.getElementById('p3').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'links') { appState.clubeLink = document.getElementById('edit-link-clube').value; appState.renovaseLink = document.getElementById('edit-link-renovase').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'contato') {
+        appState.contato.endereco = document.getElementById('edit-endereco').value;
+        appState.contato.horario = document.getElementById('edit-horario').value;
+        appState.contato.telefone = document.getElementById('edit-telefone').value;
+        const redes = []; document.querySelectorAll('#redes-container .config-item-row').forEach(row => { const n = row.querySelector('.rede-nome').value; const l = row.querySelector('.rede-link').value; if(n && l) redes.push({ nome: n, link: l, icone: 'fa-link', classe: 'custom' }); });
+        appState.contato.redesSociais = redes;
+        const canais = []; document.querySelectorAll('#canais-config-container .config-item-row').forEach(row => { const n = row.querySelector('.canal-nome').value; const l = row.querySelector('.canal-link').value; const d = row.querySelector('.canal-desc').value; if(n && l) canais.push({ nome: n, link: l, descricao: d }); });
+        appState.contato.canais = canais;
+        salvarEstado(); renderizarHome();
+      }
+      else if (id === 'logo') {
+        appState.logo = document.getElementById('edit-logo-text').value; const f = document.getElementById('edit-logo-file');
+        if(f.files.length) lerArquivoComprimido('edit-logo-file', v => { appState.logoImage = v; salvarEstado(); renderizarHome(); fecharEditor(); });
+        else { salvarEstado(); renderizarHome(); fecharEditor(); return; }
+      }
+      else if (id === 'fundo') {
+        const c = document.getElementById('edit-bg-color').value; const f = document.getElementById('edit-bg-file');
+        if(f.files.length) lerArquivoComprimido('edit-bg-file', v => { appState.bgImage = v; appState.bgGradient = null; salvarEstado(); renderizarHome(); fecharEditor(); });
+        else { appState.bgColor = c; appState.bgImage = null; appState.bgGradient = null; salvarEstado(); renderizarHome(); }
+      }
+      else if (id === 'videos') {
+        const f = document.getElementById('edit-video-file');
+        if(f.files.length) lerArquivoComprimido('edit-video-file', v => { appState.video = v; salvarEstado(); renderizarHome(); fecharEditor(); });
+      }
+      fecharEditor();
+    }
+
+    function fecharEditor() {
+      document.getElementById('modal-editor').style.display = 'none';
+      document.getElementById('btn-salvar-editor').style.display = 'block';
+      document.getElementById('btn-voltar-editor').onclick = desfazerConfig;
+    }
+    function desfazerConfig() { fecharEditor(); }
+    function addRedeConfig() { document.getElementById('redes-container').insertAdjacentHTML('beforeend', `<div class="config-item-row"><input type="text" class="rede-nome" placeholder="Nome"><input type="url" class="rede-link" placeholder="Link"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`); }
+    function addCanalConfig() { document.getElementById('canais-config-container').insertAdjacentHTML('beforeend', `<div class="config-item-row" style="flex-direction:column; background:#f9f9f9; padding:8px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><span style="font-size:11px; font-weight:700;">Canal</span><button type="button" class="btn-del" onclick="this.closest('.config-item-row').remove()">X</button></div><input type="text" class="canal-nome" placeholder="Nome"><input type="url" class="canal-link" placeholder="Link"><input type="text" class="canal-desc" placeholder="Descrição"></div>`); }
+
+    // =====================================================
+    // RESTAURO DE FUNÇÕES AUXILIARES E INDICAÇÃO
+    // =====================================================
+    function inicializarIndicacao() {
+      try {
+        let codigo = localStorage.getItem('ab_ref_code') || 'AB' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        localStorage.setItem('ab_ref_code', codigo);
+        let base = location.protocol === 'file:' ? location.href.split('?')[0] : location.origin + location.pathname;
+        let link = `${base}?ref=${codigo}`;
+        if (document.getElementById('link-indicacao')) document.getElementById('link-indicacao').value = link;
+        if (document.getElementById('codigo-indicacao')) document.getElementById('codigo-indicacao').textContent = codigo;
+        if (document.getElementById('btn-share-indique')) document.getElementById('btn-share-indique').href = `https://wa.me/?text=${encodeURIComponent('Use meu link: ' + link)}`;
+      } catch(e) {}
+    }
+
+    function copiarLink() {
+      const input = document.getElementById('link-indicacao');
+      input.select(); input.setSelectionRange(0, 99999);
+      try { document.execCommand('copy'); mostrarToast('✅ Link copiado!'); } catch (e) { alert('Copie manualmente.'); }
+    }
+
+    function aplicarRestricoes() {
+      const role = document.getElementById('role-select').value;
+      let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
+      document.getElementById('perfil-cargo').textContent = role === 'dona' ? 'Proprietária' : 'Equipe';
+      document.getElementById('perfil-nome').textContent = role === 'dona' ? appState.appName : 'Usuário';
+      const grid = document.getElementById('master-grid-botoes');
+      grid.innerHTML = perms.map(id => { const p = todasPermissoes.find(x => x.id === id); return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>` : ''; }).join('');
+    }
+
+    function lerArquivoComprimido(inputId, cb) {
+      const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null);
+      const file = i.files[0];
+      if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas'); let width = img.width, height = img.height;
+          if (width > 600) { height = Math.round((height * 600) / width); width = 600; }
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+          cb(canvas.toDataURL('image/jpeg', 0.6));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function mostrarToast(msg) {
+      const t = document.createElement('div'); t.textContent = msg;
+      t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:999px;font-size:12px;z-index:99999;box-shadow:0 4px 14px rgba(0,0,0,.3);';
+      document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
+    }
+
+    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
+    function enviarCadastro(e) { e.preventDefault(); alert('Conta criada!'); document.getElementById('modal-cadastro').style.display = 'none'; }
+
+    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
+    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
+    function iniciarAula() { document.getElementById('chat-body').innerHTML = `<div class="msg msg-bot">Aula: Vá no Perfil > Integrações para conectar seus apps! 🌸</div>`; }
+    function enviarMsgIA() { 
+      const inp = document.getElementById('chat-input'); const txt = inp.value; if(!txt) return;
+      const body = document.getElementById('chat-body');
+      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); inp.value = '';
+      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">Entendi! Para configurar, vá no Perfil. 😊</div>`); body.scrollTop = body.scrollHeight; }, 800);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { carregarEstado(); });
+  </script>
+
+</body>
+</html>
