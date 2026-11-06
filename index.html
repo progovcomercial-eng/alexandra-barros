@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AleClub">
-  <link rel="apple-touch-icon" href="logo_login.png">
+  <link rel="apple-touch-icon" href="logo.png">
 
   <title>Alexandra Barros - App Oficial</title>
 
@@ -16,6 +16,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Scripts do Firebase (Versão Compatível) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -260,9 +264,6 @@
     .produto-preco { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--cor-texto-escuro); }
     .produto-desc { text-align: center; color: var(--cor-texto-mutado); margin-bottom: 24px; line-height: 1.6; font-size: 13px; }
   </style>
-<!-- Scripts do Firebase (Versão Compatível) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -442,19 +443,10 @@
       <div class="cartao-cadastro" style="background: #fff;">
         <h3 id="editor-titulo">Editar</h3>
         <div id="editor-content" style="text-align: left;"></div>
-          else if (id === 'videos') {
-        const linkVideo = document.getElementById('edit-video-link').value.trim();
-        appState.video = linkVideo;
-        
-        // Garante que a seção de vídeos está visível na tela
-        if (linkVideo && !appState.layoutOrder.includes('videos')) {
-            appState.layoutOrder.push('videos');
-        }
-        
-        salvarEstado(); 
-        renderizarHome();
-        mostrarToast('✅ Vídeo salvo com sucesso!'); // Aviso para você ver que funcionou
-      }
+        <button id="btn-salvar-editor" class="btn-enviar-cadastro" onclick="salvarConfigAtual()">Salvar Alterações</button>
+        <button id="btn-voltar-editor" class="btn-undo" onclick="desfazerConfig()">↩ Desfazer / Voltar</button>
+      </div>
+    </div>
 
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
@@ -466,6 +458,21 @@
   </div>
 
   <script>
+    // --- CONFIGURAÇÃO DO FIREBASE ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-sA-g6fCm7Zcv41DBsF1NyQJTFvjays",
+      authDomain: "aleclube.firebaseapp.com",
+      projectId: "aleclube",
+      storageBucket: "aleclube.firebasestorage.app",
+      messagingSenderId: "1086356924442",
+      appId: "1:1086356924442:web:17fe110f263a01b57189a3",
+      measurementId: "G-15ZM50X9B8"
+    };
+
+    // Inicializa o Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     const manifest = {
       name: "AleClube App",
       short_name: "AleClube",
@@ -473,7 +480,7 @@
       display: "standalone",
       background_color: "#FFF2F6",
       theme_color: "#9D174D",
-      icons: [{ src: "logo_login.png", sizes: "512x512", type: "image/png" }]
+      icons: [{ src: "logo.png", sizes: "512x512", type: "image/png" }]
     };
     const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'}));
     const link = document.createElement('link');
@@ -575,14 +582,38 @@
     let horarioSelecionado = null;
     let aulaIniciada = false;
 
+    // --- FUNÇÕES DO FIREBASE ---
+    function carregarEstado() {
+      db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
+        if (docSnap.exists) {
+          appState = docSnap.data();
+          renderizarHome();
+          aplicarRestricoes();
+        } else {
+          db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(() => {
+            renderizarHome();
+            aplicarRestricoes();
+          });
+        }
+      });
+    }
+
+    async function salvarEstado() {
+      try {
+        await db.collection("appData").doc("estadoGlobal").set(appState);
+      } catch (e) {
+        alert("Erro ao salvar na nuvem. Verifique sua internet ou as regras do Firebase.");
+        console.error(e);
+      }
+    }
+    // ----------------------------
+
     function fazerLogin() {
       const senha = document.getElementById('login-senha').value;
       if (senha === appState.senhaAdmin) {
         document.getElementById('tela-login').style.display = 'none';
         document.getElementById('app-container').style.display = 'flex';
         carregarEstado(); 
-        renderizarHome();
-        aplicarRestricoes();
         gerarCalendario();
         inicializarIndicacao();
       } else {
@@ -591,29 +622,11 @@
       }
     }
 
-    function salvarEstado() {
-      try { 
-        localStorage.setItem('appStateAlexandra', JSON.stringify(appState)); 
-      } catch (e) { 
-        alert('⚠️ Memória cheia!\n\nVocê atingiu o limite de armazenamento. Vá no Painel Master e remova vídeos ou imagens pesadas de Publicidades ou da Boutique.'); 
-      }
-    }
-
-    function carregarEstado() {
-      try {
-        const salvo = localStorage.getItem('appStateAlexandra');
-        if (salvo) {
-          const parsed = JSON.parse(salvo);
-          appState = { ...estadoPadrao, ...parsed };
-        }
-      } catch (e) { console.warn('Erro ao carregar', e); }
-    }
-
     function resetarApp() {
       if (confirm('Apagar tudo e voltar ao padrão?')) {
-        try { localStorage.removeItem('appStateAlexandra'); } catch(e) {}
         appState = JSON.parse(JSON.stringify(estadoPadrao));
-        renderizarHome(); aplicarRestricoes(); voltarInicio();
+        salvarEstado();
+        alert("App resetado!");
       }
     }
 
@@ -729,7 +742,6 @@
       window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de agendar no dia ${diaSelecionado} às ${horarioSelecionado}.`)}`, '_blank');
     }
 
-    // --- AQUI ESTÁ A CORREÇÃO DO VÍDEO ---
     function gerarHTMLVideo(url) {
       if (!url) return '';
       
@@ -933,7 +945,6 @@
         }).join('');
         html = `<p style="font-size:11px; margin-bottom:10px;">Use as setas para mudar a ordem:</p>${listaHTML}`;
       }
-      // AQUI ESTÁ A CORREÇÃO DO MENU DE VÍDEO
       else if (id === 'videos') {
         titulo.textContent = 'Configuração de Vídeos';
         html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${appState.video || ''}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
