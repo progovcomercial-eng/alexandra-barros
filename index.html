@@ -948,9 +948,9 @@
         }).join('');
         html = `<p style="font-size:11px; margin-bottom:10px;">Use as setas para mudar a ordem:</p>${listaHTML}`;
       }
-      else if (id === 'videos') {
+          else if (id === 'videos') {
         titulo.textContent = 'Configuração de Vídeos';
-        html = `<label style="font-size:11px; font-weight:700;">Envie um vídeo</label><input type="file" id="edit-video-file" accept="video/*">${appState.video ? `<div style="margin-top:10px;"><video src="${appState.video}" controls style="width:100%; border-radius:8px; margin-bottom:10px;"></video></div>` : ''}`;
+        html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${appState.video || ''}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
       }
       else if (id === 'equipe') {
         titulo.textContent = 'Gerenciar Equipe';
