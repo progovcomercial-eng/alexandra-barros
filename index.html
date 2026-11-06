@@ -17,7 +17,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Scripts do Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -339,14 +338,12 @@
           <div class="painel-master-box">
             <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
             
-            <!-- CAIXA DE SENHA (RESTAURADA) -->
             <div id="area-login-admin">
               <p style="font-size:12px; text-align:center; margin-bottom:10px;">Digite a senha de administrador para liberar os botões.</p>
               <input type="password" id="senha-admin" placeholder="Senha (1234)" style="width:100%; padding:10px; border:1px solid var(--cor-principal); border-radius:8px; margin-bottom:10px;">
               <button onclick="verificarSenhaAdmin()" style="width:100%; padding:10px; background:var(--cor-principal); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Desbloquear</button>
             </div>
             
-            <!-- GRID DE BOTÕES -->
             <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
           </div>
         </div>
@@ -527,12 +524,15 @@
     function carregarEstado() {
       db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
         if (docSnap.exists) {
-          // Mescla para garantir que campos novos (como a senha) existam
           appState = { ...estadoPadrao, ...docSnap.data() };
           renderizarHome();
+          aplicarRestricoes();
+          gerarCalendario();
         } else {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(() => {
             renderizarHome();
+            aplicarRestricoes();
+            gerarCalendario();
           });
         }
       });
@@ -649,16 +649,20 @@
       const loginAdmin = document.getElementById('area-login-admin');
       
       if (isDona) {
-        loginAdmin.style.display = 'none';
-        grid.style.display = 'grid';
-        grid.innerHTML = todasPermissoes.map(id => {
-          const p = todasPermissoes.find(x => x.id === id);
-          return `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`;
-        }).join('');
+        if(loginAdmin) loginAdmin.style.display = 'none';
+        if(grid) {
+          grid.style.display = 'grid';
+          // O ERRO ESTAVA AQUI! Corrigido para mapear os objetos diretamente
+          grid.innerHTML = todasPermissoes.map(p => {
+            return `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`;
+          }).join('');
+        }
       } else {
-        loginAdmin.style.display = 'block';
-        grid.style.display = 'none';
-        grid.innerHTML = '';
+        if(loginAdmin) loginAdmin.style.display = 'block';
+        if(grid) {
+          grid.style.display = 'none';
+          grid.innerHTML = '';
+        }
       }
     }
 
@@ -1314,7 +1318,11 @@
       document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
     }
 
-    document.addEventListener('DOMContentLoaded', () => { carregarEstado(); });
+    document.addEventListener('DOMContentLoaded', () => { 
+      carregarEstado(); 
+      aplicarRestricoes(); 
+      gerarCalendario();
+    });
   </script>
 
 </body>
