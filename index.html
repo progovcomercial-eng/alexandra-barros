@@ -527,6 +527,7 @@
     function carregarEstado() {
       db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
         if (docSnap.exists) {
+          // Mescla para garantir que campos novos (como a senha) existam
           appState = { ...estadoPadrao, ...docSnap.data() };
           renderizarHome();
         } else {
@@ -619,7 +620,7 @@
 
         alert(`✅ Acesso Liberado!\n\nCódigo de ${nomeCliente}: \n\n👉 ${novoCodigo} 👈\n\nCopie e envie para a cliente no WhatsApp.`);
         
-        abrirConfiguracao('vip');
+        abrirConfiguracao('vip'); 
 
       } catch (error) {
         console.error("Erro ao liberar acesso:", error);
