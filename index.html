@@ -338,11 +338,15 @@
           <div class="section-title-nova">Configurações</div>
           <div class="painel-master-box">
             <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
+            
+            <!-- CAIXA DE SENHA (RESTAURADA) -->
             <div id="area-login-admin">
               <p style="font-size:12px; text-align:center; margin-bottom:10px;">Digite a senha de administrador para liberar os botões.</p>
               <input type="password" id="senha-admin" placeholder="Senha (1234)" style="width:100%; padding:10px; border:1px solid var(--cor-principal); border-radius:8px; margin-bottom:10px;">
               <button onclick="verificarSenhaAdmin()" style="width:100%; padding:10px; background:var(--cor-principal); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Desbloquear</button>
             </div>
+            
+            <!-- GRID DE BOTÕES -->
             <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
           </div>
         </div>
@@ -523,7 +527,7 @@
     function carregarEstado() {
       db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
         if (docSnap.exists) {
-          appState = docSnap.data();
+          appState = { ...estadoPadrao, ...docSnap.data() };
           renderizarHome();
         } else {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(() => {
@@ -615,7 +619,7 @@
 
         alert(`✅ Acesso Liberado!\n\nCódigo de ${nomeCliente}: \n\n👉 ${novoCodigo} 👈\n\nCopie e envie para a cliente no WhatsApp.`);
         
-        abrirConfiguracao('vip'); // Recarrega a tela para mostrar como "Liberado"
+        abrirConfiguracao('vip');
 
       } catch (error) {
         console.error("Erro ao liberar acesso:", error);
@@ -625,28 +629,34 @@
 
     // --- LÓGICA DE ACESSO ADMIN ---
     function verificarSenhaAdmin() {
-      const senha = document.getElementById('senha-admin').value;
-      if (senha === appState.senhaAdmin) {
-        document.getElementById('area-login-admin').style.display = 'none';
-        document.getElementById('master-grid-botoes').style.display = 'grid';
+      const senhaDigitada = document.getElementById('senha-admin').value.trim();
+      const senhaCorreta = appState.senhaAdmin || '1234'; 
+      
+      if (senhaDigitada === senhaCorreta) {
         document.getElementById('role-select').value = 'dona';
         aplicarRestricoes();
         mostrarToast('Acesso liberado!');
       } else {
-        alert("Senha incorreta!");
+        alert("Senha incorreta! Tente novamente.");
       }
     }
 
     function aplicarRestricoes() {
-      const isDona = document.getElementById('role-select').value === 'dona';
+      const role = document.getElementById('role-select').value;
+      const isDona = role === 'dona';
       const grid = document.getElementById('master-grid-botoes');
+      const loginAdmin = document.getElementById('area-login-admin');
       
       if (isDona) {
+        loginAdmin.style.display = 'none';
+        grid.style.display = 'grid';
         grid.innerHTML = todasPermissoes.map(id => {
           const p = todasPermissoes.find(x => x.id === id);
           return `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`;
         }).join('');
       } else {
+        loginAdmin.style.display = 'block';
+        grid.style.display = 'none';
         grid.innerHTML = '';
       }
     }
