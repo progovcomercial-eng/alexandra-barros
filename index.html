@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Meta tags PWA -->
   <meta name="theme-color" content="#9D174D">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -51,70 +50,49 @@
       background-position: center;
     }
 
-    .app-content {
-      flex: 1; overflow-y: auto;
-      padding: 20px;
-      padding-bottom: 100px; 
-    }
+    .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
 
-    /* TELA DE LOGIN */
     #tela-login {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;
-      background: linear-gradient(135deg, var(--cor-principal), #4C0519);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #fff; padding: 20px;
+      background-color: #ffffff;
+      background-image: url('logo_login.png'); 
+      background-position: center top 40px;
+      background-size: 85% auto;
+      background-repeat: no-repeat;
+      
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      color: var(--cor-principal);
+      padding: 0 20px 80px 20px;
     }
-    .login-logo-img {
-      width: 250px; max-width: 85%; height: auto; margin-bottom: 30px;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
-      border-radius: 20px; /* Caso a imagem tenha bordas quadradas, isso arredonda */
-    }
-    .login-sub { font-size: 12px; opacity: 0.8; margin-bottom: 30px; letter-spacing: 1px; }
-    .login-input { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: #fff; text-align: center; font-size: 18px; letter-spacing: 5px; margin-bottom: 15px; outline: none; }
-    .login-input::placeholder { letter-spacing: normal; font-size: 14px; }
-    .login-btn { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: var(--cor-dourada); color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+
+    .login-sub { font-size: 13px; color: var(--cor-principal); font-weight: 700; margin-bottom: 20px; letter-spacing: 1px; }
+    .login-input { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: 2px solid var(--cor-principal); background: #ffffff; color: var(--cor-principal); text-align: center; font-size: 18px; letter-spacing: 5px; margin-bottom: 15px; outline: none; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .login-input::placeholder { letter-spacing: normal; font-size: 14px; font-weight: 400; color: #999; }
+    .login-btn { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: var(--cor-principal); color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 15px rgba(157, 23, 77, 0.3); }
     .login-btn:active { transform: scale(0.96); }
 
-    /* BARRA DE SIMULAÇÃO */
-    .debug-switcher {
-      background: #222; color: #fff; padding: 10px; font-size: 11px;
-      display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around;
-      border-bottom: 2px solid var(--cor-principal); z-index: 100;
-    }
+    .debug-switcher { background: #222; color: #fff; padding: 10px; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around; border-bottom: 2px solid var(--cor-principal); z-index: 100; }
     .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
 
-    /* HEADER */
-    .app-header {
-      background-color: var(--cor-principal); padding: 20px 16px;
-      text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-    }
+    .app-header { background-color: var(--cor-principal); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
     .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
     .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
     .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
 
-    /* HOME - BANNER */
-    .vitrine-banner-nova {
-      background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519);
-      border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF;
-      margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2);
-      position: relative; overflow: hidden;
-    }
+    .vitrine-banner-nova { background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
     .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
 
-    /* PUBLICIDADE DINÂMICA */
     .pub-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .pub-scroll::-webkit-scrollbar { display: none; }
     .pub-card { flex-shrink: 0; width: 260px; scroll-snap-align: start; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid rgba(157, 23, 77, 0.1); position: relative; }
     .pub-media { width: 100%; height: 130px; background: #eee; position: relative; }
-    .pub-media img, .pub-media video { width: 100%; height: 100%; object-fit: cover; }
+    .pub-media img, .pub-media video, .pub-media iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
     .pub-info { padding: 16px; flex: 1; display: flex; flex-direction: column; }
     .pub-info h4 { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
     .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
     .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
 
-    /* CTA CADASTRO */
     .cta-cadastro { background: linear-gradient(135deg, #FFF8FA, #FFE4EE); border: 1.5px solid var(--cor-dourada); border-radius: 18px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
     .cta-cadastro-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .cta-cadastro-texto { flex: 1; }
@@ -122,17 +100,14 @@
     .cta-cadastro-texto p { font-size: 10.5px; color: var(--cor-texto-mutado); }
     .btn-cadastrar-agora { background: var(--cor-principal); color: #fff; border: none; padding: 10px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
 
-    /* BANNER INDIQUE */
     .banner-indique { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); color: #4A2300; }
     .banner-indique h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
     .banner-indique p { font-size: 11px; opacity: 0.8; }
     .banner-indique i { font-size: 24px; color: #fff; }
 
-    /* SEÇÕES */
     .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
     .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
 
-    /* PLANOS */
     .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .planos-scroll::-webkit-scrollbar { display: none; }
     .plano-card { flex-shrink: 0; width: 172px; scroll-snap-align: start; background: var(--cor-card-fundo); border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 18px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; }
@@ -145,7 +120,6 @@
     .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
     .plano-btn { width: 100%; padding: 9px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    /* ESPAÇOS (CLUBE / RENOVA-SE) */
     .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
     .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
     .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); }
@@ -159,7 +133,6 @@
     .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
     .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
 
-    /* CONTATO COMPACTO */
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 11px; color: var(--cor-texto-mutado); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
     .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 13px; }
@@ -171,7 +144,6 @@
     .rede-btn.em { background: #333333; }
     .rede-btn.canal { background: #128C7E; flex: 1 1 100%; flex-direction: row; gap: 10px; padding: 14px 0; font-size: 13px; margin-top: 5px; }
 
-    /* TELA DE CANAIS EXCLUSIVA */
     .canal-item-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-decoration: none; color: inherit; border: 1px solid rgba(0,0,0,0.03); transition: transform 0.2s; }
     .canal-item-card:active { transform: scale(0.98); }
     .canal-item-icon { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #128C7E, #25D366); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
@@ -180,7 +152,6 @@
     .canal-item-info p { font-size: 11px; color: var(--cor-texto-mutado); }
     .canal-item-arrow { color: #ccc; }
 
-    /* BOUTIQUE */
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
     .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
     .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
@@ -188,11 +159,9 @@
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
     .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
 
-    /* VÍDEO */
     .video-container { display: none; margin-bottom: 24px; }
-    .video-container video { width: 100%; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .video-container video, .video-container iframe { width: 100%; height: 220px; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; }
 
-    /* AGENDA */
     .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .calendario-header h3 { font-size: 16px; color: var(--cor-principal); }
     .calendario-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 24px; }
@@ -204,7 +173,6 @@
     .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; }
     .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
 
-    /* INDIQUE */
     .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .indique-box i { font-size: 48px; color: var(--cor-dourada); margin-bottom: 16px; }
     .indique-box h3 { font-size: 18px; color: var(--cor-principal); margin-bottom: 8px; }
@@ -213,11 +181,9 @@
     .link-indique input { flex: 1; border: none; background: transparent; padding: 8px; font-family: inherit; font-size: 12px; color: #555; }
     .link-indique button { background: var(--cor-principal); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
-    /* BOTÕES GERAIS */
     .btn-cta-grande { width: 100%; padding: 16px; background: var(--cor-principal); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
     .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); padding: 8px 14px; border-radius: 999px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-bottom: 18px; }
 
-    /* PERFIL E PAINEL MASTER */
     .perfil-hero { background: linear-gradient(135deg, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
     .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
     .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
@@ -231,12 +197,10 @@
     .master-card h4 { font-size: 11px; color: var(--cor-principal); font-weight: 700; margin: 0; line-height: 1.2; }
     .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
 
-    /* TELAS E ANIMAÇÕES */
     .tela { display: none; }
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-    /* IA CHAT */
     .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
     @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
     @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -255,7 +219,6 @@
     .btn-ia-acao { display: block; background: #fff; border: 1.5px solid var(--cor-principal); color: var(--cor-principal); padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; transition: all 0.2s; }
     .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
 
-    /* MODAIS E EDITORES */
     .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
@@ -264,13 +227,11 @@
     .btn-enviar-cadastro { background: #9D174D; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 12px; }
     .btn-undo { background: #f5f5f5; color: #555; border: 1px solid #ccc; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
-    /* CONFIG ITEM ROWS */
     .config-item-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
     .config-item-row input { margin: 0; flex: 1; }
     .config-item-row .btn-del { background: #ffebee; color: #c62828; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-add-item { background: #e0e0e0; color: #333; border: none; padding: 8px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer; margin-bottom: 15px; }
 
-    /* CENTRAL DE INTEGRAÇÕES */
     .integracoes-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
     .integ-left { display: flex; align-items: center; gap: 12px; }
     .integ-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: bold; }
@@ -281,47 +242,19 @@
     .btn-conectar.off { background: var(--cor-principal); color: #fff; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
 
-    /* PALETAS E EMOJIS */
-    .paleta-cores { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-    .cor-opcao { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-    .cor-opcao:hover { transform: scale(1.1); border-color: #333; }
-    .emoji-grid { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-    .emoji-opcao { font-size: 24px; padding: 8px; background: #f5f5f5; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; }
-    .emoji-opcao:hover { background: #e0e0e0; }
-
-    /* NAV INFERIOR */
     .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
     .nav-item.active { color: var(--cor-principal); }
     .nav-item i { font-size: 18px; }
 
-    /* TELA PLANO E PRODUTO */
-    .pagina-hero {
-      border-radius: 22px; padding: 26px 20px; text-align: center;
-      color: #fff; margin-bottom: 20px;
-      box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22);
-    }
+    .pagina-hero { border-radius: 22px; padding: 26px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); }
     .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
-    .pagina-titulo {
-      font-family: 'Playfair Display', serif; font-size: 24px;
-      color: var(--cor-dourada); margin-bottom: 6px;
-    }
+    .pagina-titulo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--cor-dourada); margin-bottom: 6px; }
     .pagina-subtitulo { font-size: 12px; opacity: 0.88; }
 
     .beneficios-lista { list-style: none; padding: 0; margin: 0 0 24px 0; }
-    .beneficios-lista li {
-      display: flex; align-items: center; gap: 10px;
-      background: #fff; border-radius: 12px;
-      padding: 12px 14px; margin-bottom: 8px;
-      font-size: 12.5px; color: var(--cor-texto-escuro);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    }
-    .beneficio-icone {
-      width: 22px; height: 22px; border-radius: 50%;
-      background: var(--cor-dourada); color: #fff;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; flex-shrink: 0;
-    }
+    .beneficios-lista li { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 12.5px; color: var(--cor-texto-escuro); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .beneficio-icone { width: 22px; height: 22px; border-radius: 50%; background: var(--cor-dourada); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
 
     .produto-nome { text-align: center; color: var(--cor-principal); margin-bottom: 8px; font-family: 'Playfair Display', serif; font-size: 22px; }
     .produto-preco { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--cor-texto-escuro); }
@@ -330,18 +263,15 @@
 </head>
 <body>
 
-  <!-- TELA DE LOGIN -->
   <div id="tela-login">
-    <img src="logo_login.png" alt="Logo AleClube" class="login-logo-img">
     <div class="login-sub">Acesso Restrito ao Painel</div>
     <input type="password" id="login-senha" class="login-input" placeholder="Digite a senha" maxlength="4">
     <button class="login-btn" onclick="fazerLogin()">Entrar no App</button>
-    <p style="font-size:10px; margin-top:20px; opacity:0.6;">Senha padrão: 1234</p>
+    <p style="font-size:10px; margin-top:20px; color: #777;">Senha padrão: 1234</p>
   </div>
 
   <div class="app-container" id="app-container" style="display:none;">
 
-    <!-- SIMULADOR -->
     <div class="debug-switcher">
       <div>
         Simular Acesso:
@@ -354,7 +284,6 @@
       </div>
     </div>
 
-    <!-- HEADER -->
     <div class="app-header">
       <div class="avatar-ab" id="app-logo">AB</div>
       <div class="header-title" id="app-name">Alexandra Barros</div>
@@ -362,12 +291,10 @@
 
     <div class="app-content" id="app-content">
 
-      <!-- ============ TELA INÍCIO ============ -->
       <div id="tela-inicio" class="tela ativa">
         <div id="home-sections"></div>
       </div>
 
-      <!-- ============ TELA DE CANAIS ============ -->
       <div id="tela-canais" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="section-title-nova" style="margin-top:0;">Nossos Canais</div>
@@ -375,7 +302,6 @@
         <div id="canais-lista-container"></div>
       </div>
 
-      <!-- ============ TELA AGENDA ============ -->
       <div id="tela-agenda" class="tela">
         <div class="section-title-nova" style="margin-top:0;">Escolha o dia</div>
         <div class="calendario-header"><h3>Novembro 2026</h3></div>
@@ -391,7 +317,6 @@
         </div>
       </div>
 
-      <!-- ============ TELA INDIQUE ============ -->
       <div id="tela-indique" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="indique-box">
@@ -402,16 +327,17 @@
             <input type="text" id="link-indicacao" readonly>
             <button onclick="copiarLink()">Copiar</button>
           </div>
-          <a id="btn-share-indique" href="#" target="_blank" class="btn-cta-grande" style="text-decoration:none; background:#00BB2D;" onclick="mostrarToast('Abrindo WhatsApp...')">
+          
+          <button onclick="compartilharIndicacao()" class="btn-cta-grande" style="background:#00BB2D;">
             <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
-          </a>
+          </button>
+
           <p style="font-size:11px; color:var(--cor-texto-mutado); margin-top:14px;">
             Seu código: <b id="codigo-indicacao" style="color:var(--cor-principal);"></b>
           </p>
         </div>
       </div>
 
-      <!-- ============ TELA PLANO ============ -->
       <div id="tela-plano" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" id="plano-hero" style="background: linear-gradient(135deg, #9D174D 0%, #560021 100%);">
@@ -428,7 +354,6 @@
         <button class="btn-cta-grande" id="plano-btn-acao" onclick="abrirModalCadastro()"><i class="fa-solid fa-bolt"></i> Assinar agora</button>
       </div>
 
-      <!-- ============ TELA PRODUTO ============ -->
       <div id="tela-produto" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div id="produto-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🛍️</div>
@@ -438,7 +363,18 @@
         <button class="btn-cta-grande" onclick="abrirModalCadastro()"><i class="fa-solid fa-bag-shopping"></i> Comprar agora</button>
       </div>
 
-      <!-- ============ TELA PERFIL ============ -->
+      <div id="tela-parceiro" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🤝</div>
+        <h1 class="produto-nome" id="parceiro-nome">Parceiro</h1>
+        <p class="produto-preco" id="parceiro-desc" style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Descrição curta</p>
+        
+        <div class="section-title-nova">Sobre a Parceria</div>
+        <div id="parceiro-conteudo" style="font-size: 13px; line-height: 1.6; color: var(--cor-texto-escuro); background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        </div>
+        <button class="btn-cta-grande" onclick="voltarInicio()"><i class="fa-solid fa-check"></i> Entendi</button>
+      </div>
+
       <div id="tela-perfil" class="tela">
         <div class="perfil-hero">
           <div class="perfil-avatar" id="perfil-avatar">AB</div>
@@ -459,14 +395,12 @@
         </div>
       </div>
 
-    </div><!-- /app-content -->
+    </div>
 
-    <!-- BOTÃO IA -->
     <button class="assistente-ia-flutuante" onclick="abrirChat()" aria-label="Assistente IA">
       <i class="fa-solid fa-wand-magic-sparkles"></i>
     </button>
 
-    <!-- CHAT IA -->
     <div id="tela-chat" class="tela">
       <div class="chat-container">
         <div class="chat-header">
@@ -490,7 +424,6 @@
       </div>
     </div>
 
-    <!-- MODAL CADASTRO -->
     <div id="modal-cadastro" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
         <h3>Bem-vindo(a) à Vitrine Ale</h3>
@@ -502,7 +435,6 @@
       </div>
     </div>
 
-    <!-- MODAL EDITOR -->
     <div id="modal-editor" class="modal-cadastro-fixo" style="align-items: center;">
       <div class="cartao-cadastro" style="background: #fff;">
         <h3 id="editor-titulo">Editar</h3>
@@ -512,7 +444,6 @@
       </div>
     </div>
 
-    <!-- NAV INFERIOR -->
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
       <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
@@ -523,9 +454,6 @@
   </div>
 
   <script>
-    // =====================================================
-    // CONFIGURAÇÃO PWA (MANIFEST)
-    // =====================================================
     const manifest = {
       name: "AleClube App",
       short_name: "AleClube",
@@ -541,9 +469,6 @@
     link.href = manifestURL;
     document.head.appendChild(link);
 
-    // =====================================================
-    // PERMISSÕES E ESTADO
-    // =====================================================
     const todasPermissoes = [
       { id: 'identidade', nome: 'Nome & Senha' },
       { id: 'cores', nome: 'Cores' },
@@ -553,7 +478,7 @@
       { id: 'boutique', nome: 'Boutique / Loja' },
       { id: 'integracoes', nome: 'Integrações' },
       { id: 'layout', nome: 'Organizar Tela' },
-      { id: 'videos', nome: 'Vídeos' },
+      { id: 'videos', nome: 'Vídeos (Link)' },
       { id: 'publicidade', nome: 'Patrocinadores' },
       { id: 'equipe', nome: 'Equipe' },
       { id: 'links', nome: 'Links' },
@@ -573,7 +498,7 @@
       bgColor: '#FFF2F6',
       bgGradient: null,
       bgImage: null,
-      video: null,
+      video: null, 
       whatsapp: '5511997450293',
       mensagem: 'Ganhe pontos e ofertas exclusivas',
       vitrineName: 'VITRINE ALE',
@@ -638,9 +563,6 @@
     let horarioSelecionado = null;
     let aulaIniciada = false;
 
-    // =====================================================
-    // LOGIN E PERSISTÊNCIA
-    // =====================================================
     function fazerLogin() {
       const senha = document.getElementById('login-senha').value;
       if (senha === appState.senhaAdmin) {
@@ -658,8 +580,11 @@
     }
 
     function salvarEstado() {
-      try { localStorage.setItem('appStateAlexandra', JSON.stringify(appState)); } 
-      catch (e) { alert('Aviso: Memória do navegador cheia. Tente usar imagens mais leves.'); }
+      try { 
+        localStorage.setItem('appStateAlexandra', JSON.stringify(appState)); 
+      } catch (e) { 
+        alert('⚠️ Memória cheia!\n\nVocê atingiu o limite de armazenamento. Vá no Painel Master e remova vídeos ou imagens pesadas de Publicidades ou da Boutique.'); 
+      }
     }
 
     function carregarEstado() {
@@ -680,9 +605,6 @@
       }
     }
 
-    // =====================================================
-    // NAVEGAÇÃO
-    // =====================================================
     function abrirTela(id) {
       document.getElementById('tela-chat').style.display = 'none';
       document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
@@ -703,9 +625,6 @@
       document.querySelector('.nav-item[data-tab="inicio"]').classList.add('active');
     }
 
-    // =====================================================
-    // AMBIENTES E PLANOS (RESTAURADOS)
-    // =====================================================
     function abrirPlano(tipo) {
       const p = appState.planos[tipo] || estadoPadrao.planos[tipo];
       const emojis = { essencial: '🌱', inteligente: '🚀', master: '👑' };
@@ -760,9 +679,6 @@
       abrirTela('canais');
     }
 
-    // =====================================================
-    // INTEGRAÇÕES E AGENDA (RESTAURADOS)
-    // =====================================================
     function toggleIntegracao(id) {
       const integ = appState.integracoes.find(i => i.id === id);
       if (!integ) return;
@@ -801,9 +717,43 @@
       window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de agendar no dia ${diaSelecionado} às ${horarioSelecionado}.`)}`, '_blank');
     }
 
-    // =====================================================
-    // HOME E PRODUTOS
-    // =====================================================
+    // --- AQUI ESTÁ A CORREÇÃO DO VÍDEO ---
+    function gerarHTMLVideo(url) {
+      if (!url) return '';
+      
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let vidId = '';
+        try {
+          if (url.includes('youtu.be/')) {
+            vidId = url.split('youtu.be/')[1].split(/[?#]/)[0];
+          } else if (url.includes('youtube.com/shorts/')) {
+            vidId = url.split('youtube.com/shorts/')[1].split(/[?#]/)[0];
+          } else {
+            const urlParams = new URLSearchParams(new URL(url).search);
+            vidId = urlParams.get('v');
+          }
+        } catch(e) {
+          vidId = url.split('v=')[1] || url.split('/').pop();
+          if (vidId) vidId = vidId.split('&')[0];
+        }
+
+        if (!vidId) return `<div style="padding:20px; text-align:center; color:#fff; background:#000;">Link inválido.</div>`;
+
+        return `<iframe src="https://www.youtube.com/embed/${vidId}?playsinline=1&controls=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
+      } 
+      else if (url.includes('tiktok.com')) {
+        let match = url.match(/video\/(\d+)/);
+        if (match) {
+           return `<iframe src="https://www.tiktok.com/embed/v2/${match[1]}" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
+        }
+        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:#000; color:#fff; flex-direction:column; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; font-weight:bold; text-decoration:none;">Abrir no TikTok</a></div>`;
+      }
+      else if (url.includes('kwai')) {
+        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:linear-gradient(135deg, #FF8C00, #FF4500); color:#fff; flex-direction:column; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; font-weight:bold; text-decoration:none; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:999px;">Assistir no Kwai</a></div>`;
+      }
+      return `<video src="${url}" controls playsinline style="width:100%; height:100%; object-fit:cover; border-radius:16px;"></video>`;
+    }
+
     function renderizarHome() {
       document.documentElement.style.setProperty('--cor-principal', appState.colorPrimary || '#9D174D');
       document.documentElement.style.setProperty('--cor-dourada', appState.colorGold || '#D4AF37');
@@ -827,14 +777,26 @@
         else if (secao === 'publicidade' && appState.publicidades.length > 0) {
           let pubHtml = '';
           appState.publicidades.forEach(pub => {
-            let media = pub.video ? `<div class="pub-media"><video src="${pub.video}" muted autoplay loop playsinline></video></div>` : (pub.imagem ? `<div class="pub-media"><img src="${pub.imagem}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
-            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p>${pub.link ? `<a href="${pub.link}" target="_blank" class="pub-btn">Aproveitar</a>` : `<button class="pub-btn">Aproveitar</button>`}</div></div>`;
+            let media = '';
+            if (pub.video) {
+              media = `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>`;
+            } else if (pub.imagem) {
+              media = `<div class="pub-media"><img src="${pub.imagem}"></div>`;
+            } else {
+              media = `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`;
+            }
+            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${pub.id})">Conhecer Parceiro</button></div></div>`;
           });
-          html = `<div class="section-title-nova">Ofertas</div><div class="pub-scroll">${pubHtml}</div>`;
+          html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
         }
         else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${appState.mensagem}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
         else if (secao === 'indique') html = `<div class="banner-indique" onclick="abrirTela('indique'); document.querySelector('[data-tab=indique]').click();"><div><h3>Indique e Ganhe!</h3><p>Convide amigas</p></div><i class="fa-solid fa-gift"></i></div>`;
-        else if (secao === 'videos' && appState.video) html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><video src="${appState.video}" controls></video></div>`;
+        
+        else if (secao === 'videos' && appState.video) {
+          let videoHtml = gerarHTMLVideo(appState.video);
+          html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><div style="height:220px;">${videoHtml}</div></div>`;
+        }
+        
         else if (secao === 'planos') {
           let planosHtml = '';
           ['essencial', 'inteligente', 'master'].forEach(id => {
@@ -874,9 +836,20 @@
       abrirTela('produto');
     }
 
-    // =====================================================
-    // CONFIGURAÇÕES MASTER (RESTAURADO)
-    // =====================================================
+    function abrirDetalhesParceiro(id) {
+      const pub = appState.publicidades.find(p => p.id === id);
+      if (!pub) return;
+      
+      document.getElementById('parceiro-img-grande').innerHTML = pub.imagem ? `<img src="${pub.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🤝';
+      document.getElementById('parceiro-nome').textContent = pub.titulo;
+      document.getElementById('parceiro-desc').textContent = pub.descricao;
+      
+      const textoFormatado = pub.sobre ? pub.sobre.replace(/\n/g, '<br>') : 'Este é um dos nossos parceiros oficiais. Em breve mais detalhes sobre esta parceria.';
+      document.getElementById('parceiro-conteudo').innerHTML = textoFormatado;
+      
+      abrirTela('parceiro');
+    }
+
     function abrirConfiguracao(id) {
       configAtualAberta = id;
       backupState = JSON.parse(JSON.stringify(appState));
@@ -948,7 +921,8 @@
         }).join('');
         html = `<p style="font-size:11px; margin-bottom:10px;">Use as setas para mudar a ordem:</p>${listaHTML}`;
       }
-          else if (id === 'videos') {
+      // AQUI ESTÁ A CORREÇÃO DO MENU DE VÍDEO
+      else if (id === 'videos') {
         titulo.textContent = 'Configuração de Vídeos';
         html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${appState.video || ''}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
       }
@@ -982,13 +956,29 @@
       }
     }
 
-    // EDITORES DE PUBLICIDADE E PRODUTO
     function abrirEditorPublicidade(index) {
       indexPubEditando = index;
       configAtualAberta = 'publicidade-edit';
-      const pub = index === -1 ? { titulo: '', descricao: '', imagem: null, video: null, link: '' } : appState.publicidades[index];
+      const pub = index === -1 ? { titulo: '', descricao: '', sobre: '', imagem: null, video: null } : appState.publicidades[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Nova Publicidade' : 'Editar Publicidade';
-      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título da Oferta</label><input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Frete Grátis Hoje!"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><textarea id="pub-descricao" rows="2" placeholder="Ex: Válido para compras acima de R$100">${pub.descricao || ''}</textarea><label style="font-size:11px; font-weight:700;">Link de Destino (Opcional)</label><input type="url" id="pub-link" value="${pub.link || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Imagem (Opcional)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700;">Vídeo (Opcional - substitui a imagem)</label><input type="file" id="pub-video" accept="video/*"></div>`;
+      
+      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;">
+        <label style="font-size:11px; font-weight:700;">Título (Nome do Parceiro)</label>
+        <input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Loja da Maria">
+        
+        <label style="font-size:11px; font-weight:700;">Descrição Curta</label>
+        <input type="text" id="pub-descricao" value="${pub.descricao || ''}" placeholder="Ex: Moda Feminina e Acessórios">
+        
+        <label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Sobre a Parceria / O Parceiro (Texto Longo)</label>
+        <textarea id="pub-sobre" rows="4" placeholder="Escreva os detalhes da parceria...">${pub.sobre || ''}</textarea>
+        
+        <label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Imagem (Máx 10MB)</label>
+        <input type="file" id="pub-imagem" accept="image/*">
+        
+        <label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Link do Vídeo (YouTube, TikTok, Kwai)</label>
+        <input type="url" id="pub-video-link" value="${pub.video || ''}" placeholder="https://www.youtube.com/watch?v=...">
+      </div>`;
+      
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Publicidade';
@@ -999,19 +989,34 @@
     function salvarPublicidade() {
       const tituloVal = document.getElementById('pub-titulo').value;
       const descVal = document.getElementById('pub-descricao').value;
-      const linkVal = document.getElementById('pub-link').value;
+      const sobreVal = document.getElementById('pub-sobre').value;
+      const videoLinkVal = document.getElementById('pub-video-link').value;
       const imgInput = document.getElementById('pub-imagem');
-      const vidInput = document.getElementById('pub-video');
+      
       const novaPub = indexPubEditando === -1 ? { id: Date.now() } : appState.publicidades[indexPubEditando];
-      novaPub.titulo = tituloVal; novaPub.descricao = descVal; novaPub.link = linkVal;
-      const salvarFinal = () => {
-        if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
-        salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
-      };
-      const pendentes = [];
-      if (vidInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-video', v => { if (v) { novaPub.video = v; novaPub.imagem = null; } r(); })));
-      else if (imgInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-imagem', v => { if (v) { novaPub.imagem = v; novaPub.video = null; } r(); })));
-      if (pendentes.length) Promise.all(pendentes).then(salvarFinal); else salvarFinal();
+      novaPub.titulo = tituloVal; 
+      novaPub.descricao = descVal; 
+      novaPub.sobre = sobreVal;
+      
+      if (videoLinkVal) {
+        novaPub.video = videoLinkVal;
+        novaPub.imagem = null;
+      } else if (imgInput.files.length) {
+        lerArquivoComprimido('pub-imagem', v => { 
+          if (v) { 
+            novaPub.imagem = v; 
+            novaPub.video = null; 
+          } 
+          if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
+          salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
+        });
+        return;
+      } else {
+        novaPub.video = null;
+      }
+
+      if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
+      salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
     }
 
     function removerPublicidade(index) { if (confirm('Excluir?')) { appState.publicidades.splice(index, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); } }
@@ -1021,7 +1026,7 @@
       configAtualAberta = 'boutique-edit';
       const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar Produto';
-      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto</label><input type="file" id="prod-imagem" accept="image/*">`;
+      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto (Máx 10MB)</label><input type="file" id="prod-imagem" accept="image/*">`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Produto';
@@ -1109,8 +1114,8 @@
         else { appState.bgColor = c; appState.bgImage = null; appState.bgGradient = null; salvarEstado(); renderizarHome(); }
       }
       else if (id === 'videos') {
-        const f = document.getElementById('edit-video-file');
-        if(f.files.length) lerArquivoComprimido('edit-video-file', v => { appState.video = v; salvarEstado(); renderizarHome(); fecharEditor(); });
+        appState.video = document.getElementById('edit-video-link').value;
+        salvarEstado(); renderizarHome();
       }
       fecharEditor();
     }
@@ -1124,19 +1129,26 @@
     function addRedeConfig() { document.getElementById('redes-container').insertAdjacentHTML('beforeend', `<div class="config-item-row"><input type="text" class="rede-nome" placeholder="Nome"><input type="url" class="rede-link" placeholder="Link"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`); }
     function addCanalConfig() { document.getElementById('canais-config-container').insertAdjacentHTML('beforeend', `<div class="config-item-row" style="flex-direction:column; background:#f9f9f9; padding:8px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><span style="font-size:11px; font-weight:700;">Canal</span><button type="button" class="btn-del" onclick="this.closest('.config-item-row').remove()">X</button></div><input type="text" class="canal-nome" placeholder="Nome"><input type="url" class="canal-link" placeholder="Link"><input type="text" class="canal-desc" placeholder="Descrição"></div>`); }
 
-    // =====================================================
-    // RESTAURO DE FUNÇÕES AUXILIARES E INDICAÇÃO
-    // =====================================================
     function inicializarIndicacao() {
       try {
         let codigo = localStorage.getItem('ab_ref_code') || 'AB' + Math.random().toString(36).substring(2, 8).toUpperCase();
         localStorage.setItem('ab_ref_code', codigo);
-        let base = location.protocol === 'file:' ? location.href.split('?')[0] : location.origin + location.pathname;
+        
+        let base = location.protocol === 'file:' ? "https://seu-site-aqui.com" : location.origin + location.pathname;
+        
         let link = `${base}?ref=${codigo}`;
         if (document.getElementById('link-indicacao')) document.getElementById('link-indicacao').value = link;
         if (document.getElementById('codigo-indicacao')) document.getElementById('codigo-indicacao').textContent = codigo;
-        if (document.getElementById('btn-share-indique')) document.getElementById('btn-share-indique').href = `https://wa.me/?text=${encodeURIComponent('Use meu link: ' + link)}`;
       } catch(e) {}
+    }
+
+    function compartilharIndicacao() {
+        const link = document.getElementById('link-indicacao').value;
+        const texto = encodeURIComponent('Use meu link e ganhe descontos exclusivos: ' + link);
+        mostrarToast('Abrindo WhatsApp...');
+        
+        const url = `https://api.whatsapp.com/send?text=${texto}`;
+        window.open(url, '_blank');
     }
 
     function copiarLink() {
@@ -1155,18 +1167,44 @@
     }
 
     function lerArquivoComprimido(inputId, cb) {
-      const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null);
+      const i = document.getElementById(inputId); 
+      if (!i || !i.files[0]) return cb(null);
+      
       const file = i.files[0];
-      if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; }
+      
+      const limiteImagem = 10 * 1024 * 1024;
+
+      if (file.type.startsWith('image/') && file.size > limiteImagem) {
+        alert('⚠️ Imagem muito pesada! Por favor, escolha uma imagem menor que 10MB.');
+        i.value = ''; return cb(null);
+      }
+
+      if (!file.type.startsWith('image/')) { 
+        const r = new FileReader(); 
+        r.onload = e => cb(e.target.result); 
+        r.readAsDataURL(file); 
+        return; 
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement('canvas'); let width = img.width, height = img.height;
-          if (width > 600) { height = Math.round((height * 600) / width); width = 600; }
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-          cb(canvas.toDataURL('image/jpeg', 0.6));
+          const canvas = document.createElement('canvas'); 
+          let width = img.width, height = img.height;
+          
+          const MAX_WIDTH = 600; 
+          if (width > MAX_WIDTH) { 
+            height = Math.round((height * MAX_WIDTH) / width); 
+            width = MAX_WIDTH; 
+          }
+          
+          canvas.width = width; 
+          canvas.height = height;
+          const ctx = canvas.getContext('2d'); 
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          cb(canvas.toDataURL('image/jpeg', 0.5));
         };
         img.src = e.target.result;
       };
