@@ -17,7 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Scripts do Firebase (Versão Compatível) -->
+  <!-- Scripts do Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -55,25 +55,6 @@
     }
 
     .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-
-    #tela-login {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;
-      background-color: #ffffff;
-      background-image: url('logo.png'); 
-      background-position: center top 40px;
-      background-size: 85% auto;
-      background-repeat: no-repeat;
-      
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-      color: var(--cor-principal);
-      padding: 0 20px 80px 20px;
-    }
-
-    .login-sub { font-size: 13px; color: var(--cor-principal); font-weight: 700; margin-bottom: 20px; letter-spacing: 1px; }
-    .login-input { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: 2px solid var(--cor-principal); background: #ffffff; color: var(--cor-principal); text-align: center; font-size: 18px; letter-spacing: 5px; margin-bottom: 15px; outline: none; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .login-input::placeholder { letter-spacing: normal; font-size: 14px; font-weight: 400; color: #999; }
-    .login-btn { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: var(--cor-principal); color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 15px rgba(157, 23, 77, 0.3); }
-    .login-btn:active { transform: scale(0.96); }
 
     .debug-switcher { background: #222; color: #fff; padding: 10px; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around; border-bottom: 2px solid var(--cor-principal); z-index: 100; }
     .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
@@ -205,25 +186,8 @@
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-    .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
-    @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
-    @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-    #tela-chat { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999; background: #fff; display: none; }
-    .chat-container { max-width: 450px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; position: relative; }
-    .chat-header { background: var(--cor-principal); color: #fff; padding: 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-    .chat-body { flex: 1; padding: 16px; padding-bottom: 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #E5DDD5; min-height: 0; }
-    .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
-    .msg-bot { background: #fff; align-self: flex-start; border-top-left-radius: 0; }
-    .msg-user { background: #DCF8C6; align-self: flex-end; border-top-right-radius: 0; }
-    .chat-input-area { position: absolute; bottom: 0; left: 0; right: 0; display: flex; padding: 10px; background: #f0f0f0; gap: 8px; z-index: 10; border-top: 1px solid #ddd; }
-    .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-family: inherit; }
-    .chat-input-area button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--cor-principal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-    
-    .btn-ia-acao { display: block; background: #fff; border: 1.5px solid var(--cor-principal); color: var(--cor-principal); padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; transition: all 0.2s; }
-    .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
-
-    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    /* MODAIS E EDITORES */
+    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
     .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #D4AF37; border-radius: 8px; font-family: inherit; font-size: 13px; }
@@ -267,23 +231,15 @@
 </head>
 <body>
 
-  <div id="tela-login">
-    <div class="login-sub">Acesso Restrito ao Painel</div>
-    <input type="password" id="login-senha" class="login-input" placeholder="Digite a senha" maxlength="4">
-    <button class="login-btn" onclick="fazerLogin()">Entrar no App</button>
-    <p style="font-size:10px; margin-top:20px; color: #777;">Senha padrão: 1234</p>
-  </div>
+  <div class="app-container" id="app-container">
 
-  <div class="app-container" id="app-container" style="display:none;">
-
+    <!-- SIMULADOR DE ACESSO (APENAS PARA TESTES) -->
     <div class="debug-switcher">
       <div>
-        Simular Acesso:
+        Simular Visão: 
         <select id="role-select" onchange="aplicarRestricoes()">
-          <option value="dona" selected>Dona (Comando Geral)</option>
-          <option value="gerente">Gerente (Maria)</option>
-          <option value="supervisor">Supervisor (João)</option>
-          <option value="cliente">Cliente (Sem acesso)</option>
+          <option value="cliente" selected>Cliente (Sem Senha)</option>
+          <option value="dona">Dona (Logada)</option>
         </select>
       </div>
     </div>
@@ -302,7 +258,7 @@
       <div id="tela-canais" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="section-title-nova" style="margin-top:0;">Nossos Canais</div>
-        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades, ofertas e novidades exclusivas.</p>
+        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades.</p>
         <div id="canais-lista-container"></div>
       </div>
 
@@ -331,14 +287,9 @@
             <input type="text" id="link-indicacao" readonly>
             <button onclick="copiarLink()">Copiar</button>
           </div>
-          
           <button onclick="compartilharIndicacao()" class="btn-cta-grande" style="background:#00BB2D;">
             <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
           </button>
-
-          <p style="font-size:11px; color:var(--cor-texto-mutado); margin-top:14px;">
-            Seu código: <b id="codigo-indicacao" style="color:var(--cor-principal);"></b>
-          </p>
         </div>
       </div>
 
@@ -372,10 +323,8 @@
         <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🤝</div>
         <h1 class="produto-nome" id="parceiro-nome">Parceiro</h1>
         <p class="produto-preco" id="parceiro-desc" style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Descrição curta</p>
-        
         <div class="section-title-nova">Sobre a Parceria</div>
-        <div id="parceiro-conteudo" style="font-size: 13px; line-height: 1.6; color: var(--cor-texto-escuro); background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        </div>
+        <div id="parceiro-conteudo" style="font-size: 13px; line-height: 1.6; color: var(--cor-texto-escuro); background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"></div>
         <button class="btn-cta-grande" onclick="voltarInicio()"><i class="fa-solid fa-check"></i> Entendi</button>
       </div>
 
@@ -390,55 +339,44 @@
           <div class="section-title-nova">Configurações</div>
           <div class="painel-master-box">
             <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
-            <div class="master-grid" id="master-grid-botoes"></div>
+            <div id="area-login-admin">
+              <p style="font-size:12px; text-align:center; margin-bottom:10px;">Digite a senha de administrador para liberar os botões.</p>
+              <input type="password" id="senha-admin" placeholder="Senha (1234)" style="width:100%; padding:10px; border:1px solid var(--cor-principal); border-radius:8px; margin-bottom:10px;">
+              <button onclick="verificarSenhaAdmin()" style="width:100%; padding:10px; background:var(--cor-principal); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Desbloquear</button>
+            </div>
+            <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
           </div>
-        </div>
-
-        <div style="text-align:center; margin-top: 30px;">
-          <button onclick="resetarApp()" style="background:none; border:none; color:#ccc; font-size:11px; text-decoration:underline; cursor:pointer;">Apagar todas as configurações e voltar ao padrão</button>
         </div>
       </div>
 
     </div>
 
-    <button class="assistente-ia-flutuante" onclick="abrirChat()" aria-label="Assistente IA">
-      <i class="fa-solid fa-wand-magic-sparkles"></i>
-    </button>
-
-    <div id="tela-chat" class="tela">
-      <div class="chat-container">
-        <div class="chat-header">
-          <button onclick="fecharChat()" style="background:none; border:none; color:#fff; font-size:20px;"><i class="fa-solid fa-arrow-left"></i></button>
-          <i class="fa-solid fa-robot"></i>
-          <div><h3 style="font-size:14px;" id="ia-name-header">Assistente Ale</h3><p style="font-size:10px; opacity:0.8;">Online</p></div>
-        </div>
-        
-        <div class="chat-body" id="chat-body">
-          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸</div>
-          <div class="msg msg-bot" style="border:1px solid #eee; padding:14px;">
-            <b>💡 Dica:</b> Eu posso te ensinar a configurar todo o seu aplicativo!<br>
-            <button type="button" class="btn-ia-acao" onclick="iniciarAula()">🎓 Quero fazer a aula de configuração</button>
-          </div>
-        </div>
-        
-        <div class="chat-input-area">
-          <input type="text" id="chat-input" placeholder="Digite aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
-          <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
+    <!-- MODAL DO CÓDIGO DO CLUBE -->
+    <div id="modal-codigo-clube" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro">
+        <h3>Clube da Ale 🤫</h3>
+        <p style="font-size:12px; text-align:center; margin-bottom:15px;">Este espaço é exclusivo. Digite seu código de convite para liberar o acesso.</p>
+        <input type="text" id="input-codigo-clube" placeholder="Ex: ALE2026" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
+        <button onclick="verificarCodigoClube()" class="btn-enviar-cadastro">Verificar Código</button>
+        <button onclick="document.getElementById('modal-codigo-clube').style.display='none'" class="btn-undo">Cancelar</button>
       </div>
     </div>
 
+    <!-- MODAL DE CADASTRO DO CLIENTE -->
     <div id="modal-cadastro" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
-        <h3>Bem-vindo(a) à Vitrine Ale</h3>
+        <h3 style="margin-bottom:15px;">Faça seu Cadastro</h3>
         <form onsubmit="enviarCadastro(event)">
-          <input type="text" placeholder="Seu nome completo" required>
+          <input type="text" id="cad-nome" placeholder="Seu nome completo" required>
+          <input type="email" id="cad-email" placeholder="Seu melhor e-mail" required>
           <input type="tel" id="cad-tel" placeholder="WhatsApp (com DDD)" required>
-          <button type="submit" class="btn-enviar-cadastro">Criar minha conta</button>
+          <button type="submit" class="btn-enviar-cadastro">Cadastrar</button>
+          <button type="button" onclick="document.getElementById('modal-cadastro').style.display='none'" style="width:100%; margin-top:10px; border:none; background:none; color:#777; font-size:12px; cursor:pointer; text-decoration:underline;">Cancelar</button>
         </form>
       </div>
     </div>
 
+    <!-- MODAL EDITOR MASTER -->
     <div id="modal-editor" class="modal-cadastro-fixo" style="align-items: center;">
       <div class="cartao-cadastro" style="background: #fff;">
         <h3 id="editor-titulo">Editar</h3>
@@ -448,6 +386,7 @@
       </div>
     </div>
 
+    <!-- NAV INFERIOR -->
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
       <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
@@ -469,7 +408,6 @@
       measurementId: "G-15ZM50X9B8"
     };
 
-    // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -480,7 +418,10 @@
       display: "standalone",
       background_color: "#FFF2F6",
       theme_color: "#9D174D",
-      icons: [{ src: "logo.png", sizes: "512x512", type: "image/png" }]
+      icons: [
+        { src: "logo.png", sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: "logo.png", sizes: "512x512", type: "image/png", purpose: "any" }
+      ]
     };
     const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'}));
     const link = document.createElement('link');
@@ -561,10 +502,7 @@
         ]
       },
       layoutOrder: ['banner', 'publicidade', 'cta', 'indique', 'videos', 'planos', 'espacos', 'boutique', 'contato'],
-      equipe: [
-        { id: 1, nome: 'Maria', cargo: 'gerente', senha: '123', perms: ['identidade', 'cores', 'logo', 'mensagens', 'clube'] },
-        { id: 2, nome: 'João', cargo: 'supervisor', senha: '123', perms: ['publicidade', 'mensagens'] }
-      ],
+      equipe: [],
       precos: { essencial: '29', inteligente: '59', master: '99' },
       planos: {
         essencial: { titulo: 'Essencial', subtitulo: 'O básico', features: ['Vitrine básica', 'Cadastro de produtos'] },
@@ -580,7 +518,6 @@
     let indexProdEditando = -1;
     let diaSelecionado = null;
     let horarioSelecionado = null;
-    let aulaIniciada = false;
 
     // --- FUNÇÕES DO FIREBASE ---
     function carregarEstado() {
@@ -588,11 +525,9 @@
         if (docSnap.exists) {
           appState = docSnap.data();
           renderizarHome();
-          aplicarRestricoes();
         } else {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(() => {
             renderizarHome();
-            aplicarRestricoes();
           });
         }
       });
@@ -602,26 +537,98 @@
       try {
         await db.collection("appData").doc("estadoGlobal").set(appState);
       } catch (e) {
-        alert("Erro ao salvar na nuvem. Verifique sua internet ou as regras do Firebase.");
+        alert("Erro ao salvar na nuvem.");
         console.error(e);
       }
     }
-    // ----------------------------
 
-    function fazerLogin() {
-      const senha = document.getElementById('login-senha').value;
-      if (senha === appState.senhaAdmin) {
-        document.getElementById('tela-login').style.display = 'none';
-        document.getElementById('app-container').style.display = 'flex';
-        carregarEstado(); 
-        gerarCalendario();
-        inicializarIndicacao();
-      } else {
-        alert('Senha incorreta! Tente novamente.');
-        document.getElementById('login-senha').value = '';
+    // --- NOVA FUNÇÃO DE CADASTRO DE CLIENTE ---
+    async function enviarCadastro(e) {
+      e.preventDefault();
+      const nome = document.getElementById('cad-nome').value;
+      const email = document.getElementById('cad-email').value;
+      const telefone = document.getElementById('cad-tel').value;
+
+      try {
+        // Salva o cliente numa coleção separada no Firebase
+        await db.collection("clientes").add({
+          nome: nome,
+          email: email,
+          telefone: telefone,
+          dataCadastro: new Date().toISOString()
+        });
+        
+        mostrarToast('✅ Cadastro realizado com sucesso!');
+        document.getElementById('modal-cadastro').style.display = 'none';
+        document.getElementById('cad-nome').value = '';
+        document.getElementById('cad-email').value = '';
+        document.getElementById('cad-tel').value = '';
+      } catch (error) {
+        console.error("Erro ao cadastrar:", error);
+        alert("Erro ao cadastrar. Verifique sua internet.");
       }
     }
 
+    // --- FUNÇÕES DE ACESSO AO CLUBE VIP ---
+    function pedirCodigoClube() {
+      document.getElementById('modal-codigo-clube').style.display = 'flex';
+    }
+
+    async function verificarCodigoClube() {
+      const codigo = document.getElementById('input-codigo-clube').value.trim().toUpperCase();
+      if (!codigo) return alert('Digite um código.');
+
+      try {
+        // Procura o código na coleção "codigos_clube" do Firebase
+        const doc = await db.collection("codigos_clube").doc(codigo).get();
+        
+        if (doc.exists) {
+          // Código válido!
+          mostrarToast('✅ Código válido! Bem-vinda ao Clube.');
+          document.getElementById('modal-codigo-clube').style.display = 'none';
+          document.getElementById('input-codigo-clube').value = '';
+          
+          // Chama a função original que abre o link do clube
+          abrirLinkAmbiente('clube'); 
+        } else {
+          alert('❌ Código inválido ou expirado. Verifique com a Alexandra.');
+        }
+      } catch (e) {
+        console.error("Erro ao verificar código:", e);
+        alert('Erro de conexão. Tente novamente.');
+      }
+    }
+
+    // --- LÓGICA DE ACESSO ADMIN ---
+    function verificarSenhaAdmin() {
+      const senha = document.getElementById('senha-admin').value;
+      if (senha === appState.senhaAdmin) {
+        document.getElementById('area-login-admin').style.display = 'none';
+        document.getElementById('master-grid-botoes').style.display = 'grid';
+        document.getElementById('role-select').value = 'dona'; // Simula que a dona está logada
+        aplicarRestricoes();
+        mostrarToast('Acesso liberado!');
+      } else {
+        alert("Senha incorreta!");
+      }
+    }
+
+    function aplicarRestricoes() {
+      // Se o usuário já desbloqueou a senha, ele vê os botões
+      const isDona = document.getElementById('role-select').value === 'dona';
+      
+      const grid = document.getElementById('master-grid-botoes');
+      if (isDona) {
+        grid.innerHTML = todasPermissoes.map(id => {
+          const p = todasPermissoes.find(x => x.id === id);
+          return `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`;
+        }).join('');
+      } else {
+        grid.innerHTML = '';
+      }
+    }
+
+    // --- RESTO DAS FUNÇÕES DO APP ---
     function resetarApp() {
       if (confirm('Apagar tudo e voltar ao padrão?')) {
         appState = JSON.parse(JSON.stringify(estadoPadrao));
@@ -631,7 +638,6 @@
     }
 
     function abrirTela(id) {
-      document.getElementById('tela-chat').style.display = 'none';
       document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
       const tela = document.getElementById('tela-' + id);
       if (tela) tela.classList.add('ativa');
@@ -713,7 +719,7 @@
         let limite = 99;
         if (appState.planoAtual === 'basico') limite = 2;
         else if (appState.planoAtual === 'intermediario') limite = 5;
-        if (conectadas >= limite) { alert(`Atenção: Seu plano atual (${appState.planoAtual.toUpperCase()}) permite conectar apenas ${limite} integrações.`); return; }
+        if (conectadas >= limite) { alert(`Atenção: Seu plano atual permite conectar apenas ${limite} integrações.`); return; }
         integ.conectada = true; mostrarToast(`✅ ${integ.nome} conectado!`);
       }
       salvarEstado(); abrirConfiguracao('integracoes'); 
@@ -833,7 +839,7 @@
         else if (secao === 'espacos') {
           const bgClube = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.clubeImage}');` : `background: linear-gradient(135deg, ${appState.clubeColor} 0%, #4C0519 100%);`;
           const bgRenova = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.renovaseImage}');` : `background: linear-gradient(135deg, ${appState.renovaseColor} 0%, #4A2300 100%);`;
-          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="abrirLinkAmbiente('clube')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
+          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="pedirCodigoClube()"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
         }
         else if (secao === 'boutique') {
           const prods = appState.boutiqueProdutos || [];
@@ -873,6 +879,8 @@
       
       abrirTela('parceiro');
     }
+
+    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
 
     function abrirConfiguracao(id) {
       configAtualAberta = id;
@@ -1180,15 +1188,6 @@
       try { document.execCommand('copy'); mostrarToast('✅ Link copiado!'); } catch (e) { alert('Copie manualmente.'); }
     }
 
-    function aplicarRestricoes() {
-      const role = document.getElementById('role-select').value;
-      let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
-      document.getElementById('perfil-cargo').textContent = role === 'dona' ? 'Proprietária' : 'Equipe';
-      document.getElementById('perfil-nome').textContent = role === 'dona' ? appState.appName : 'Usuário';
-      const grid = document.getElementById('master-grid-botoes');
-      grid.innerHTML = perms.map(id => { const p = todasPermissoes.find(x => x.id === id); return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>` : ''; }).join('');
-    }
-
     function lerArquivoComprimido(inputId, cb) {
       const i = document.getElementById(inputId); 
       if (!i || !i.files[0]) return cb(null);
@@ -1238,19 +1237,6 @@
       const t = document.createElement('div'); t.textContent = msg;
       t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:999px;font-size:12px;z-index:99999;box-shadow:0 4px 14px rgba(0,0,0,.3);';
       document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
-    }
-
-    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
-    function enviarCadastro(e) { e.preventDefault(); alert('Conta criada!'); document.getElementById('modal-cadastro').style.display = 'none'; }
-
-    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
-    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
-    function iniciarAula() { document.getElementById('chat-body').innerHTML = `<div class="msg msg-bot">Aula: Vá no Perfil > Integrações para conectar seus apps! 🌸</div>`; }
-    function enviarMsgIA() { 
-      const inp = document.getElementById('chat-input'); const txt = inp.value; if(!txt) return;
-      const body = document.getElementById('chat-body');
-      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); inp.value = '';
-      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">Entendi! Para configurar, vá no Perfil. 😊</div>`); body.scrollTop = body.scrollHeight; }, 800);
     }
 
     document.addEventListener('DOMContentLoaded', () => { carregarEstado(); });
