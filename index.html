@@ -439,10 +439,19 @@
       <div class="cartao-cadastro" style="background: #fff;">
         <h3 id="editor-titulo">Editar</h3>
         <div id="editor-content" style="text-align: left;"></div>
-        <button id="btn-salvar-editor" class="btn-enviar-cadastro" onclick="salvarConfigAtual()">Salvar Alterações</button>
-        <button id="btn-voltar-editor" class="btn-undo" onclick="desfazerConfig()">↩ Desfazer / Voltar</button>
-      </div>
-    </div>
+          else if (id === 'videos') {
+        const linkVideo = document.getElementById('edit-video-link').value.trim();
+        appState.video = linkVideo;
+        
+        // Garante que a seção de vídeos está visível na tela
+        if (linkVideo && !appState.layoutOrder.includes('videos')) {
+            appState.layoutOrder.push('videos');
+        }
+        
+        salvarEstado(); 
+        renderizarHome();
+        mostrarToast('✅ Vídeo salvo com sucesso!'); // Aviso para você ver que funcionou
+      }
 
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
