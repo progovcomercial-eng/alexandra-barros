@@ -23,6 +23,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
   <style>
+    /* O CSS PERMANECE EXATAMENTE O MESMO */
     :root {
       --cor-fundo: #FFF2F6; --cor-card-fundo: #FFFFFF; --cor-principal: #9D174D;
       --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
@@ -175,7 +176,6 @@
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-    /* IA CHAT */
     .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
     @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
     @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -194,7 +194,6 @@
     .btn-ia-acao { display: block; background: #fff; border: 1.5px solid var(--cor-principal); color: var(--cor-principal); padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; transition: all 0.2s; }
     .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
 
-    /* MODAIS E EDITORES */
     .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
@@ -723,15 +722,19 @@
       if (tela) tela.classList.add('ativa');
       document.querySelector('.app-content').scrollTop = 0;
       
+      // Força a renderização da Agenda corretamente
       if (id === 'agenda') {
         const role = document.getElementById('role-select').value;
+        const elCliente = document.getElementById('agenda-cliente');
+        const elAdmin = document.getElementById('agenda-admin');
+        
         if (role === 'dona' || role === 'gerente' || role === 'supervisor') {
-          document.getElementById('agenda-cliente').style.display = 'none';
-          document.getElementById('agenda-admin').style.display = 'block';
+          if (elCliente) elCliente.style.display = 'none';
+          if (elAdmin) elAdmin.style.display = 'block';
           carregarAgendamentosAdmin();
         } else {
-          document.getElementById('agenda-cliente').style.display = 'block';
-          document.getElementById('agenda-admin').style.display = 'none';
+          if (elCliente) elCliente.style.display = 'block';
+          if (elAdmin) elAdmin.style.display = 'none';
           verificarAgendamentoCliente();
           gerarCalendarioReal();
         }
@@ -823,7 +826,8 @@
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       
       const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-      document.getElementById('mes-ano-atual').textContent = `${meses[month]} ${year}`;
+      const mesAnoEl = document.getElementById('mes-ano-atual');
+      if(mesAnoEl) mesAnoEl.textContent = `${meses[month]} ${year}`;
 
       let html = `<div class="dia-semana">D</div><div class="dia-semana">S</div><div class="dia-semana">T</div><div class="dia-semana">Q</div><div class="dia-semana">Q</div><div class="dia-semana">S</div><div class="dia-semana">S</div>`;
 
@@ -847,7 +851,8 @@
         }
       }
       grid.innerHTML = html;
-      document.getElementById('horarios-container').style.display = 'none';
+      const hrContainer = document.getElementById('horarios-container');
+      if(hrContainer) hrContainer.style.display = 'none';
     }
 
     function mudarMes(dir) {
@@ -860,9 +865,10 @@
       btn.classList.add('selecionado');
       diaSelecionado = dataStr;
       
-      document.getElementById('horarios-container').style.display = 'block';
-      const gridHorarios = document.getElementById('horarios-grid');
+      const hrContainer = document.getElementById('horarios-container');
+      if(hrContainer) hrContainer.style.display = 'block';
       
+      const gridHorarios = document.getElementById('horarios-grid');
       const horarios = appState.horariosAgenda || estadoPadrao.horariosAgenda;
       
       if (horarios.length === 0) {
@@ -908,20 +914,29 @@
 
     function verificarAgendamentoCliente() {
         const salvo = localStorage.getItem('meu_agendamento');
+        const calendarContainer = document.getElementById('calendario-container');
+        const clienteJaAgendou = document.getElementById('cliente-ja-agendou');
+        
         if (salvo) {
             const ag = JSON.parse(salvo);
-            document.getElementById('calendario-container').style.display = 'none';
-            document.getElementById('cliente-ja-agendou').style.display = 'block';
-            document.getElementById('btn-whats-cliente').href = `https://wa.me/${appState.whatsapp}?text=Olá, tenho um horário marcado dia ${ag.data} às ${ag.hora}`;
+            if(calendarContainer) calendarContainer.style.display = 'none';
+            if(clienteJaAgendou) clienteJaAgendou.style.display = 'block';
+            const btnW = document.getElementById('btn-whats-cliente');
+            if(btnW) btnW.href = `https://wa.me/${appState.whatsapp}?text=Olá, tenho um horário marcado dia ${ag.data} às ${ag.hora}`;
         } else {
-            document.getElementById('calendario-container').style.display = 'block';
-            document.getElementById('cliente-ja-agendou').style.display = 'none';
+            if(calendarContainer) calendarContainer.style.display = 'block';
+            if(clienteJaAgendou) clienteJaAgendou.style.display = 'none';
         }
     }
 
-    // --- AQUI ESTÁ A CORREÇÃO DO "CARREGANDO..." ---
+    // --- CARREGAMENTO DOS AGENDAMENTOS (ADMIN) ---
     function carregarAgendamentosAdmin() {
       const container = document.getElementById('lista-agendamentos-admin');
+      if (!container) {
+        console.error("Elemento #lista-agendamentos-admin não encontrado no HTML.");
+        return;
+      }
+      
       container.innerHTML = '<p style="font-size:12px; color:#666; text-align:center;">Carregando...</p>';
       
       const hojeStr = new Date().toISOString().split('T')[0];
@@ -946,7 +961,6 @@
             </div>`;
         }).join('');
       }).catch(err => {
-        // Se der erro (como falta de permissão), avisa na tela e no console
         console.error("Erro ao carregar agendamentos:", err);
         container.innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar. Verifique as regras do Firestore.</p>';
       });
