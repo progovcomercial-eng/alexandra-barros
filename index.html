@@ -125,18 +125,19 @@
     .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
     
     /* CORES VIVAS E ACESSÍVEIS */
-    /* Cliente: Livre = Verde Água / Ocupado = Vinho Escuro */
     .horario-btn { border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; transition: all 0.2s; }
     .horario-btn.livre-cliente { background: #E0F7FA; border: 1px solid #00BCD4; color: #006064; cursor: pointer; }
     .horario-btn.ocupado-cliente { background: #880E4F; border: 1px solid #4A148C; color: #FFFFFF; text-decoration: line-through; opacity: 0.8; cursor: not-allowed; }
     
-    /* Admin: Livre = Verde Água / Ocupado = Vinho Escuro */
-    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 75px; font-weight: 400; font-size: 11px; border-radius: 8px; }
+    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 85px; font-weight: 400; font-size: 11px; border-radius: 8px; }
     .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; font-weight: 700; }
     .horario-btn.admin-slot.livre { background: #E0F7FA; border: 1px solid #00BCD4; color: #006064; cursor: pointer; }
     .horario-btn.admin-slot.livre:hover { background: #B2EBF2; }
     .horario-btn.admin-slot.ocupado { background: #880E4F; border: 1px solid #4A148C; color: #FFFFFF; cursor: default; }
     .horario-btn.admin-slot.ocupado span { color: #F8BBD0; }
+    
+    .btn-mini-remarcar { margin-top:5px; font-size:9px; padding:3px 6px; border-radius:4px; background:#fff; border:1px solid #880E4F; color:#880E4F; cursor:pointer; font-weight:700; }
+    .btn-mini-cancelar { margin-top:5px; font-size:9px; padding:3px 6px; border-radius:4px; background:#ffebee; border:1px solid #c62828; color:#c62828; cursor:pointer; font-weight:700; }
 
     .admin-agenda-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 4px solid var(--cor-principal); display: flex; flex-direction: column; gap: 5px; }
     .admin-agenda-card .data-hora { font-size: 14px; font-weight: 700; color: var(--cor-principal); display: flex; justify-content: space-between; }
@@ -146,6 +147,8 @@
     .btn-whats-agendamento { background: #00BB2D; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; }
     .btn-remarcar { background: #eee; color: #555; border: 1px solid #ddd; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; margin-left: 5px; }
     .btn-remarcar:hover { background: #e0e0e0; }
+    .btn-cancelar { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; margin-left: 5px; }
+    .btn-cancelar:hover { background: #ffcdd2; }
 
     .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .indique-box i { font-size: 48px; color: var(--cor-dourada); margin-bottom: 16px; }
@@ -280,7 +283,11 @@
           <h3 style="color:var(--cor-principal); margin-bottom:5px;">Você já tem um horário!</h3>
           <p style="font-size:12px; color:#666; margin-bottom:15px;">Seu agendamento foi registrado. Aguarde o contato da nossa equipe.</p>
           <a id="btn-whats-cliente" href="#" target="_blank" class="btn-cta-grande" style="background:#00BB2D; text-decoration:none;">Falar no WhatsApp</a>
-          <button onclick="solicitarRemarcacaoCliente()" class="btn-undo" style="margin-top: 8px;">Remarcar / Desmarcar</button>
+          
+          <div style="display:flex; gap: 8px; margin-top: 8px;">
+            <button onclick="solicitarRemarcacaoCliente()" class="btn-undo" style="margin-top: 0; flex: 1;">Remarcar</button>
+            <button onclick="cancelarAgendamentoCliente()" class="btn-undo" style="margin-top: 0; flex: 1; background: #ffebee; color: #c62828; border-color: #ffcdd2;">Cancelar</button>
+          </div>
         </div>
 
         <!-- VISÃO DA EQUIPE: LISTA EXTRA -->
@@ -996,12 +1003,10 @@
         });
 
         gridHorarios.innerHTML = horarios.map(hr => {
-          // Verifica se o slot está ocupado por algum agendamento que engloba esse horário
           let agendamentoConflitante = null;
           for (let ag of agendamentosDoDia) {
               const inicio = ag.horaInicio || ag.hora;
               const fim = ag.horaFim || ag.hora;
-              // Se o horário atual for >= inicio e < fim, está ocupado
               if (hr >= inicio && hr < fim) {
                   agendamentoConflitante = ag;
                   break;
@@ -1017,7 +1022,10 @@
                       <span>👤 ${esc(agendamentoConflitante.nome)}</span>
                       <span>📞 ${esc(agendamentoConflitante.telefone)}</span>
                       <span>✨ ${esc(agendamentoConflitante.servico || 'Não especificado')}</span>
-                      <button onclick="abrirRemarcarAdmin('${esc(agendamentoConflitante.idFirestore)}', '${esc(agendamentoConflitante.nome)}', '${esc(agendamentoConflitante.telefone)}', '${esc(agendamentoConflitante.servico)}')" style="margin-top:5px; font-size:9px; padding:2px 5px; border-radius:4px; background:#fff; border:1px solid #880E4F; color:#880E4F; cursor:pointer;">Remarcar</button>
+                      <div style="display:flex; gap:5px; margin-top:5px;">
+                        <button onclick="abrirRemarcarAdmin('${esc(agendamentoConflitante.idFirestore)}', '${esc(agendamentoConflitante.nome)}', '${esc(agendamentoConflitante.telefone)}', '${esc(agendamentoConflitante.servico)}')" class="btn-mini-remarcar">Remarcar</button>
+                        <button onclick="cancelarAgendamentoAdmin('${esc(agendamentoConflitante.idFirestore)}')" class="btn-mini-cancelar">Cancelar</button>
+                      </div>
                   </div>`;
               } else {
                   return `<div class="horario-btn admin-slot livre" onclick="abrirModalAgendamentoAdmin('${esc(hr)}')">
@@ -1047,7 +1055,6 @@
       const nomeLogado = localStorage.getItem('clienteNome');
       if (nomeLogado) document.getElementById('agenda-nome').value = nomeLogado;
       
-      // Configura a tela para o modo CLIENTE
       document.getElementById('div-horario-admin').style.display = 'none';
       document.getElementById('resumo-horario-cliente').style.display = 'block';
       document.getElementById('modal-agendar-titulo').textContent = 'Confirmar Agendamento';
@@ -1061,16 +1068,14 @@
       const dataFmt = diaSelecionado.split('-').reverse().join('/');
       document.getElementById('resumo-dia').textContent = dataFmt;
       
-      // Configura a tela para o modo ADMIN
       document.getElementById('div-horario-admin').style.display = 'block';
       document.getElementById('resumo-horario-cliente').style.display = 'none';
       document.getElementById('modal-agendar-titulo').textContent = 'Novo Agendamento (Admin)';
       document.getElementById('btn-salvar-agendamento').textContent = 'Agendar Cliente';
       
       document.getElementById('agenda-hora-inicio').value = hr;
-      document.getElementById('agenda-hora-fim').value = calcHoraFim(hr, 60); // Padrão 1 hora
+      document.getElementById('agenda-hora-fim').value = calcHoraFim(hr, 60);
       
-      // Se estiver em modo de remarcação, preenche os dados
       if (idAgendamentoRemarcando && dadosRemarcando) {
           document.getElementById('agenda-nome').value = dadosRemarcando.nome;
           document.getElementById('agenda-tel').value = dadosRemarcando.telefone;
@@ -1088,7 +1093,6 @@
 
     function fecharModalAgendar() {
         document.getElementById('modal-agendar').style.display = 'none';
-        // Se estava remarcando, limpa as variáveis para não bugar
         if (idAgendamentoRemarcando) {
             idAgendamentoRemarcando = null;
             dadosRemarcando = null;
@@ -1107,7 +1111,7 @@
       const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
       
       let hInicio = horarioSelecionado;
-      let hFim = calcHoraFim(horarioSelecionado, 60); // Cliente padrão 1h
+      let hFim = calcHoraFim(horarioSelecionado, 60);
       
       if (isAdmin) {
           hInicio = document.getElementById('agenda-hora-inicio').value;
@@ -1127,22 +1131,19 @@
       };
 
       try {
-        // Se estiver remarcando, atualiza o documento existente
         if (idAgendamentoRemarcando) {
             await db.collection('agendamentos').doc(idAgendamentoRemarcando).update(agendamento);
             alert('Agendamento remarcado com sucesso!');
             idAgendamentoRemarcando = null;
             dadosRemarcando = null;
         } else {
-            // Se for um agendamento novo
-            // Checagem de conflito (básica para o cliente)
             const snap = await db.collection('agendamentos').where('data', '==', diaSelecionado).get();
             let conflito = false;
             snap.docs.forEach(doc => {
                 const ag = doc.data();
                 const i = ag.horaInicio || ag.hora;
                 const f = ag.horaFim || ag.hora;
-                if (hInicio < f && hFim > i) conflito = true; // Lógica de overlap
+                if (hInicio < f && hFim > i) conflito = true;
             });
             
             if (conflito) {
@@ -1204,7 +1205,6 @@
         if (!id) return alert('Erro ao localizar agendamento.');
 
         idAgendamentoRemarcando = id;
-        // Como o cliente não tem os dados salvos localmente as vezes, buscamos no firestore
         db.collection('agendamentos').doc(id).get().then(doc => {
             if(doc.exists) {
                 const d = doc.data();
@@ -1217,11 +1217,48 @@
         });
     }
 
+    async function cancelarAgendamentoCliente() {
+        if(!confirm('Tem certeza que deseja cancelar o seu agendamento?')) return;
+        
+        const idAgendamento = localStorage.getItem('meu_agendamento_id');
+        if (idAgendamento) {
+            try {
+                await db.collection('agendamentos').doc(idAgendamento).delete();
+            } catch(e) { console.error("Erro ao deletar agendamento:", e); }
+        }
+        
+        localStorage.removeItem('meu_agendamento');
+        localStorage.removeItem('meu_agendamento_id');
+        verificarAgendamentoCliente();
+        mostrarToast('Agendamento cancelado. Você pode escolher um novo!');
+        
+        if (diaSelecionado) {
+            const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
+            if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
+        }
+    }
+
     function abrirRemarcarAdmin(id, nome, telefone, servico) {
         idAgendamentoRemarcando = id;
         dadosRemarcando = { nome, telefone, servico };
         mostrarToast('Escolha o novo dia e horário no calendário.');
         document.getElementById('calendario-container').scrollIntoView({behavior: 'smooth'});
+    }
+
+    async function cancelarAgendamentoAdmin(id) {
+        if(!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+        try {
+            await db.collection('agendamentos').doc(id).delete();
+            mostrarToast('Agendamento cancelado.');
+            if (diaSelecionado) {
+                const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
+                if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
+            }
+            carregarAgendamentosAdmin();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao cancelar agendamento.');
+        }
     }
 
     function carregarAgendamentosAdmin() {
@@ -1240,7 +1277,6 @@
         
         let ags = []; 
         snapshot.forEach(doc => ags.push({ id: doc.id, ...doc.data() }));
-        // Ordena pela data e depois pela hora de início
         ags.sort((a,b) => {
             const aStr = a.data + (a.horaInicio || a.hora);
             const bStr = b.data + (b.horaInicio || b.hora);
@@ -1258,9 +1294,10 @@
                 <div class="cliente-info"><i class="fa-solid fa-user"></i> ${esc(ag.nome)}</div>
                 <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${esc(ag.telefone)}</div>
                 <div class="cliente-servico"><i class="fa-solid fa-wand-magic-sparkles"></i> Serviço: ${esc(ag.servico || 'Não especificado')}</div>
-                <div style="display:flex; gap:5px; margin-top:10px;">
+                <div style="display:flex; gap:5px; margin-top:10px; flex-wrap:wrap;">
                     <a href="https://wa.me/55${telClean}" target="_blank" rel="noopener" class="btn-whats-agendamento" style="margin-top:0;">Chamar no Zap</a>
                     <button onclick="abrirRemarcarAdmin('${ag.id}', '${esc(ag.nome)}', '${esc(ag.telefone)}', '${esc(ag.servico || '')}')" class="btn-remarcar" style="margin-top:0;">Remarcar</button>
+                    <button onclick="cancelarAgendamentoAdmin('${ag.id}')" class="btn-cancelar" style="margin-top:0;">Cancelar</button>
                 </div>
             </div>`;
         }).join('');
