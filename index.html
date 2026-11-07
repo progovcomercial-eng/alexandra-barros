@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
+  <!-- Meta tags PWA -->
   <meta name="theme-color" content="#9D174D">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AleClub">
-  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="apple-touch-icon" href="logo_login.png">
 
   <title>Alexandra Barros - App Oficial</title>
 
@@ -16,11 +17,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <!-- Scripts do Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
   <style>
     :root {
@@ -55,32 +51,70 @@
       background-position: center;
     }
 
-    .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+    .app-content {
+      flex: 1; overflow-y: auto;
+      padding: 20px;
+      padding-bottom: 100px; 
+    }
 
-    .debug-switcher { background: #222; color: #fff; padding: 10px; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around; border-bottom: 2px solid var(--cor-principal); z-index: 100; }
+    /* TELA DE LOGIN */
+    #tela-login {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;
+      background: linear-gradient(135deg, var(--cor-principal), #4C0519);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; padding: 20px;
+    }
+    .login-logo-img {
+      width: 250px; max-width: 85%; height: auto; margin-bottom: 30px;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+      border-radius: 20px;
+    }
+    .login-sub { font-size: 12px; opacity: 0.8; margin-bottom: 20px; letter-spacing: 1px; }
+    .login-input { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: #fff; text-align: center; font-size: 16px; margin-bottom: 15px; outline: none; }
+    .login-input::placeholder { font-size: 14px; opacity: 0.7; }
+    .login-btn { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: var(--cor-dourada); color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+    .login-btn:active { transform: scale(0.96); }
+
+    /* BARRA DE SIMULAÇÃO */
+    .debug-switcher {
+      background: #222; color: #fff; padding: 10px; font-size: 11px;
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around;
+      border-bottom: 2px solid var(--cor-principal); z-index: 100;
+    }
     .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
 
-    .app-header { background-color: var(--cor-principal); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    /* HEADER */
+    .app-header {
+      background-color: var(--cor-principal); padding: 20px 16px;
+      text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
     .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
     .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
     .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
 
-    .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
-
-    .vitrine-banner-nova { background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
+    /* HOME - BANNER */
+    .vitrine-banner-nova {
+      background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519);
+      border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF;
+      margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2);
+      position: relative; overflow: hidden;
+    }
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
     .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
 
+    /* PUBLICIDADE DINÂMICA */
     .pub-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .pub-scroll::-webkit-scrollbar { display: none; }
     .pub-card { flex-shrink: 0; width: 260px; scroll-snap-align: start; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid rgba(157, 23, 77, 0.1); position: relative; }
     .pub-media { width: 100%; height: 130px; background: #eee; position: relative; }
-    .pub-media img, .pub-media video, .pub-media iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
+    .pub-media img, .pub-media video { width: 100%; height: 100%; object-fit: cover; }
     .pub-info { padding: 16px; flex: 1; display: flex; flex-direction: column; }
     .pub-info h4 { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
     .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
     .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
 
+    /* CTA CADASTRO */
     .cta-cadastro { background: linear-gradient(135deg, #FFF8FA, #FFE4EE); border: 1.5px solid var(--cor-dourada); border-radius: 18px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
     .cta-cadastro-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .cta-cadastro-texto { flex: 1; }
@@ -88,14 +122,17 @@
     .cta-cadastro-texto p { font-size: 10.5px; color: var(--cor-texto-mutado); }
     .btn-cadastrar-agora { background: var(--cor-principal); color: #fff; border: none; padding: 10px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
 
+    /* BANNER INDIQUE */
     .banner-indique { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); color: #4A2300; }
     .banner-indique h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
     .banner-indique p { font-size: 11px; opacity: 0.8; }
     .banner-indique i { font-size: 24px; color: #fff; }
 
+    /* SEÇÕES */
     .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
     .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
 
+    /* PLANOS */
     .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .planos-scroll::-webkit-scrollbar { display: none; }
     .plano-card { flex-shrink: 0; width: 172px; scroll-snap-align: start; background: var(--cor-card-fundo); border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 18px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; }
@@ -108,6 +145,7 @@
     .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
     .plano-btn { width: 100%; padding: 9px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
 
+    /* ESPAÇOS (CLUBE / RENOVA-SE) */
     .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
     .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
     .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); }
@@ -121,6 +159,7 @@
     .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
     .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
 
+    /* CONTATO COMPACTO */
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 11px; color: var(--cor-texto-mutado); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
     .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 13px; }
@@ -132,6 +171,7 @@
     .rede-btn.em { background: #333333; }
     .rede-btn.canal { background: #128C7E; flex: 1 1 100%; flex-direction: row; gap: 10px; padding: 14px 0; font-size: 13px; margin-top: 5px; }
 
+    /* TELA DE CANAIS EXCLUSIVA */
     .canal-item-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-decoration: none; color: inherit; border: 1px solid rgba(0,0,0,0.03); transition: transform 0.2s; }
     .canal-item-card:active { transform: scale(0.98); }
     .canal-item-icon { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #128C7E, #25D366); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
@@ -140,6 +180,7 @@
     .canal-item-info p { font-size: 11px; color: var(--cor-texto-mutado); }
     .canal-item-arrow { color: #ccc; }
 
+    /* BOUTIQUE */
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
     .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
     .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
@@ -147,9 +188,11 @@
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
     .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
 
+    /* VÍDEO */
     .video-container { display: none; margin-bottom: 24px; }
-    .video-container video, .video-container iframe { width: 100%; height: 220px; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; }
+    .video-container video { width: 100%; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
+    /* AGENDA */
     .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .calendario-header h3 { font-size: 16px; color: var(--cor-principal); }
     .calendario-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 24px; }
@@ -161,6 +204,7 @@
     .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; }
     .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
 
+    /* INDIQUE */
     .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .indique-box i { font-size: 48px; color: var(--cor-dourada); margin-bottom: 16px; }
     .indique-box h3 { font-size: 18px; color: var(--cor-principal); margin-bottom: 8px; }
@@ -169,9 +213,11 @@
     .link-indique input { flex: 1; border: none; background: transparent; padding: 8px; font-family: inherit; font-size: 12px; color: #555; }
     .link-indique button { background: var(--cor-principal); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
+    /* BOTÕES GERAIS */
     .btn-cta-grande { width: 100%; padding: 16px; background: var(--cor-principal); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
     .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); padding: 8px 14px; border-radius: 999px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-bottom: 18px; }
 
+    /* PERFIL E PAINEL MASTER */
     .perfil-hero { background: linear-gradient(135deg, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
     .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
     .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
@@ -185,6 +231,7 @@
     .master-card h4 { font-size: 11px; color: var(--cor-principal); font-weight: 700; margin: 0; line-height: 1.2; }
     .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
 
+    /* TELAS E ANIMAÇÕES */
     .tela { display: none; }
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -209,7 +256,7 @@
     .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
 
     /* MODAIS E EDITORES */
-    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
+    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
     .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #D4AF37; border-radius: 8px; font-family: inherit; font-size: 13px; }
@@ -217,11 +264,13 @@
     .btn-enviar-cadastro { background: #9D174D; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 12px; }
     .btn-undo { background: #f5f5f5; color: #555; border: 1px solid #ccc; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
+    /* CONFIG ITEM ROWS */
     .config-item-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
     .config-item-row input { margin: 0; flex: 1; }
     .config-item-row .btn-del { background: #ffebee; color: #c62828; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-add-item { background: #e0e0e0; color: #333; border: none; padding: 8px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer; margin-bottom: 15px; }
 
+    /* CENTRAL DE INTEGRAÇÕES */
     .integracoes-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
     .integ-left { display: flex; align-items: center; gap: 12px; }
     .integ-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: bold; }
@@ -232,19 +281,47 @@
     .btn-conectar.off { background: var(--cor-principal); color: #fff; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
 
+    /* PALETAS E EMOJIS */
+    .paleta-cores { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+    .cor-opcao { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+    .cor-opcao:hover { transform: scale(1.1); border-color: #333; }
+    .emoji-grid { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    .emoji-opcao { font-size: 24px; padding: 8px; background: #f5f5f5; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; }
+    .emoji-opcao:hover { background: #e0e0e0; }
+
+    /* NAV INFERIOR */
     .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
     .nav-item.active { color: var(--cor-principal); }
     .nav-item i { font-size: 18px; }
 
-    .pagina-hero { border-radius: 22px; padding: 26px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); }
+    /* TELA PLANO E PRODUTO */
+    .pagina-hero {
+      border-radius: 22px; padding: 26px 20px; text-align: center;
+      color: #fff; margin-bottom: 20px;
+      box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22);
+    }
     .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
-    .pagina-titulo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--cor-dourada); margin-bottom: 6px; }
+    .pagina-titulo {
+      font-family: 'Playfair Display', serif; font-size: 24px;
+      color: var(--cor-dourada); margin-bottom: 6px;
+    }
     .pagina-subtitulo { font-size: 12px; opacity: 0.88; }
 
     .beneficios-lista { list-style: none; padding: 0; margin: 0 0 24px 0; }
-    .beneficios-lista li { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 12.5px; color: var(--cor-texto-escuro); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-    .beneficio-icone { width: 22px; height: 22px; border-radius: 50%; background: var(--cor-dourada); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .beneficios-lista li {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 8px;
+      font-size: 12.5px; color: var(--cor-texto-escuro);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .beneficio-icone {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--cor-dourada); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
 
     .produto-nome { text-align: center; color: var(--cor-principal); margin-bottom: 8px; font-family: 'Playfair Display', serif; font-size: 22px; }
     .produto-preco { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--cor-texto-escuro); }
@@ -253,8 +330,35 @@
 </head>
 <body>
 
-  <div class="app-container" id="app-container">
+  <!-- TELA DE LOGIN -->
+  <div id="tela-login">
+    <img src="logo_login.png" alt="Logo AleClube" class="login-logo-img">
+    <div class="login-sub">Acesso Restrito ao Painel</div>
+    
+    <!-- Campo de E-mail adicionado -->
+    <input type="email" id="login-email" class="login-input" placeholder="Digite seu e-mail" value="progvocacional@gmail.com">
+    <input type="password" id="login-senha" class="login-input" placeholder="Digite a senha">
+    
+    <button class="login-btn" onclick="fazerLogin()">Entrar no App</button>
+    <p style="font-size:10px; margin-top:20px; opacity:0.6;">Senha cadastrada no Firebase</p>
+  </div>
 
+  <div class="app-container" id="app-container" style="display:none;">
+
+    <!-- SIMULADOR -->
+    <div class="debug-switcher">
+      <div>
+        Simular Acesso:
+        <select id="role-select" onchange="aplicarRestricoes()">
+          <option value="dona" selected>Dona (Comando Geral)</option>
+          <option value="gerente">Gerente (Maria)</option>
+          <option value="supervisor">Supervisor (João)</option>
+          <option value="cliente">Cliente (Sem acesso)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- HEADER -->
     <div class="app-header">
       <div class="avatar-ab" id="app-logo">AB</div>
       <div class="header-title" id="app-name">Alexandra Barros</div>
@@ -262,18 +366,20 @@
 
     <div class="app-content" id="app-content">
 
+      <!-- ============ TELA INÍCIO ============ -->
       <div id="tela-inicio" class="tela ativa">
-        <div id="welcome-banner" class="welcome-banner">Olá, seja bem-vindo(a)!</div>
         <div id="home-sections"></div>
       </div>
 
+      <!-- ============ TELA DE CANAIS ============ -->
       <div id="tela-canais" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="section-title-nova" style="margin-top:0;">Nossos Canais</div>
-        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades.</p>
+        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades, ofertas e novidades exclusivas.</p>
         <div id="canais-lista-container"></div>
       </div>
 
+      <!-- ============ TELA AGENDA ============ -->
       <div id="tela-agenda" class="tela">
         <div class="section-title-nova" style="margin-top:0;">Escolha o dia</div>
         <div class="calendario-header"><h3>Novembro 2026</h3></div>
@@ -289,6 +395,7 @@
         </div>
       </div>
 
+      <!-- ============ TELA INDIQUE ============ -->
       <div id="tela-indique" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="indique-box">
@@ -299,12 +406,16 @@
             <input type="text" id="link-indicacao" readonly>
             <button onclick="copiarLink()">Copiar</button>
           </div>
-          <button onclick="compartilharIndicacao()" class="btn-cta-grande" style="background:#00BB2D;">
+          <a id="btn-share-indique" href="#" target="_blank" class="btn-cta-grande" style="text-decoration:none; background:#00BB2D;" onclick="mostrarToast('Abrindo WhatsApp...')">
             <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
-          </button>
+          </a>
+          <p style="font-size:11px; color:var(--cor-texto-mutado); margin-top:14px;">
+            Seu código: <b id="codigo-indicacao" style="color:var(--cor-principal);"></b>
+          </p>
         </div>
       </div>
 
+      <!-- ============ TELA PLANO ============ -->
       <div id="tela-plano" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" id="plano-hero" style="background: linear-gradient(135deg, #9D174D 0%, #560021 100%);">
@@ -321,6 +432,7 @@
         <button class="btn-cta-grande" id="plano-btn-acao" onclick="abrirModalCadastro()"><i class="fa-solid fa-bolt"></i> Assinar agora</button>
       </div>
 
+      <!-- ============ TELA PRODUTO ============ -->
       <div id="tela-produto" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div id="produto-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🛍️</div>
@@ -330,16 +442,7 @@
         <button class="btn-cta-grande" onclick="abrirModalCadastro()"><i class="fa-solid fa-bag-shopping"></i> Comprar agora</button>
       </div>
 
-      <div id="tela-parceiro" class="tela">
-        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🤝</div>
-        <h1 class="produto-nome" id="parceiro-nome">Parceiro</h1>
-        <p class="produto-preco" id="parceiro-desc" style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Descrição curta</p>
-        <div class="section-title-nova">Sobre a Parceria</div>
-        <div id="parceiro-conteudo" style="font-size: 13px; line-height: 1.6; color: var(--cor-texto-escuro); background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"></div>
-        <button class="btn-cta-grande" onclick="voltarInicio()"><i class="fa-solid fa-check"></i> Entendi</button>
-      </div>
-
+      <!-- ============ TELA PERFIL ============ -->
       <div id="tela-perfil" class="tela">
         <div class="perfil-hero">
           <div class="perfil-avatar" id="perfil-avatar">AB</div>
@@ -351,31 +454,26 @@
           <div class="section-title-nova">Configurações</div>
           <div class="painel-master-box">
             <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
-            
-            <div id="area-login-admin">
-              <p style="font-size:12px;text-align:center;margin-bottom:10px;">Acesso exclusivo da administração PROGOV.</p>
-              <input type="email" id="admin-email" autocomplete="username" value="progovcomercial@gmail.com" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:8px;">
-              <input type="password" id="admin-password" autocomplete="current-password" placeholder="Senha cadastrada no Firebase" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
-              <button id="btn-admin-login" onclick="verificarSenhaAdmin()" style="width:100%;padding:10px;background:var(--cor-principal);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;">Entrar como administradora</button>
-              <p id="admin-auth-status" role="status" style="font-size:11px;margin-top:9px;text-align:center;color:#777;">Entre com a conta autorizada.</p>
-            </div>
-            <div id="admin-logado" style="display:none;text-align:center;margin-bottom:12px;">
-              <p id="admin-identidade" style="font-size:12px;margin-bottom:8px;"></p>
-              <button onclick="sairAdmin()" style="padding:8px 14px;border:1px solid var(--cor-principal);background:#fff;color:var(--cor-principal);border-radius:8px;font-weight:700;">Sair da administração</button>
-            </div>
-            <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
+            <div class="master-grid" id="master-grid-botoes"></div>
           </div>
+        </div>
+
+        <div style="text-align:center; margin-top: 30px;">
+          <!-- NOVO BOTÃO DE LOGOUT -->
+          <button onclick="fazerLogout()" style="background:var(--cor-principal); border:none; color:#fff; padding:12px 20px; border-radius:10px; font-weight:700; font-size:13px; width:100%; margin-bottom: 15px; cursor:pointer;">Sair da Conta (Logout)</button>
+          
+          <button onclick="resetarApp()" style="background:none; border:none; color:#ccc; font-size:11px; text-decoration:underline; cursor:pointer;">Apagar configurações do banco e voltar ao padrão</button>
         </div>
       </div>
 
-    </div>
+    </div><!-- /app-content -->
 
     <!-- BOTÃO IA -->
     <button class="assistente-ia-flutuante" onclick="abrirChat()" aria-label="Assistente IA">
       <i class="fa-solid fa-wand-magic-sparkles"></i>
     </button>
 
-    <!-- TELA CHAT IA -->
+    <!-- CHAT IA -->
     <div id="tela-chat" class="tela">
       <div class="chat-container">
         <div class="chat-header">
@@ -385,42 +483,33 @@
         </div>
         
         <div class="chat-body" id="chat-body">
-          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸 Como posso te ajudar hoje?</div>
+          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸</div>
+          <div class="msg msg-bot" style="border:1px solid #eee; padding:14px;">
+            <b>💡 Dica:</b> Eu posso te ensinar a configurar todo o seu aplicativo!<br>
+            <button type="button" class="btn-ia-acao" onclick="iniciarAula()">🎓 Quero fazer a aula de configuração</button>
+          </div>
         </div>
         
         <div class="chat-input-area">
-          <input type="text" id="chat-input" placeholder="Digite sua dúvida aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
+          <input type="text" id="chat-input" placeholder="Digite aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
           <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- MODAL DO CÓDIGO DO CLUBE -->
-    <div id="modal-codigo-clube" class="modal-cadastro-fixo">
-      <div class="cartao-cadastro">
-        <h3>Clube da Ale 🤫</h3>
-        <p style="font-size:12px; text-align:center; margin-bottom:15px;">Este espaço é exclusivo. Digite seu código de convite para liberar o acesso.</p>
-        <input type="text" id="input-codigo-clube" placeholder="Ex: VIP-A3F9" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
-        <button onclick="verificarCodigoClube()" class="btn-enviar-cadastro">Verificar Código</button>
-        <button onclick="document.getElementById('modal-codigo-clube').style.display='none'" class="btn-undo">Cancelar</button>
-      </div>
-    </div>
-
-    <!-- MODAL DE CADASTRO DO CLIENTE -->
+    <!-- MODAL CADASTRO -->
     <div id="modal-cadastro" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
-        <h3 style="margin-bottom:15px;">Faça seu Cadastro</h3>
+        <h3>Bem-vindo(a) à Vitrine Ale</h3>
         <form onsubmit="enviarCadastro(event)">
-          <input type="text" id="cad-nome" placeholder="Seu nome completo" required>
-          <input type="email" id="cad-email" placeholder="Seu melhor e-mail" required>
+          <input type="text" placeholder="Seu nome completo" required>
           <input type="tel" id="cad-tel" placeholder="WhatsApp (com DDD)" required>
-          <button type="submit" class="btn-enviar-cadastro">Cadastrar</button>
-          <button type="button" onclick="document.getElementById('modal-cadastro').style.display='none'" style="width:100%; margin-top:10px; border:none; background:none; color:#777; font-size:12px; cursor:pointer; text-decoration:underline;">Cancelar</button>
+          <button type="submit" class="btn-enviar-cadastro">Criar minha conta</button>
         </form>
       </div>
     </div>
 
-    <!-- MODAL EDITOR MASTER -->
+    <!-- MODAL EDITOR -->
     <div id="modal-editor" class="modal-cadastro-fixo" style="align-items: center;">
       <div class="cartao-cadastro" style="background: #fff;">
         <h3 id="editor-titulo">Editar</h3>
@@ -440,26 +529,31 @@
 
   </div>
 
-  <script>
-    // --- CONFIGURAÇÃO DO FIREBASE ---
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
-  authDomain: "aleclube.firebaseapp.com",
-  projectId: "aleclube",
-  storageBucket: "aleclube.firebasestorage.app",
-  messagingSenderId: "1086356924442",
-  appId: "1:1086356924442:web:17fe110f263a01b57189a3",
-  measurementId: "G-15ZM50X9B8"
-};
+  <!-- SDK do Firebase (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+  <script>
+    // =====================================================
+    // CONFIGURAÇÃO FIREBASE
+    // =====================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
+      authDomain: "aleclube.firebaseapp.com",
+      projectId: "aleclube",
+      storageBucket: "aleclube.firebasestorage.app",
+      messagingSenderId: "1086356924442",
+      appId: "1:1086356924442:web:17fe110f263a01b57189a3",
+      measurementId: "G-15ZM50X9B8"
+    };
+
+    // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
-    const EMAIL_ADMIN_AUTORIZADO = 'progovcomercial@gmail.com';
-    let adminAutenticado = false;
-    let usuarioAutenticado = null;
 
+    // Configuração PWA (Manifest)
     const manifest = {
       name: "AleClube App",
       short_name: "AleClube",
@@ -467,10 +561,7 @@ const firebaseConfig = {
       display: "standalone",
       background_color: "#FFF2F6",
       theme_color: "#9D174D",
-      icons: [
-        { src: "logo.png", sizes: "192x192", type: "image/png", purpose: "any" },
-        { src: "logo.png", sizes: "512x512", type: "image/png", purpose: "any" }
-      ]
+      icons: [{ src: "logo_login.png", sizes: "512x512", type: "image/png" }]
     };
     const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'}));
     const link = document.createElement('link');
@@ -478,6 +569,9 @@ const firebaseConfig = {
     link.href = manifestURL;
     document.head.appendChild(link);
 
+    // =====================================================
+    // PERMISSÕES E ESTADO
+    // =====================================================
     const todasPermissoes = [
       { id: 'identidade', nome: 'Nome & Senha' },
       { id: 'cores', nome: 'Cores' },
@@ -487,14 +581,13 @@ const firebaseConfig = {
       { id: 'boutique', nome: 'Boutique / Loja' },
       { id: 'integracoes', nome: 'Integrações' },
       { id: 'layout', nome: 'Organizar Tela' },
-      { id: 'videos', nome: 'Vídeos (Link)' },
+      { id: 'videos', nome: 'Vídeos' },
       { id: 'publicidade', nome: 'Patrocinadores' },
       { id: 'equipe', nome: 'Equipe' },
       { id: 'links', nome: 'Links' },
       { id: 'contato', nome: 'Redes & Contato' },
       { id: 'ia', nome: 'Assistente IA' },
-      { id: 'clube', nome: 'Planos e Preços' },
-      { id: 'vip', nome: 'Gerenciar Clube VIP' }
+      { id: 'clube', nome: 'Preços Planos' }
     ];
 
     const estadoPadrao = {
@@ -507,7 +600,7 @@ const firebaseConfig = {
       bgColor: '#FFF2F6',
       bgGradient: null,
       bgImage: null,
-      video: null, 
+      video: null,
       whatsapp: '5511997450293',
       mensagem: 'Ganhe pontos e ofertas exclusivas',
       vitrineName: 'VITRINE ALE',
@@ -551,7 +644,10 @@ const firebaseConfig = {
         ]
       },
       layoutOrder: ['banner', 'publicidade', 'cta', 'indique', 'videos', 'planos', 'espacos', 'boutique', 'contato'],
-      equipe: [],
+      equipe: [
+        { id: 1, nome: 'Maria', cargo: 'gerente', senha: '123', perms: ['identidade', 'cores', 'logo', 'mensagens', 'clube'] },
+        { id: 2, nome: 'João', cargo: 'supervisor', senha: '123', perms: ['publicidade', 'mensagens'] }
+      ],
       precos: { essencial: '29', inteligente: '59', master: '99' },
       planos: {
         essencial: { titulo: 'Essencial', subtitulo: 'O básico', features: ['Vitrine básica', 'Cadastro de produtos'] },
@@ -568,205 +664,95 @@ const firebaseConfig = {
     let diaSelecionado = null;
     let horarioSelecionado = null;
 
-    // --- FUNÇÕES DO FIREBASE ---
-    function atualizarInterfaceEstado() { renderizarHome(); aplicarRestricoes(); gerarCalendario(); verificarClienteLogado(); }
-    let estadoListenerIniciado = false;
+    // =====================================================
+    // AUTENTICAÇÃO E BANCO DE DADOS (FIRESTORE)
+    // =====================================================
+    function fazerLogin() {
+      const email = document.getElementById('login-email').value;
+      const senha = document.getElementById('login-senha').value;
+      const btn = document.querySelector('.login-btn');
+      
+      btn.textContent = 'Entrando...';
+      btn.disabled = true;
+
+      auth.signInWithEmailAndPassword(email, senha)
+        .then(() => {
+          btn.textContent = 'Entrar no App';
+          btn.disabled = false;
+        })
+        .catch((error) => {
+          btn.textContent = 'Entrar no App';
+          btn.disabled = false;
+          alert('Erro no login:\n' + error.code + '\nVerifique e-mail e senha.');
+        });
+    }
+
+    function fazerLogout() {
+      if(confirm("Tem certeza que deseja sair?")) {
+        auth.signOut();
+      }
+    }
+
+    // Salva os dados na nuvem (Firestore)
+    function salvarEstado() {
+      if (!auth.currentUser) return; 
+      
+      db.collection('configuracoes').doc('appState').set(appState)
+        .then(() => console.log("Configurações salvas na nuvem!"))
+        .catch((e) => alert('Erro ao salvar no banco: ' + e.message));
+    }
+
+    // Carrega os dados da nuvem (Firestore)
     function carregarEstado() {
-      if (estadoListenerIniciado) return;
-      estadoListenerIniciado = true;
-      db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
-        if (docSnap.exists) {
-          const dados = docSnap.data() || {}; delete dados.senhaAdmin;
-          appState = { ...estadoPadrao, ...dados }; atualizarInterfaceEstado();
-        } else if (adminAutenticado) {
-          db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
-            .catch((e) => console.error("Erro ao criar estado inicial:", e));
-        } else { atualizarInterfaceEstado(); }
-      }, (error) => { console.error("Erro ao carregar dados:", error); mostrarToast("Falha na sincronização. Confira as regras do Firebase."); });
-    }
-    async function salvarEstado() {
-      if (!adminAutenticado) { mostrarToast("Entre como administradora para salvar."); return false; }
-      try {
-        const dadosSeguros = { ...appState }; delete dadosSeguros.senhaAdmin;
-        await db.collection("appData").doc("estadoGlobal").set(dadosSeguros); return true;
-      } catch (e) { alert("Não foi possível salvar. Confira conexão e regras do Firebase."); console.error(e); return false; }
-    }
-
-    // --- CLIENTE REGISTRO E WELCOME ---
-    function verificarClienteLogado() {
-      const nome = localStorage.getItem('clienteNome');
-      const banner = document.getElementById('welcome-banner');
-      if (nome && banner) {
-        banner.innerHTML = `<i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-right:5px;"></i> Olá, ${nome}! Seja bem-vinda. <i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-left:5px;"></i>`;
-        banner.style.display = 'block';
-      } else if (banner) {
-        banner.style.display = 'none';
-      }
-    }
-
-    async function enviarCadastro(e) {
-      e.preventDefault();
-      const nome = document.getElementById('cad-nome').value;
-      const email = document.getElementById('cad-email').value;
-      const telefone = document.getElementById('cad-tel').value;
-
-      try {
-        await db.collection("clientes").add({
-          nome: nome,
-          email: email,
-          telefone: telefone,
-          dataCadastro: new Date().toISOString(),
-          status: 'pendente'
+      db.collection('configuracoes').doc('appState').get()
+        .then((doc) => {
+          if (doc.exists) {
+            appState = { ...estadoPadrao, ...doc.data() };
+          } else {
+            salvarEstado(); 
+          }
+          
+          renderizarHome();
+          aplicarRestricoes();
+          gerarCalendario();
+          inicializarIndicacao();
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar do banco:", error);
+          renderizarHome(); // Carrega padrão em caso de erro
         });
-        
-        localStorage.setItem('clienteNome', nome); // Salva o nome para boas-vindas
-        document.getElementById('modal-cadastro').style.display = 'none';
-        
-        mostrarToast('✅ Cadastro realizado com sucesso!');
-        
-        // Voltar para a tela inicial automaticamente
-        voltarInicio();
-        verificarClienteLogado(); // Atualiza o banner de boas vindas
+    }
 
-        document.getElementById('cad-nome').value = '';
-        document.getElementById('cad-email').value = '';
-        document.getElementById('cad-tel').value = '';
-
-      } catch (error) {
-        console.error("Erro ao cadastrar:", error);
-        alert("Erro ao cadastrar. Verifique sua internet.");
+    function resetarApp() {
+      if (confirm('Apagar tudo do banco de dados e voltar ao padrão?')) {
+        appState = JSON.parse(JSON.stringify(estadoPadrao));
+        db.collection('configuracoes').doc('appState').set(appState)
+          .then(() => {
+            renderizarHome(); 
+            aplicarRestricoes(); 
+            voltarInicio();
+            mostrarToast("App resetado no banco de dados!");
+          });
       }
     }
 
-    // --- ACESSO AO CLUBE VIP ---
-    function pedirCodigoClube() {
-      document.getElementById('modal-codigo-clube').style.display = 'flex';
-    }
-
-    async function verificarCodigoClube() {
-      const codigo = document.getElementById('input-codigo-clube').value.trim().toUpperCase();
-      if (!codigo) return alert('Digite um código.');
-
-      try {
-        const doc = await db.collection("codigos_clube").doc(codigo).get();
-        if (doc.exists) {
-          mostrarToast('✅ Código válido! Bem-vinda ao Clube.');
-          document.getElementById('modal-codigo-clube').style.display = 'none';
-          document.getElementById('input-codigo-clube').value = '';
-          abrirLinkAmbiente('clube'); 
-        } else {
-          alert('❌ Código inválido ou expirado. Verifique com a Alexandra.');
-        }
-      } catch (e) {
-        console.error("Erro ao verificar código:", e);
-        alert('Erro de conexão. Tente novamente.');
-      }
-    }
-
-    // --- GERENCIAMENTO VIP (DONA) ---
-    async function liberarAcessoVIP(idCliente, nomeCliente, telefoneCliente) {
-      if (!adminAutenticado) { mostrarToast('Ação exclusiva da administração.'); return; }
-      if (!confirm(`Confirmar pagamento e liberar acesso para ${nomeCliente}?`)) return;
-
-      const novoCodigo = 'VIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-
-      try {
-        await db.collection("clientes").doc(idCliente).update({
-          status: 'pago',
-          codigoAcesso: novoCodigo,
-          dataPagamento: new Date().toISOString()
-        });
-
-        await db.collection("codigos_clube").doc(novoCodigo).set({
-          liberadoPara: nomeCliente,
-          telefone: telefoneCliente,
-          dataCriacao: new Date().toISOString()
-        });
-
-        alert(`✅ Acesso Liberado!\n\nCódigo de ${nomeCliente}: \n\n👉 ${novoCodigo} 👈\n\nCopie e envie para a cliente no WhatsApp.`);
-        
-        abrirConfiguracao('vip'); 
-
-      } catch (error) {
-        console.error("Erro ao liberar acesso:", error);
-        alert("Erro ao gerar o código. Verifique a internet.");
-      }
-    }
-
-    async function verificarSenhaAdmin() {
-      const email = (document.getElementById('admin-email')?.value || '').trim().toLowerCase();
-      const senha = document.getElementById('admin-password')?.value || '';
-      const status = document.getElementById('admin-auth-status');
-      const botao = document.getElementById('btn-admin-login');
-      if (email !== EMAIL_ADMIN_AUTORIZADO) { if(status) status.textContent = 'E-mail não autorizado.'; return; }
-      if (!senha) { if(status) status.textContent = 'Digite sua senha do Firebase.'; return; }
-      if (botao) { botao.disabled = true; botao.textContent = 'Entrando...'; }
-      try { await auth.signInWithEmailAndPassword(email, senha); }
-      catch (e) { console.error('Erro no login:', e); if(status) status.textContent = 'Login não realizado. Confira e-mail e senha no Firebase Authentication.'; }
-      finally { if(botao) { botao.disabled = false; botao.textContent = 'Entrar como administradora'; } }
-    }
-    async function sairAdmin() { try { await auth.signOut(); } catch(e) { console.error(e); } }
+    // Monitor de Sessão do Firebase
     auth.onAuthStateChanged((user) => {
-      usuarioAutenticado = user || null;
-      adminAutenticado = !!(user && user.email && user.email.toLowerCase() === EMAIL_ADMIN_AUTORIZADO);
-      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
-      const status = document.getElementById('admin-auth-status'), identidade = document.getElementById('admin-identidade');
-      if(login) login.style.display = adminAutenticado ? 'none' : 'block';
-      if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
-      if(identidade && adminAutenticado) identidade.textContent = 'Conectada: ' + user.email;
-      if(status && !adminAutenticado) status.textContent = 'Entre com a conta autorizada.';
-      aplicarRestricoes(); carregarEstado();
-    });
-    function aplicarRestricoes() {
-      const grid = document.getElementById('master-grid-botoes');
-      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
-      if(login) login.style.display = adminAutenticado ? 'none' : 'block';
-      if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
-      if(grid) {
-        grid.style.display = adminAutenticado ? 'grid' : 'none';
-        grid.innerHTML = adminAutenticado ? todasPermissoes.map(p => `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`).join('') : '';
-      }
-    }
-
-    // --- ASSISTENTE IA ---
-    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
-    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
-    
-    function enviarMsgIA() { 
-      const inp = document.getElementById('chat-input'); 
-      const txt = inp.value.trim(); 
-      if(!txt) return;
-      
-      const body = document.getElementById('chat-body');
-      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); 
-      inp.value = '';
-      
-      // Resposta inteligente baseada em palavras-chave
-      const t = txt.toLowerCase();
-      let resposta = "";
-
-      if (t.includes('clube') || t.includes('vip') || t.includes('codigo')) {
-        resposta = "O Clube da Ale é exclusivo para clientes VIP! Você precisa de um código de convite para entrar. Se já tiver o seu, clique no banner rosa 'Clube da Ale' na tela inicial e digite o código. 💖";
-      } else if (t.includes('plano') || t.includes('preço') || t.includes('valor') || t.includes('assinar')) {
-        resposta = "Temos 3 planos incríveis: Essencial, Inteligente e Master. Você pode ver todos os benefícios e preços deslizando para a seção 'Planos' na tela inicial! 💎";
-      } else if (t.includes('whatsapp') || t.includes('contato') || t.includes('falar') || t.includes('alexandra') || t.includes('telefone')) {
-        resposta = "Para falar com a Alexandra ou agendar um horário, vá na seção 'Contato' (rolando a tela inicial para baixo) ou na aba 'Agenda'. Você pode clicar direto no botão do WhatsApp! 📱";
-      } else if (t.includes('cadastro') || t.includes('senha') || t.includes('conta')) {
-        resposta = "Para se cadastrar, clique no botão 'Cadastre-se' na vitrine. Se você for a administradora, a senha do Painel Master fica na aba Perfil. 🔐";
-      } else if (t.includes('oi') || t.includes('olá') || t.includes('bom dia') || t.includes('boa tarde') || t.includes('boa noite')) {
-        resposta = "Olá! Como posso te ajudar hoje? Você pode perguntar sobre o Clube VIP, Planos, Contato ou Agendamentos! 🌸";
+      if (user) {
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('app-container').style.display = 'flex';
+        carregarEstado(); // Puxa os dados do Firestore
       } else {
-        resposta = "Desculpe, ainda estou aprendendo a responder isso. Mas você pode falar diretamente com a Alexandra clicando nos botões do WhatsApp na tela de Contato! 💬";
+        document.getElementById('tela-login').style.display = 'flex';
+        document.getElementById('app-container').style.display = 'none';
       }
+    });
 
-      setTimeout(() => { 
-        body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">${resposta}</div>`); 
-        body.scrollTop = body.scrollHeight; 
-      }, 600);
-    }
-
-    // --- NAVEGAÇÃO E FUNÇÕES GERAIS ---
+    // =====================================================
+    // NAVEGAÇÃO E FUNÇÕES VISUAIS
+    // =====================================================
     function abrirTela(id) {
+      document.getElementById('tela-chat').style.display = 'none';
       document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
       const tela = document.getElementById('tela-' + id);
       if (tela) tela.classList.add('ativa');
@@ -785,6 +771,7 @@ const firebaseConfig = {
       document.querySelector('.nav-item[data-tab="inicio"]').classList.add('active');
     }
 
+    // AMBIENTES E PLANOS
     function abrirPlano(tipo) {
       const p = appState.planos[tipo] || estadoPadrao.planos[tipo];
       const emojis = { essencial: '🌱', inteligente: '🚀', master: '👑' };
@@ -848,12 +835,11 @@ const firebaseConfig = {
         let limite = 99;
         if (appState.planoAtual === 'basico') limite = 2;
         else if (appState.planoAtual === 'intermediario') limite = 5;
-        if (conectadas >= limite) { alert(`Atenção: Seu plano atual permite conectar apenas ${limite} integrações.`); return; }
+        if (conectadas >= limite) { alert(`Atenção: Seu plano atual (${appState.planoAtual.toUpperCase()}) permite conectar apenas ${limite} integrações.`); return; }
         integ.conectada = true; mostrarToast(`✅ ${integ.nome} conectado!`);
       }
       salvarEstado(); abrirConfiguracao('integracoes'); 
     }
-    
     function mudarPlanoSimulado(plano) { appState.planoAtual = plano; salvarEstado(); abrirConfiguracao('integracoes'); }
 
     function gerarCalendario() {
@@ -878,42 +864,7 @@ const firebaseConfig = {
       window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de agendar no dia ${diaSelecionado} às ${horarioSelecionado}.`)}`, '_blank');
     }
 
-    function gerarHTMLVideo(url) {
-      if (!url) return '';
-      
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let vidId = '';
-        try {
-          if (url.includes('youtu.be/')) {
-            vidId = url.split('youtu.be/')[1].split(/[?#]/)[0];
-          } else if (url.includes('youtube.com/shorts/')) {
-            vidId = url.split('youtube.com/shorts/')[1].split(/[?#]/)[0];
-          } else {
-            const urlParams = new URLSearchParams(new URL(url).search);
-            vidId = urlParams.get('v');
-          }
-        } catch(e) {
-          vidId = url.split('v=')[1] || url.split('/').pop();
-          if (vidId) vidId = vidId.split('&')[0];
-        }
-
-        if (!vidId) return `<div style="padding:20px; text-align:center; color:#fff; background:#000;">Link inválido.</div>`;
-
-        return `<iframe src="https://www.youtube.com/embed/${vidId}?playsinline=1&controls=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
-      } 
-      else if (url.includes('tiktok.com')) {
-        let match = url.match(/video\/(\d+)/);
-        if (match) {
-           return `<iframe src="https://www.tiktok.com/embed/v2/${match[1]}" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
-        }
-        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:#000; color:#fff; flex-direction:column; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; font-weight:bold; text-decoration:none;">Abrir no TikTok</a></div>`;
-      }
-      else if (url.includes('kwai')) {
-        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:linear-gradient(135deg, #FF8C00, #FF4500); color:#fff; flex-direction:column; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; font-weight:bold; text-decoration:none; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:999px;">Assistir no Kwai</a></div>`;
-      }
-      return `<video src="${url}" controls playsinline style="width:100%; height:100%; object-fit:cover; border-radius:16px;"></video>`;
-    }
-
+    // HOME E PRODUTOS
     function renderizarHome() {
       document.documentElement.style.setProperty('--cor-principal', appState.colorPrimary || '#9D174D');
       document.documentElement.style.setProperty('--cor-dourada', appState.colorGold || '#D4AF37');
@@ -937,26 +888,14 @@ const firebaseConfig = {
         else if (secao === 'publicidade' && appState.publicidades.length > 0) {
           let pubHtml = '';
           appState.publicidades.forEach(pub => {
-            let media = '';
-            if (pub.video) {
-              media = `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>`;
-            } else if (pub.imagem) {
-              media = `<div class="pub-media"><img src="${pub.imagem}"></div>`;
-            } else {
-              media = `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`;
-            }
-            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${pub.id})">Conhecer Parceiro</button></div></div>`;
+            let media = pub.video ? `<div class="pub-media"><video src="${pub.video}" muted autoplay loop playsinline></video></div>` : (pub.imagem ? `<div class="pub-media"><img src="${pub.imagem}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
+            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p>${pub.link ? `<a href="${pub.link}" target="_blank" class="pub-btn">Aproveitar</a>` : `<button class="pub-btn">Aproveitar</button>`}</div></div>`;
           });
-          html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
+          html = `<div class="section-title-nova">Ofertas</div><div class="pub-scroll">${pubHtml}</div>`;
         }
         else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${appState.mensagem}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
         else if (secao === 'indique') html = `<div class="banner-indique" onclick="abrirTela('indique'); document.querySelector('[data-tab=indique]').click();"><div><h3>Indique e Ganhe!</h3><p>Convide amigas</p></div><i class="fa-solid fa-gift"></i></div>`;
-        
-        else if (secao === 'videos' && appState.video) {
-          let videoHtml = gerarHTMLVideo(appState.video);
-          html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><div style="height:220px;">${videoHtml}</div></div>`;
-        }
-        
+        else if (secao === 'videos' && appState.video) html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><video src="${appState.video}" controls></video></div>`;
         else if (secao === 'planos') {
           let planosHtml = '';
           ['essencial', 'inteligente', 'master'].forEach(id => {
@@ -969,7 +908,7 @@ const firebaseConfig = {
         else if (secao === 'espacos') {
           const bgClube = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.clubeImage}');` : `background: linear-gradient(135deg, ${appState.clubeColor} 0%, #4C0519 100%);`;
           const bgRenova = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.renovaseImage}');` : `background: linear-gradient(135deg, ${appState.renovaseColor} 0%, #4A2300 100%);`;
-          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="pedirCodigoClube()"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
+          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="abrirLinkAmbiente('clube')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
         }
         else if (secao === 'boutique') {
           const prods = appState.boutiqueProdutos || [];
@@ -996,27 +935,10 @@ const firebaseConfig = {
       abrirTela('produto');
     }
 
-    function abrirDetalhesParceiro(id) {
-      const pub = appState.publicidades.find(p => p.id === id);
-      if (!pub) return;
-      
-      document.getElementById('parceiro-img-grande').innerHTML = pub.imagem ? `<img src="${pub.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🤝';
-      document.getElementById('parceiro-nome').textContent = pub.titulo;
-      document.getElementById('parceiro-desc').textContent = pub.descricao;
-      
-      const textoFormatado = pub.sobre ? pub.sobre.replace(/\n/g, '<br>') : 'Este é um dos nossos parceiros oficiais. Em breve mais detalhes sobre esta parceria.';
-      document.getElementById('parceiro-conteudo').innerHTML = textoFormatado;
-      
-      abrirTela('parceiro');
-    }
-
-    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
-
-    // --- CONFIGURAÇÕES MASTER ---
+    // CONFIGURAÇÕES MASTER
     function abrirConfiguracao(id) {
       configAtualAberta = id;
       backupState = JSON.parse(JSON.stringify(appState));
-      if (!adminAutenticado) { mostrarToast('Acesso restrito à administração.'); return; }
       const content = document.getElementById('editor-content');
       const titulo = document.getElementById('editor-titulo');
       let html = '';
@@ -1042,8 +964,8 @@ const firebaseConfig = {
         html = `<label style="font-size:11px; font-weight:700;">Nome da Loja</label><input type="text" id="edit-boutique-name" value="${appState.boutiqueName}"><div style="margin-top:15px; margin-bottom:15px;">${listaHTML}</div><button onclick="abrirEditorProduto(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Adicionar Produto</button>`;
       }
       else if (id === 'identidade') {
-        titulo.textContent = 'Nome & Senha';
-        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><p style="font-size:11px;color:#777;margin-top:10px;">A senha administrativa é gerenciada pelo Firebase Authentication.</p>`;
+        titulo.textContent = 'Nome do App';
+        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><p style="font-size:10px; color:#666; margin-top:5px;">A senha agora é gerenciada diretamente pelo Firebase Authentication.</p>`;
       }
       else if (id === 'cores') {
         titulo.textContent = 'Cores do App';
@@ -1087,7 +1009,7 @@ const firebaseConfig = {
       }
       else if (id === 'videos') {
         titulo.textContent = 'Configuração de Vídeos';
-        html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${appState.video || ''}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
+        html = `<label style="font-size:11px; font-weight:700;">Envie um vídeo</label><input type="file" id="edit-video-file" accept="video/*">${appState.video ? `<div style="margin-top:10px;"><video src="${appState.video}" controls style="width:100%; border-radius:8px; margin-bottom:10px;"></video></div>` : ''}`;
       }
       else if (id === 'equipe') {
         titulo.textContent = 'Gerenciar Equipe';
@@ -1095,93 +1017,18 @@ const firebaseConfig = {
         html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Supervisor</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
       }
       else if (id === 'clube') {
-        titulo.textContent = 'Planos e Preços';
-        let htmlPlanos = '';
-        
-        ['essencial', 'inteligente', 'master'].forEach(tipo => {
-            const p = appState.planos[tipo];
-            let featuresHtml = p.features.map(f => `
-                <div class="config-item-row feat-row" style="margin-bottom:4px;">
-                    <input type="text" class="feat-input" value="${f}" style="padding:6px;">
-                    <button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button>
-                </div>
-            `).join('');
-
-            htmlPlanos += `
-            <div class="config-plan-box" style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;">
-                <h4 style="text-transform:uppercase; font-size:12px; margin-bottom:10px; color:var(--cor-principal); border-bottom:1px solid #ccc; padding-bottom:5px;">Plano ${p.titulo}</h4>
-                
-                <label style="font-size:11px; font-weight:700;">Preço (R$)</label>
-                <input type="number" id="preco-${tipo}" value="${appState.precos[tipo]}" style="margin-bottom:5px; padding:6px;">
-                
-                <label style="font-size:11px; font-weight:700;">Subtítulo</label>
-                <input type="text" id="sub-${tipo}" value="${p.subtitulo}" style="margin-bottom:5px; padding:6px;">
-                
-                <label style="font-size:11px; font-weight:700; display:block; margin-top:10px; margin-bottom:5px;">Itens inclusos:</label>
-                <div id="features-${tipo}" style="margin-bottom:8px;">${featuresHtml}</div>
-                
-                <button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')" style="padding:6px; font-size:11px; margin-bottom:0;">+ Adicionar Item</button>
-            </div>
-            `;
-        });
-        html = htmlPlanos;
+        titulo.textContent = 'Preços dos Planos';
+        html = `<label>Essencial (R$)</label><input type="number" id="p1" value="${appState.precos.essencial}"><label>Inteligente (R$)</label><input type="number" id="p2" value="${appState.precos.inteligente}"><label>Master (R$)</label><input type="number" id="p3" value="${appState.precos.master}">`;
       }
       else if (id === 'links') {
         titulo.textContent = 'Links dos Ambientes';
         html = `<label style="font-size:11px; font-weight:700;">Link do Clube (Opcional)</label><input type="url" id="edit-link-clube" value="${appState.clubeLink || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Link do Renova-se (Opcional)</label><input type="url" id="edit-link-renovase" value="${appState.renovaseLink || ''}" placeholder="https://...">`;
       }
-      else if (id === 'vip') {
-        titulo.textContent = 'Gerenciar Clube VIP';
-        
-        let clientesHTML = '<p style="text-align:center; font-size:12px;">Carregando clientes...</p>';
-        content.innerHTML = `<div id="lista-clientes-vip" style="max-height: 400px; overflow-y:auto;">${clientesHTML}</div>`;
-        
-        db.collection("clientes").get().then((querySnapshot) => {
-          if (querySnapshot.empty) {
-            document.getElementById('lista-clientes-vip').innerHTML = '<p style="text-align:center; font-size:12px; color:#777;">Nenhum cliente cadastrado ainda.</p>';
-            return;
-          }
-          
-          let htmlClientes = '';
-          querySnapshot.forEach((doc) => {
-            const cliente = doc.data();
-            const idCliente = doc.id;
-            const temAcesso = cliente.codigoAcesso ? true : false;
-            
-            const btnAcao = temAcesso 
-              ? `<button disabled style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700; width:100%;">✅ Liberado</button>
-                 <p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${cliente.codigoAcesso}</b></p>`
-              : `<button onclick="liberarAcessoVIP('${idCliente}', '${cliente.nome}', '${cliente.telefone}')" style="background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; width:100%; cursor:pointer;">Liberar Acesso</button>`;
 
-            htmlClientes += `
-              <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-                  <div>
-                    <strong style="font-size:13px; color:var(--cor-principal);">${cliente.nome}</strong><br>
-                    <span style="font-size:11px; color:#666;">${cliente.telefone}</span><br>
-                    <span style="font-size:10px; color:#999;">${cliente.email}</span>
-                  </div>
-                </div>
-                ${btnAcao}
-              </div>
-            `;
-          });
-          document.getElementById('lista-clientes-vip').innerHTML = htmlClientes;
-        }).catch((error) => {
-          console.error("Erro ao buscar clientes: ", error);
-          document.getElementById('lista-clientes-vip').innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar clientes. Verifique a internet.</p>';
-        });
-      }
-
-      if(id !== 'vip') { content.innerHTML = html; }
-      
+      content.innerHTML = html;
       document.getElementById('modal-editor').style.display = 'flex';
       
       if (id === 'integracoes') {
-         document.getElementById('btn-salvar-editor').style.display = 'none';
-         document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
-         document.getElementById('btn-voltar-editor').onclick = fecharEditor;
-      } else if (id === 'vip') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1194,39 +1041,12 @@ const firebaseConfig = {
       }
     }
 
-    // Função Auxiliar para adicionar linha de item no plano
-    function addFeatureRow(tipo) {
-        document.getElementById(`features-${tipo}`).insertAdjacentHTML('beforeend', `
-            <div class="config-item-row feat-row" style="margin-bottom:4px;">
-                <input type="text" class="feat-input" value="" placeholder="Novo item" style="padding:6px;">
-                <button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button>
-            </div>
-        `);
-    }
-
     function abrirEditorPublicidade(index) {
       indexPubEditando = index;
       configAtualAberta = 'publicidade-edit';
-      const pub = index === -1 ? { titulo: '', descricao: '', sobre: '', imagem: null, video: null } : appState.publicidades[index];
+      const pub = index === -1 ? { titulo: '', descricao: '', imagem: null, video: null, link: '' } : appState.publicidades[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Nova Publicidade' : 'Editar Publicidade';
-      
-      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;">
-        <label style="font-size:11px; font-weight:700;">Título (Nome do Parceiro)</label>
-        <input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Loja da Maria">
-        
-        <label style="font-size:11px; font-weight:700;">Descrição Curta</label>
-        <input type="text" id="pub-descricao" value="${pub.descricao || ''}" placeholder="Ex: Moda Feminina e Acessórios">
-        
-        <label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Sobre a Parceria / O Parceiro (Texto Longo)</label>
-        <textarea id="pub-sobre" rows="4" placeholder="Escreva os detalhes da parceria...">${pub.sobre || ''}</textarea>
-        
-        <label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Imagem (Máx 10MB)</label>
-        <input type="file" id="pub-imagem" accept="image/*">
-        
-        <label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Link do Vídeo (YouTube, TikTok, Kwai)</label>
-        <input type="url" id="pub-video-link" value="${pub.video || ''}" placeholder="https://www.youtube.com/watch?v=...">
-      </div>`;
-      
+      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título da Oferta</label><input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Frete Grátis Hoje!"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><textarea id="pub-descricao" rows="2" placeholder="Ex: Válido para compras acima de R$100">${pub.descricao || ''}</textarea><label style="font-size:11px; font-weight:700;">Link de Destino (Opcional)</label><input type="url" id="pub-link" value="${pub.link || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Imagem (Opcional)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700;">Vídeo (Opcional - substitui a imagem)</label><input type="file" id="pub-video" accept="video/*"></div>`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Publicidade';
@@ -1237,34 +1057,19 @@ const firebaseConfig = {
     function salvarPublicidade() {
       const tituloVal = document.getElementById('pub-titulo').value;
       const descVal = document.getElementById('pub-descricao').value;
-      const sobreVal = document.getElementById('pub-sobre').value;
-      const videoLinkVal = document.getElementById('pub-video-link').value;
+      const linkVal = document.getElementById('pub-link').value;
       const imgInput = document.getElementById('pub-imagem');
-      
+      const vidInput = document.getElementById('pub-video');
       const novaPub = indexPubEditando === -1 ? { id: Date.now() } : appState.publicidades[indexPubEditando];
-      novaPub.titulo = tituloVal; 
-      novaPub.descricao = descVal; 
-      novaPub.sobre = sobreVal;
-      
-      if (videoLinkVal) {
-        novaPub.video = videoLinkVal;
-        novaPub.imagem = null;
-      } else if (imgInput.files.length) {
-        lerArquivoComprimido('pub-imagem', v => { 
-          if (v) { 
-            novaPub.imagem = v; 
-            novaPub.video = null; 
-          } 
-          if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
-          salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
-        });
-        return;
-      } else {
-        novaPub.video = null;
-      }
-
-      if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
-      salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
+      novaPub.titulo = tituloVal; novaPub.descricao = descVal; novaPub.link = linkVal;
+      const salvarFinal = () => {
+        if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
+        salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
+      };
+      const pendentes = [];
+      if (vidInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-video', v => { if (v) { novaPub.video = v; novaPub.imagem = null; } r(); })));
+      else if (imgInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-imagem', v => { if (v) { novaPub.imagem = v; novaPub.video = null; } r(); })));
+      if (pendentes.length) Promise.all(pendentes).then(salvarFinal); else salvarFinal();
     }
 
     function removerPublicidade(index) { if (confirm('Excluir?')) { appState.publicidades.splice(index, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); } }
@@ -1274,7 +1079,7 @@ const firebaseConfig = {
       configAtualAberta = 'boutique-edit';
       const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar Produto';
-      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto (Máx 10MB)</label><input type="file" id="prod-imagem" accept="image/*">`;
+      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto</label><input type="file" id="prod-imagem" accept="image/*">`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Produto';
@@ -1323,7 +1128,6 @@ const firebaseConfig = {
 
     function salvarConfigAtual() {
       const id = configAtualAberta;
-      if (!adminAutenticado) { mostrarToast('Acesso restrito à administração.'); return; }
       if (id === 'boutique') { appState.boutiqueName = document.getElementById('edit-boutique-name').value; salvarEstado(); renderizarHome(); }
       else if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; salvarEstado(); renderizarHome(); }
       else if (id === 'cores') { appState.colorPrimary = document.getElementById('edit-c1').value; appState.colorGold = document.getElementById('edit-c2').value; salvarEstado(); renderizarHome(); }
@@ -1340,19 +1144,7 @@ const firebaseConfig = {
         if (nome && senha) { appState.equipe.push({ id: Date.now(), nome, cargo, senha, perms: ['mensagens'] }); salvarEstado(); alert('Adicionado!'); abrirConfiguracao('equipe'); }
         else alert('Preencha tudo.');
       }
-      else if (id === 'clube') { 
-        ['essencial', 'inteligente', 'master'].forEach(tipo => {
-            appState.precos[tipo] = document.getElementById(`preco-${tipo}`).value;
-            appState.planos[tipo].subtitulo = document.getElementById(`sub-${tipo}`).value;
-            
-            const feats = [];
-            document.querySelectorAll(`#features-${tipo} .feat-input`).forEach(inp => {
-                if(inp.value.trim() !== '') feats.push(inp.value.trim());
-            });
-            appState.planos[tipo].features = feats;
-        });
-        salvarEstado(); renderizarHome(); 
-      }
+      else if (id === 'clube') { appState.precos.essencial = document.getElementById('p1').value; appState.precos.inteligente = document.getElementById('p2').value; appState.precos.master = document.getElementById('p3').value; salvarEstado(); renderizarHome(); }
       else if (id === 'links') { appState.clubeLink = document.getElementById('edit-link-clube').value; appState.renovaseLink = document.getElementById('edit-link-renovase').value; salvarEstado(); renderizarHome(); }
       else if (id === 'contato') {
         appState.contato.endereco = document.getElementById('edit-endereco').value;
@@ -1375,8 +1167,8 @@ const firebaseConfig = {
         else { appState.bgColor = c; appState.bgImage = null; appState.bgGradient = null; salvarEstado(); renderizarHome(); }
       }
       else if (id === 'videos') {
-        appState.video = document.getElementById('edit-video-link').value;
-        salvarEstado(); renderizarHome();
+        const f = document.getElementById('edit-video-file');
+        if(f.files.length) lerArquivoComprimido('edit-video-file', v => { appState.video = v; salvarEstado(); renderizarHome(); fecharEditor(); });
       }
       fecharEditor();
     }
@@ -1394,22 +1186,12 @@ const firebaseConfig = {
       try {
         let codigo = localStorage.getItem('ab_ref_code') || 'AB' + Math.random().toString(36).substring(2, 8).toUpperCase();
         localStorage.setItem('ab_ref_code', codigo);
-        
-        let base = location.protocol === 'file:' ? "https://seu-site-aqui.com" : location.origin + location.pathname;
-        
+        let base = location.protocol === 'file:' ? location.href.split('?')[0] : location.origin + location.pathname;
         let link = `${base}?ref=${codigo}`;
         if (document.getElementById('link-indicacao')) document.getElementById('link-indicacao').value = link;
         if (document.getElementById('codigo-indicacao')) document.getElementById('codigo-indicacao').textContent = codigo;
+        if (document.getElementById('btn-share-indique')) document.getElementById('btn-share-indique').href = `https://wa.me/?text=${encodeURIComponent('Use meu link: ' + link)}`;
       } catch(e) {}
-    }
-
-    function compartilharIndicacao() {
-        const link = document.getElementById('link-indicacao').value;
-        const texto = encodeURIComponent('Use meu link e ganhe descontos exclusivos: ' + link);
-        mostrarToast('Abrindo WhatsApp...');
-        
-        const url = `https://api.whatsapp.com/send?text=${texto}`;
-        window.open(url, '_blank');
     }
 
     function copiarLink() {
@@ -1418,45 +1200,28 @@ const firebaseConfig = {
       try { document.execCommand('copy'); mostrarToast('✅ Link copiado!'); } catch (e) { alert('Copie manualmente.'); }
     }
 
+    function aplicarRestricoes() {
+      const role = document.getElementById('role-select').value;
+      let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
+      document.getElementById('perfil-cargo').textContent = role === 'dona' ? 'Proprietária' : 'Equipe';
+      document.getElementById('perfil-nome').textContent = role === 'dona' ? appState.appName : 'Usuário';
+      const grid = document.getElementById('master-grid-botoes');
+      grid.innerHTML = perms.map(id => { const p = todasPermissoes.find(x => x.id === id); return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>` : ''; }).join('');
+    }
+
     function lerArquivoComprimido(inputId, cb) {
-      const i = document.getElementById(inputId); 
-      if (!i || !i.files[0]) return cb(null);
-      
+      const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null);
       const file = i.files[0];
-      
-      const limiteImagem = 10 * 1024 * 1024;
-
-      if (file.type.startsWith('image/') && file.size > limiteImagem) {
-        alert('⚠️ Imagem muito pesada! Por favor, escolha uma imagem menor que 10MB.');
-        i.value = ''; return cb(null);
-      }
-
-      if (!file.type.startsWith('image/')) { 
-        const r = new FileReader(); 
-        r.onload = e => cb(e.target.result); 
-        r.readAsDataURL(file); 
-        return; 
-      }
-
+      if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; }
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement('canvas'); 
-          let width = img.width, height = img.height;
-          
-          const MAX_WIDTH = 600; 
-          if (width > MAX_WIDTH) { 
-            height = Math.round((height * MAX_WIDTH) / width); 
-            width = MAX_WIDTH; 
-          }
-          
-          canvas.width = width; 
-          canvas.height = height;
-          const ctx = canvas.getContext('2d'); 
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          cb(canvas.toDataURL('image/jpeg', 0.5));
+          const canvas = document.createElement('canvas'); let width = img.width, height = img.height;
+          if (width > 600) { height = Math.round((height * 600) / width); width = 600; }
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+          cb(canvas.toDataURL('image/jpeg', 0.6));
         };
         img.src = e.target.result;
       };
@@ -1469,10 +1234,19 @@ const firebaseConfig = {
       document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
     }
 
-    document.addEventListener('DOMContentLoaded', () => { 
-      aplicarRestricoes(); 
-      gerarCalendario();
-    });
+    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
+    function enviarCadastro(e) { e.preventDefault(); alert('Conta criada!'); document.getElementById('modal-cadastro').style.display = 'none'; }
+
+    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
+    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
+    function iniciarAula() { document.getElementById('chat-body').innerHTML = `<div class="msg msg-bot">Aula: Vá no Perfil > Integrações para conectar seus apps! 🌸</div>`; }
+    function enviarMsgIA() { 
+      const inp = document.getElementById('chat-input'); const txt = inp.value; if(!txt) return;
+      const body = document.getElementById('chat-body');
+      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); inp.value = '';
+      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">Entendi! Para configurar, vá no Perfil. 😊</div>`); body.scrollTop = body.scrollHeight; }, 800);
+    }
+
   </script>
 
 </body>
