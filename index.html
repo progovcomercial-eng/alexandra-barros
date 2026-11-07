@@ -20,6 +20,7 @@
   <!-- Scripts do Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
   <style>
     :root {
@@ -254,16 +255,6 @@
 
   <div class="app-container" id="app-container">
 
-    <div class="debug-switcher">
-      <div>
-        Simular Visão: 
-        <select id="role-select" onchange="aplicarRestricoes()">
-          <option value="cliente" selected>Cliente (Sem Senha)</option>
-          <option value="dona">Dona (Logada)</option>
-        </select>
-      </div>
-    </div>
-
     <div class="app-header">
       <div class="avatar-ab" id="app-logo">AB</div>
       <div class="header-title" id="app-name">Alexandra Barros</div>
@@ -362,11 +353,16 @@
             <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
             
             <div id="area-login-admin">
-              <p style="font-size:12px; text-align:center; margin-bottom:10px;">Digite a senha de administrador para liberar os botões.</p>
-              <input type="password" id="senha-admin" placeholder="Senha (1234)" style="width:100%; padding:10px; border:1px solid var(--cor-principal); border-radius:8px; margin-bottom:10px;">
-              <button onclick="verificarSenhaAdmin()" style="width:100%; padding:10px; background:var(--cor-principal); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Desbloquear</button>
+              <p style="font-size:12px;text-align:center;margin-bottom:10px;">Acesso exclusivo da administração PROGOV.</p>
+              <input type="email" id="admin-email" autocomplete="username" value="progovcomercial@gmail.com" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:8px;">
+              <input type="password" id="admin-password" autocomplete="current-password" placeholder="Senha cadastrada no Firebase" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
+              <button id="btn-admin-login" onclick="verificarSenhaAdmin()" style="width:100%;padding:10px;background:var(--cor-principal);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;">Entrar como administradora</button>
+              <p id="admin-auth-status" role="status" style="font-size:11px;margin-top:9px;text-align:center;color:#777;">Entre com a conta autorizada.</p>
             </div>
-            
+            <div id="admin-logado" style="display:none;text-align:center;margin-bottom:12px;">
+              <p id="admin-identidade" style="font-size:12px;margin-bottom:8px;"></p>
+              <button onclick="sairAdmin()" style="padding:8px 14px;border:1px solid var(--cor-principal);background:#fff;color:var(--cor-principal);border-radius:8px;font-weight:700;">Sair da administração</button>
+            </div>
             <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
           </div>
         </div>
@@ -458,6 +454,10 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
+    const EMAIL_ADMIN_AUTORIZADO = 'progovcomercial@gmail.com';
+    let adminAutenticado = false;
+    let usuarioAutenticado = null;
 
     const manifest = {
       name: "AleClube App",
@@ -497,7 +497,6 @@
     ];
 
     const estadoPadrao = {
-      senhaAdmin: '1234',
       appName: 'Alexandra Barros',
       logo: 'AB',
       logoImage: null,
@@ -569,32 +568,24 @@
     let horarioSelecionado = null;
 
     // --- FUNÇÕES DO FIREBASE ---
+    function atualizarInterfaceEstado() { renderizarHome(); aplicarRestricoes(); gerarCalendario(); verificarClienteLogado(); }
     function carregarEstado() {
       db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
         if (docSnap.exists) {
-          appState = { ...estadoPadrao, ...docSnap.data() };
-          renderizarHome();
-          aplicarRestricoes();
-          gerarCalendario();
-          verificarClienteLogado();
-        } else {
-          db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(() => {
-            renderizarHome();
-            aplicarRestricoes();
-            gerarCalendario();
-            verificarClienteLogado();
-          });
-        }
-      });
+          const dados = docSnap.data() || {}; delete dados.senhaAdmin;
+          appState = { ...estadoPadrao, ...dados }; atualizarInterfaceEstado();
+        } else if (adminAutenticado) {
+          db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
+            .catch((e) => console.error("Erro ao criar estado inicial:", e));
+        } else { atualizarInterfaceEstado(); }
+      }, (error) => { console.error("Erro ao carregar dados:", error); mostrarToast("Falha na sincronização. Confira as regras do Firebase."); });
     }
-
     async function salvarEstado() {
+      if (!adminAutenticado) { mostrarToast("Entre como administradora para salvar."); return false; }
       try {
-        await db.collection("appData").doc("estadoGlobal").set(appState);
-      } catch (e) {
-        alert("Erro ao salvar na nuvem.");
-        console.error(e);
-      }
+        const dadosSeguros = { ...appState }; delete dadosSeguros.senhaAdmin;
+        await db.collection("appData").doc("estadoGlobal").set(dadosSeguros); return true;
+      } catch (e) { alert("Não foi possível salvar. Confira conexão e regras do Firebase."); console.error(e); return false; }
     }
 
     // --- CLIENTE REGISTRO E WELCOME ---
@@ -670,6 +661,7 @@
 
     // --- GERENCIAMENTO VIP (DONA) ---
     async function liberarAcessoVIP(idCliente, nomeCliente, telefoneCliente) {
+      if (!adminAutenticado) { mostrarToast('Ação exclusiva da administração.'); return; }
       if (!confirm(`Confirmar pagamento e liberar acesso para ${nomeCliente}?`)) return;
 
       const novoCodigo = 'VIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -697,40 +689,38 @@
       }
     }
 
-    // --- LÓGICA DE ACESSO ADMIN ---
-    function verificarSenhaAdmin() {
-      const senhaDigitada = document.getElementById('senha-admin').value.trim();
-      const senhaCorreta = appState.senhaAdmin || '1234'; 
-      
-      if (senhaDigitada === senhaCorreta) {
-        document.getElementById('role-select').value = 'dona';
-        aplicarRestricoes();
-        mostrarToast('Acesso liberado!');
-      } else {
-        alert("Senha incorreta! Tente novamente.");
-      }
+    async function verificarSenhaAdmin() {
+      const email = (document.getElementById('admin-email')?.value || '').trim().toLowerCase();
+      const senha = document.getElementById('admin-password')?.value || '';
+      const status = document.getElementById('admin-auth-status');
+      const botao = document.getElementById('btn-admin-login');
+      if (email !== EMAIL_ADMIN_AUTORIZADO) { if(status) status.textContent = 'E-mail não autorizado.'; return; }
+      if (!senha) { if(status) status.textContent = 'Digite sua senha do Firebase.'; return; }
+      if (botao) { botao.disabled = true; botao.textContent = 'Entrando...'; }
+      try { await auth.signInWithEmailAndPassword(email, senha); }
+      catch (e) { console.error('Erro no login:', e); if(status) status.textContent = 'Login não realizado. Confira e-mail e senha no Firebase Authentication.'; }
+      finally { if(botao) { botao.disabled = false; botao.textContent = 'Entrar como administradora'; } }
     }
-
+    async function sairAdmin() { try { await auth.signOut(); } catch(e) { console.error(e); } }
+    auth.onAuthStateChanged((user) => {
+      usuarioAutenticado = user || null;
+      adminAutenticado = !!(user && user.email && user.email.toLowerCase() === EMAIL_ADMIN_AUTORIZADO);
+      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
+      const status = document.getElementById('admin-auth-status'), identidade = document.getElementById('admin-identidade');
+      if(login) login.style.display = adminAutenticado ? 'none' : 'block';
+      if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
+      if(identidade && adminAutenticado) identidade.textContent = 'Conectada: ' + user.email;
+      if(status && !adminAutenticado) status.textContent = 'Entre com a conta autorizada.';
+      aplicarRestricoes(); if(adminAutenticado) carregarEstado();
+    });
     function aplicarRestricoes() {
-      const role = document.getElementById('role-select').value;
-      const isDona = role === 'dona';
       const grid = document.getElementById('master-grid-botoes');
-      const loginAdmin = document.getElementById('area-login-admin');
-      
-      if (isDona) {
-        if(loginAdmin) loginAdmin.style.display = 'none';
-        if(grid) {
-          grid.style.display = 'grid';
-          grid.innerHTML = todasPermissoes.map(p => {
-            return `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`;
-          }).join('');
-        }
-      } else {
-        if(loginAdmin) loginAdmin.style.display = 'block';
-        if(grid) {
-          grid.style.display = 'none';
-          grid.innerHTML = '';
-        }
+      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
+      if(login) login.style.display = adminAutenticado ? 'none' : 'block';
+      if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
+      if(grid) {
+        grid.style.display = adminAutenticado ? 'grid' : 'none';
+        grid.innerHTML = adminAutenticado ? todasPermissoes.map(p => `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>`).join('') : '';
       }
     }
 
@@ -1022,6 +1012,7 @@
     function abrirConfiguracao(id) {
       configAtualAberta = id;
       backupState = JSON.parse(JSON.stringify(appState));
+      if (!adminAutenticado) { mostrarToast('Acesso restrito à administração.'); return; }
       const content = document.getElementById('editor-content');
       const titulo = document.getElementById('editor-titulo');
       let html = '';
@@ -1048,7 +1039,7 @@
       }
       else if (id === 'identidade') {
         titulo.textContent = 'Nome & Senha';
-        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Senha de Acesso (Admin)</label><input type="text" id="edit-senha" value="${appState.senhaAdmin || '1234'}" maxlength="4">`;
+        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><p style="font-size:11px;color:#777;margin-top:10px;">A senha administrativa é gerenciada pelo Firebase Authentication.</p>`;
       }
       else if (id === 'cores') {
         titulo.textContent = 'Cores do App';
@@ -1328,8 +1319,9 @@
 
     function salvarConfigAtual() {
       const id = configAtualAberta;
+      if (!adminAutenticado) { mostrarToast('Acesso restrito à administração.'); return; }
       if (id === 'boutique') { appState.boutiqueName = document.getElementById('edit-boutique-name').value; salvarEstado(); renderizarHome(); }
-      else if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; appState.senhaAdmin = document.getElementById('edit-senha').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; salvarEstado(); renderizarHome(); }
       else if (id === 'cores') { appState.colorPrimary = document.getElementById('edit-c1').value; appState.colorGold = document.getElementById('edit-c2').value; salvarEstado(); renderizarHome(); }
       else if (id === 'tela-inicial') { 
         appState.clubeName = document.getElementById('edit-clube-name').value; appState.renovaseName = document.getElementById('edit-renovase-name').value; 
@@ -1474,7 +1466,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => { 
-      carregarEstado(); 
       aplicarRestricoes(); 
       gerarCalendario();
     });
