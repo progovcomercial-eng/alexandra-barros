@@ -569,7 +569,10 @@
 
     // --- FUNÇÕES DO FIREBASE ---
     function atualizarInterfaceEstado() { renderizarHome(); aplicarRestricoes(); gerarCalendario(); verificarClienteLogado(); }
+    let estadoListenerIniciado = false;
     function carregarEstado() {
+      if (estadoListenerIniciado) return;
+      estadoListenerIniciado = true;
       db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
         if (docSnap.exists) {
           const dados = docSnap.data() || {}; delete dados.senhaAdmin;
@@ -711,7 +714,7 @@
       if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
       if(identidade && adminAutenticado) identidade.textContent = 'Conectada: ' + user.email;
       if(status && !adminAutenticado) status.textContent = 'Entre com a conta autorizada.';
-      aplicarRestricoes(); if(adminAutenticado) carregarEstado();
+      aplicarRestricoes(); carregarEstado();
     });
     function aplicarRestricoes() {
       const grid = document.getElementById('master-grid-botoes');
