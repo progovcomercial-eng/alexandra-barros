@@ -17,38 +17,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Scripts do Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
   <style>
-    /* O CSS PERMANECE EXATAMENTE O MESMO */
     :root {
       --cor-fundo: #FFF2F6; --cor-card-fundo: #FFFFFF; --cor-principal: #9D174D;
       --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
       --cor-whatsapp: #00BB2D;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; }
     .app-container { width: 100%; max-width: 450px; background-color: var(--cor-fundo); min-height: 100vh; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); transition: background 0.3s; background-size: cover; background-position: center; }
     .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-
     .debug-switcher { background: #222; color: #fff; padding: 10px; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around; border-bottom: 2px solid var(--cor-principal); z-index: 100; }
     .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
-
     .app-header { background-color: var(--cor-principal); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
     .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
     .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
     .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
-
     .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
-
     .vitrine-banner-nova { background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
     .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
-
     .pub-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .pub-scroll::-webkit-scrollbar { display: none; }
     .pub-card { flex-shrink: 0; width: 260px; scroll-snap-align: start; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid rgba(157, 23, 77, 0.1); position: relative; }
@@ -58,22 +50,18 @@
     .pub-info h4 { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
     .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
     .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
-
     .cta-cadastro { background: linear-gradient(135deg, #FFF8FA, #FFE4EE); border: 1.5px solid var(--cor-dourada); border-radius: 18px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
     .cta-cadastro-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .cta-cadastro-texto { flex: 1; }
     .cta-cadastro-texto h3 { font-size: 13px; color: var(--cor-principal); font-weight: 700; margin-bottom: 2px; }
     .cta-cadastro-texto p { font-size: 10.5px; color: var(--cor-texto-mutado); }
     .btn-cadastrar-agora { background: var(--cor-principal); color: #fff; border: none; padding: 10px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
-
     .banner-indique { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); color: #4A2300; }
     .banner-indique h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
     .banner-indique p { font-size: 11px; opacity: 0.8; }
     .banner-indique i { font-size: 24px; color: #fff; }
-
     .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
     .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
-
     .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .planos-scroll::-webkit-scrollbar { display: none; }
     .plano-card { flex-shrink: 0; width: 172px; scroll-snap-align: start; background: var(--cor-card-fundo); border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 18px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; }
@@ -85,7 +73,6 @@
     .plano-features { list-style: none; font-size: 10.5px; color: var(--cor-texto-mutado); line-height: 1.5; margin-bottom: 14px; }
     .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
     .plano-btn { width: 100%; padding: 9px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
-
     .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
     .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
     .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); }
@@ -98,7 +85,6 @@
     .espaco-sub { font-size: 11px; opacity: 0.88; }
     .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
     .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
-
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 11px; color: var(--cor-texto-mutado); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
     .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 13px; }
@@ -109,7 +95,6 @@
     .rede-btn.ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
     .rede-btn.em { background: #333333; }
     .rede-btn.canal { background: #128C7E; flex: 1 1 100%; flex-direction: row; gap: 10px; padding: 14px 0; font-size: 13px; margin-top: 5px; }
-
     .canal-item-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-decoration: none; color: inherit; border: 1px solid rgba(0,0,0,0.03); transition: transform 0.2s; }
     .canal-item-card:active { transform: scale(0.98); }
     .canal-item-icon { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #128C7E, #25D366); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
@@ -117,17 +102,15 @@
     .canal-item-info h4 { font-size: 14px; color: var(--cor-texto-escuro); margin-bottom: 2px; }
     .canal-item-info p { font-size: 11px; color: var(--cor-texto-mutado); }
     .canal-item-arrow { color: #ccc; }
-
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
     .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
     .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
     .product-img-box-nova img { width: 100%; height: 100%; object-fit: cover; }
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
     .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
-
     .video-container { display: none; margin-bottom: 24px; }
     .video-container video, .video-container iframe { width: 100%; height: 220px; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; }
-
+    
     /* AGENDA */
     .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .calendario-header h3 { font-size: 16px; color: var(--cor-principal); }
@@ -139,8 +122,14 @@
     .dia-btn.indisponivel { background: #f5f5f5; color: #ccc; cursor: not-allowed; text-decoration: line-through; }
     .dia-btn.vazio { background: transparent; border: none; cursor: default; }
     .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
-    .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; }
+    .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; transition: all 0.2s; }
     .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
+    
+    /* ESTILOS PARA O ADMIN VER OS HORÁRIOS */
+    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 65px; font-weight: 400; font-size: 11px; cursor: default; }
+    .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; }
+    .horario-btn.admin-slot.ocupado { background: #fff0f0; border-color: #ffcdd2; color: #b71c1c; }
+    .horario-btn.admin-slot.livre { background: #f1f8e9; border-color: #c5e1a5; color: #33691e; }
 
     .admin-agenda-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 4px solid var(--cor-principal); display: flex; flex-direction: column; gap: 5px; }
     .admin-agenda-card .data-hora { font-size: 14px; font-weight: 700; color: var(--cor-principal); display: flex; justify-content: space-between; }
@@ -155,15 +144,12 @@
     .link-indique { display: flex; background: #f5f5f5; border-radius: 8px; padding: 4px; margin-bottom: 16px; }
     .link-indique input { flex: 1; border: none; background: transparent; padding: 8px; font-family: inherit; font-size: 12px; color: #555; }
     .link-indique button { background: var(--cor-principal); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
-
     .btn-cta-grande { width: 100%; padding: 16px; background: var(--cor-principal); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
     .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); padding: 8px 14px; border-radius: 999px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-bottom: 18px; }
-
     .perfil-hero { background: linear-gradient(135deg, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
     .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
     .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
     .perfil-cargo { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.85; }
-
     .painel-master-box { background: #FFF8FA; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 16px; margin-top: 10px; }
     .master-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .master-card { background: #fff; border: 1px solid rgba(157, 23, 77, 0.2); border-radius: 10px; padding: 12px 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: left; }
@@ -171,15 +157,12 @@
     .master-card:active { transform: scale(.96); }
     .master-card h4 { font-size: 11px; color: var(--cor-principal); font-weight: 700; margin: 0; line-height: 1.2; }
     .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
-
     .tela { display: none; }
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
     .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
     @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
     @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
     #tela-chat { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999; background: #fff; display: none; }
     .chat-container { max-width: 450px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; position: relative; }
     .chat-header { background: var(--cor-principal); color: #fff; padding: 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
@@ -190,23 +173,18 @@
     .chat-input-area { position: absolute; bottom: 0; left: 0; right: 0; display: flex; padding: 10px; background: #f0f0f0; gap: 8px; z-index: 10; border-top: 1px solid #ddd; }
     .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-family: inherit; }
     .chat-input-area button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--cor-principal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-    
     .btn-ia-acao { display: block; background: #fff; border: 1.5px solid var(--cor-principal); color: var(--cor-principal); padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; transition: all 0.2s; }
     .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
-
     .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
     .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #D4AF37; border-radius: 8px; font-family: inherit; font-size: 13px; }
-
     .btn-enviar-cadastro { background: #9D174D; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 12px; }
     .btn-undo { background: #f5f5f5; color: #555; border: 1px solid #ccc; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-
     .config-item-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
     .config-item-row input { margin: 0; flex: 1; }
     .config-item-row .btn-del { background: #ffebee; color: #c62828; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-add-item { background: #e0e0e0; color: #333; border: none; padding: 8px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer; margin-bottom: 15px; }
-
     .integracoes-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
     .integ-left { display: flex; align-items: center; gap: 12px; }
     .integ-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: bold; }
@@ -216,21 +194,17 @@
     .btn-conectar.on { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .btn-conectar.off { background: var(--cor-principal); color: #fff; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
-
     .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
     .nav-item.active { color: var(--cor-principal); }
     .nav-item i { font-size: 18px; }
-
     .pagina-hero { border-radius: 22px; padding: 26px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); }
     .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
     .pagina-titulo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--cor-dourada); margin-bottom: 6px; }
     .pagina-subtitulo { font-size: 12px; opacity: 0.88; }
-
     .beneficios-lista { list-style: none; padding: 0; margin: 0 0 24px 0; }
     .beneficios-lista li { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 12.5px; color: var(--cor-texto-escuro); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
     .beneficio-icone { width: 22px; height: 22px; border-radius: 50%; background: var(--cor-dourada); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
-
     .produto-nome { text-align: center; color: var(--cor-principal); margin-bottom: 8px; font-family: 'Playfair Display', serif; font-size: 22px; }
     .produto-preco { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--cor-texto-escuro); }
     .produto-desc { text-align: center; color: var(--cor-texto-mutado); margin-bottom: 24px; line-height: 1.6; font-size: 13px; }
@@ -274,36 +248,34 @@
       <!-- TELA DE AGENDA -->
       <div id="tela-agenda" class="tela">
         
-        <!-- VISÃO DO CLIENTE -->
-        <div id="agenda-cliente" style="display:block;">
-          <div class="section-title-nova" style="margin-top:0;">Escolha o dia e horário</div>
+        <!-- CALENDÁRIO COMPARTILHADO -->
+        <div id="calendario-container">
+          <div class="section-title-nova" style="margin-top:0;">Agenda de Atendimentos</div>
           
-          <div id="cliente-ja-agendou" style="display:none; background:#fff; padding:20px; border-radius:12px; text-align:center; border:1px solid #ddd;">
-            <i class="fa-solid fa-calendar-check" style="font-size:40px; color:var(--cor-principal); margin-bottom:10px;"></i>
-            <h3 style="color:var(--cor-principal); margin-bottom:5px;">Você já tem um horário!</h3>
-            <p style="font-size:12px; color:#666; margin-bottom:15px;">Seu agendamento foi registrado. Aguarde o contato da nossa equipe.</p>
-            <a id="btn-whats-cliente" href="#" target="_blank" class="btn-cta-grande" style="background:#00BB2D; text-decoration:none;">Falar no WhatsApp</a>
+          <div class="calendario-header">
+            <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <h3 id="mes-ano-atual">Novembro 2026</h3>
+            <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
-
-          <div id="calendario-container">
-            <div class="calendario-header">
-              <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-              <h3 id="mes-ano-atual">Novembro 2026</h3>
-              <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-            <div class="calendario-grid" id="calendario-grid"></div>
-            
-            <div id="horarios-container" style="display:none;">
-              <div class="section-title-nova" style="margin-top:16px;">Horários disponíveis</div>
-              <div class="horarios-grid" id="horarios-grid"></div>
-            </div>
+          <div class="calendario-grid" id="calendario-grid"></div>
+          
+          <div id="horarios-container" style="display:none;">
+            <div class="section-title-nova" style="margin-top:16px;" id="titulo-horarios">Horários disponíveis</div>
+            <div class="horarios-grid" id="horarios-grid"></div>
           </div>
         </div>
 
-        <!-- VISÃO DO ADMIN -->
-        <div id="agenda-admin" style="display:none;">
-          <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-          <div class="section-title-nova" style="margin-top:0;">Agendamentos Marcados</div>
+        <!-- VISÃO DO CLIENTE: JÁ AGENDOU -->
+        <div id="cliente-ja-agendou" style="display:none; background:#fff; padding:20px; border-radius:12px; text-align:center; border:1px solid #ddd; margin-top:20px;">
+          <i class="fa-solid fa-calendar-check" style="font-size:40px; color:var(--cor-principal); margin-bottom:10px;"></i>
+          <h3 style="color:var(--cor-principal); margin-bottom:5px;">Você já tem um horário!</h3>
+          <p style="font-size:12px; color:#666; margin-bottom:15px;">Seu agendamento foi registrado. Aguarde o contato da nossa equipe.</p>
+          <a id="btn-whats-cliente" href="#" target="_blank" class="btn-cta-grande" style="background:#00BB2D; text-decoration:none;">Falar no WhatsApp</a>
+        </div>
+
+        <!-- VISÃO DA EQUIPE: LISTA EXTRA -->
+        <div id="agenda-admin" style="display:none; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+          <div class="section-title-nova" style="margin-top:0;">Próximos Agendamentos</div>
           <div id="lista-agendamentos-admin"></div>
         </div>
 
@@ -473,6 +445,27 @@
   </div>
 
   <script>
+    // --- HELPERS DE SEGURANÇA (XSS) ---
+    function esc(s) {
+      if (s === null || s === undefined) return '';
+      return String(s).replace(/[&<>"']/g, function(c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+    function safeImgSrc(url) {
+      if (!url) return '';
+      var s = String(url).trim();
+      if (/^(javascript|vbscript):/i.test(s)) return '';
+      return s;
+    }
+    function safeHref(url) {
+      if (!url) return '#';
+      var s = String(url).trim();
+      if (/^(javascript|data|vbscript|file):/i.test(s)) return '#';
+      return s;
+    }
+    function cssUrl(url) { return JSON.stringify(String(url || '')); }
+
     // --- CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
@@ -541,7 +534,8 @@
         inteligente: { titulo: 'Inteligente', subtitulo: 'O mais escolhido', features: ['Shopee + ML', 'Relatórios'] },
         master: { titulo: 'Master', subtitulo: 'Completo', features: ['Tudo incluso', 'Assistente IA'] }
       },
-      horariosAgenda: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00']
+      horariosAgenda: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+      diasDisponiveis: [1, 2, 3, 4, 5, 6] // 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sáb
     };
 
     let appState = JSON.parse(JSON.stringify(estadoPadrao));
@@ -550,12 +544,12 @@
     let indexPubEditando = -1;
     let indexProdEditando = -1;
     
-    // Variáveis da Agenda
     let currentDate = new Date();
     let diaSelecionado = null;
     let horarioSelecionado = null;
+    let ultimoRoleAplicado = null;
 
-    // --- FUNÇÕES DO FIREBASE ---
+    // --- FIREBASE ---
     function atualizarInterfaceEstado() { renderizarHome(); aplicarRestricoes(); gerarCalendarioReal(); verificarClienteLogado(); }
     let estadoListenerIniciado = false;
     function carregarEstado() {
@@ -579,12 +573,12 @@
       } catch (e) { alert("Não foi possível salvar. Confira conexão e regras do Firebase."); console.error(e); return false; }
     }
 
-    // --- CLIENTE REGISTRO E WELCOME ---
+    // --- CLIENTE ---
     function verificarClienteLogado() {
       const nome = localStorage.getItem('clienteNome');
       const banner = document.getElementById('welcome-banner');
       if (nome && banner) {
-        banner.innerHTML = `<i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-right:5px;"></i> Olá, ${nome}! Seja bem-vinda. <i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-left:5px;"></i>`;
+        banner.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--cor-dourada); margin-right:5px;"></i> Olá, ${esc(nome)}! Seja bem-vinda. <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--cor-dourada); margin-left:5px;"></i>`;
         banner.style.display = 'block';
       } else if (banner) {
         banner.style.display = 'none';
@@ -593,9 +587,9 @@
 
     async function enviarCadastro(e) {
       e.preventDefault();
-      const nome = document.getElementById('cad-nome').value;
-      const email = document.getElementById('cad-email').value;
-      const telefone = document.getElementById('cad-tel').value;
+      const nome = document.getElementById('cad-nome').value.trim();
+      const email = document.getElementById('cad-email').value.trim();
+      const telefone = document.getElementById('cad-tel').value.trim();
 
       try {
         await db.collection("clientes").add({
@@ -613,7 +607,7 @@
       } catch (error) { console.error("Erro ao cadastrar:", error); alert("Erro ao cadastrar."); }
     }
 
-    // --- ACESSO AO CLUBE VIP ---
+    // --- CLUBE VIP ---
     function pedirCodigoClube() { document.getElementById('modal-codigo-clube').style.display = 'flex'; }
     async function verificarCodigoClube() {
       const codigo = document.getElementById('input-codigo-clube').value.trim().toUpperCase();
@@ -629,7 +623,6 @@
       } catch (e) { console.error(e); alert('Erro de conexão.'); }
     }
 
-    // --- GERENCIAMENTO VIP (DONA) ---
     async function liberarAcessoVIP(idCliente, nomeCliente, telefoneCliente) {
       if (!adminAutenticado) { mostrarToast('Ação exclusiva da administração.'); return; }
       if (!confirm(`Confirmar pagamento e liberar acesso para ${nomeCliente}?`)) return;
@@ -668,8 +661,41 @@
       aplicarRestricoes(); carregarEstado();
     });
 
+    function atualizarViewAgenda() {
+      const role = document.getElementById('role-select').value;
+      const isAdmin = (role === 'dona' || role === 'gerente' || role === 'supervisor');
+
+      // Sempre mostra o calendário
+      const calendarContainer = document.getElementById('calendario-container');
+      if (calendarContainer) calendarContainer.style.display = 'block';
+
+      const elClienteJaAgendou = document.getElementById('cliente-ja-agendou');
+      if (elClienteJaAgendou) {
+          if (isAdmin) {
+              elClienteJaAgendou.style.display = 'none';
+          } else {
+              verificarAgendamentoCliente();
+          }
+      }
+
+      const elAdmin = document.getElementById('agenda-admin');
+      if (elAdmin) {
+        if (isAdmin) {
+          elAdmin.style.display = 'block';
+          carregarAgendamentosAdmin();
+        } else {
+          elAdmin.style.display = 'none';
+        }
+      }
+
+      gerarCalendarioReal();
+    }
+
     function aplicarRestricoes() {
       const role = document.getElementById('role-select').value;
+      const roleMudou = (ultimoRoleAplicado !== null && role !== ultimoRoleAplicado);
+      ultimoRoleAplicado = role;
+
       let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
       
       if(role === 'cliente') perms = [];
@@ -692,18 +718,30 @@
         grid.style.display = perms.length > 0 ? 'grid' : 'none';
         grid.innerHTML = perms.map(id => { 
           const p = todasPermissoes.find(x => x.id === id); 
-          return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>` : ''; 
+          return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${esc(p.nome)}</h4><span class="plus">+</span></button>` : ''; 
         }).join('');
+      }
+
+      if (roleMudou) {
+        diaSelecionado = null;
+        horarioSelecionado = null;
+        const hrContainer = document.getElementById('horarios-container');
+        if (hrContainer) hrContainer.style.display = 'none';
+
+        const telaAgenda = document.getElementById('tela-agenda');
+        if (telaAgenda && telaAgenda.classList.contains('ativa')) {
+          atualizarViewAgenda();
+        }
       }
     }
 
-    // --- ASSISTENTE IA ---
+    // --- IA ---
     function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
     function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
     function enviarMsgIA() { 
       const inp = document.getElementById('chat-input'); const txt = inp.value.trim(); if(!txt) return;
       const body = document.getElementById('chat-body');
-      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); inp.value = '';
+      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${esc(txt)}</div>`); inp.value = '';
       
       const t = txt.toLowerCase(); let resposta = "";
       if (t.includes('clube') || t.includes('vip')) resposta = "O Clube da Ale é exclusivo! Você precisa de um código de convite. Se já tiver, clique no banner rosa na tela inicial.";
@@ -712,32 +750,18 @@
       else if (t.includes('agenda') || t.includes('horário')) resposta = "Para agendar, vá na aba Agenda, escolha o dia, o horário e preencha seu nome e WhatsApp! 📅";
       else resposta = "Desculpe, ainda estou aprendendo. Mas você pode falar diretamente com a Alexandra no WhatsApp! 💬";
 
-      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">${resposta}</div>`); body.scrollTop = body.scrollHeight; }, 600);
+      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">${esc(resposta)}</div>`); body.scrollTop = body.scrollHeight; }, 600);
     }
 
-    // --- NAVEGAÇÃO E FUNÇÕES GERAIS ---
+    // --- NAVEGAÇÃO ---
     function abrirTela(id) {
       document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
       const tela = document.getElementById('tela-' + id);
       if (tela) tela.classList.add('ativa');
       document.querySelector('.app-content').scrollTop = 0;
       
-      // Força a renderização da Agenda corretamente
       if (id === 'agenda') {
-        const role = document.getElementById('role-select').value;
-        const elCliente = document.getElementById('agenda-cliente');
-        const elAdmin = document.getElementById('agenda-admin');
-        
-        if (role === 'dona' || role === 'gerente' || role === 'supervisor') {
-          if (elCliente) elCliente.style.display = 'none';
-          if (elAdmin) elAdmin.style.display = 'block';
-          carregarAgendamentosAdmin();
-        } else {
-          if (elCliente) elCliente.style.display = 'block';
-          if (elAdmin) elAdmin.style.display = 'none';
-          verificarAgendamentoCliente();
-          gerarCalendarioReal();
-        }
+        atualizarViewAgenda();
       }
     }
 
@@ -762,7 +786,7 @@
       document.getElementById('plano-hero').style.background = 'linear-gradient(135deg, #9D174D 0%, #560021 100%)';
       document.getElementById('plano-preco').textContent = `R$ ${appState.precos[tipo] || '0'}`;
       document.getElementById('plano-periodo').textContent = '/mês';
-      document.getElementById('plano-beneficios').innerHTML = p.features.map(f => `<li><span class="beneficio-icone">✓</span> ${f}</li>`).join('');
+      document.getElementById('plano-beneficios').innerHTML = p.features.map(f => `<li><span class="beneficio-icone">✓</span> ${esc(f)}</li>`).join('');
       const btn = document.getElementById('plano-btn-acao');
       btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Assinar agora';
       btn.onclick = abrirModalCadastro;
@@ -773,15 +797,15 @@
       const toast = (msg) => { const t = document.createElement('div'); t.textContent = msg; t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 22px;border-radius:999px;font-size:12px;z-index:99999;font-family:Montserrat,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3);'; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); };
       try {
         const link = tipo === 'clube' ? appState.clubeLink : appState.renovaseLink;
-        if (link && String(link).trim() !== '') { toast('Abrindo site...'); window.open(link, '_blank'); return; }
+        if (link && String(link).trim() !== '') { toast('Abrindo site...'); window.open(safeHref(link), '_blank'); return; }
         toast(tipo === 'clube' ? 'Abrindo Clube da Ale...' : 'Abrindo Renova-se...');
         const dados = tipo === 'clube'
-          ? { emoji: appState.clubeImage ? `<img src="${appState.clubeImage}" style="width:80px;height:80px;border-radius:18px;object-fit:cover;">` : '🌸', titulo: appState.clubeName || 'Clube da Ale', sub: 'Experiências & Benefícios', cor: appState.clubeColor || '#C2185B', itens: ['Descontos progressivos', 'Brindes em datas especiais', 'Convites para eventos', 'Atendimento prioritário'] }
-          : { emoji: appState.renovaseImage ? `<img src="${appState.renovaseImage}" style="width:80px;height:80px;border-radius:18px;object-fit:cover;">` : '✨', titulo: appState.renovaseName || 'Renova-se', sub: 'Transformação & Autoestima', cor: appState.renovaseColor || '#B8852E', itens: ['Consultoria personalizada', 'Produtos selecionados', 'Acompanhamento contínuo', 'Comunidade exclusiva'] };
+          ? { emoji: appState.clubeImage ? `<img src="${esc(safeImgSrc(appState.clubeImage))}" style="width:80px;height:80px;border-radius:18px;object-fit:cover;">` : '🌸', titulo: appState.clubeName || 'Clube da Ale', sub: 'Experiências & Benefícios', cor: appState.clubeColor || '#C2185B', itens: ['Descontos progressivos', 'Brindes em datas especiais', 'Convites para eventos', 'Atendimento prioritário'] }
+          : { emoji: appState.renovaseImage ? `<img src="${esc(safeImgSrc(appState.renovaseImage))}" style="width:80px;height:80px;border-radius:18px;object-fit:cover;">` : '✨', titulo: appState.renovaseName || 'Renova-se', sub: 'Transformação & Autoestima', cor: appState.renovaseColor || '#B8852E', itens: ['Consultoria personalizada', 'Produtos selecionados', 'Acompanhamento contínuo', 'Comunidade exclusiva'] };
         const set = (id, val, isHTML) => { const el = document.getElementById(id); if (el) { if (isHTML) el.innerHTML = val; else el.textContent = val; } };
         set('plano-emoji', dados.emoji, true); set('plano-titulo', dados.titulo); set('plano-subtitulo', dados.sub); set('plano-preco', 'Exclusivo'); set('plano-periodo', '');
-        set('plano-beneficios', dados.itens.map(i => `<li><span class="beneficio-icone">✓</span> ${i}</li>`).join(''), true);
-        const hero = document.getElementById('plano-hero'); if (hero) hero.style.background = `linear-gradient(135deg, ${dados.cor} 0%, #4C0519 100%)`;
+        set('plano-beneficios', dados.itens.map(i => `<li><span class="beneficio-icone">✓</span> ${esc(i)}</li>`).join(''), true);
+        const hero = document.getElementById('plano-hero'); if (hero) hero.style.background = `linear-gradient(135deg, ${esc(dados.cor)} 0%, #4C0519 100%)`;
         const btn = document.getElementById('plano-btn-acao');
         if (btn) { btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Quero fazer parte'; btn.onclick = () => { window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá! Tenho interesse no ' + dados.titulo)}`, '_blank'); }; }
         abrirTela('plano');
@@ -791,9 +815,9 @@
     function abrirTelaCanais() {
       const c = appState.contato.canais || [];
       document.getElementById('canais-lista-container').innerHTML = c.length === 0 ? '<p>Nenhum canal.</p>' : c.map(can => `
-        <a href="${can.link}" target="_blank" class="canal-item-card">
+        <a href="${esc(safeHref(can.link))}" target="_blank" rel="noopener" class="canal-item-card">
           <div class="canal-item-icon"><i class="fa-brands fa-whatsapp"></i></div>
-          <div class="canal-item-info"><h4>${can.nome}</h4><p>${can.descricao}</p></div>
+          <div class="canal-item-info"><h4>${esc(can.nome)}</h4><p>${esc(can.descricao)}</p></div>
           <i class="fa-solid fa-chevron-right canal-item-arrow"></i>
         </a>`).join('');
       abrirTela('canais');
@@ -815,11 +839,12 @@
     
     function mudarPlanoSimulado(plano) { appState.planoAtual = plano; salvarEstado(); abrirConfiguracao('integracoes'); }
 
-    // --- CALENDÁRIO E AGENDAMENTO ---
+    // --- AGENDA ---
     function gerarCalendarioReal() {
       const grid = document.getElementById('calendario-grid');
       if(!grid) return;
 
+      const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
       const firstDay = new Date(year, month, 1).getDay();
@@ -837,14 +862,19 @@
 
       const hoje = new Date();
       hoje.setHours(0,0,0,0);
+      const diasDisponiveis = appState.diasDisponiveis || [1,2,3,4,5,6];
 
       for (let i = 1; i <= daysInMonth; i++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
         const dataBtn = new Date(year, month, i);
-        const isPast = dataBtn < hoje;
-        const isSunday = dataBtn.getDay() === 0;
+        
+        // Admin pode ver dias passados. Cliente não.
+        const isPast = dataBtn < hoje && !isAdmin;
+        
+        // Verifica se o dia da semana está marcado como disponível
+        const isDiaIndisponivel = !diasDisponiveis.includes(dataBtn.getDay());
 
-        if (isPast || isSunday) {
+        if (isPast || isDiaIndisponivel) {
           html += `<button class="dia-btn indisponivel" disabled>${i}</button>`;
         } else {
           html += `<button class="dia-btn" onclick="selecionarDiaReal('${dateStr}', this)">${i}</button>`;
@@ -862,12 +892,17 @@
 
     function selecionarDiaReal(dataStr, btn) {
       document.querySelectorAll('.dia-btn').forEach(b => b.classList.remove('selecionado'));
-      btn.classList.add('selecionado');
+      if (btn && btn.classList) btn.classList.add('selecionado');
       diaSelecionado = dataStr;
+      
+      const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
       
       const hrContainer = document.getElementById('horarios-container');
       if(hrContainer) hrContainer.style.display = 'block';
       
+      const tituloHorarios = document.getElementById('titulo-horarios');
+      if (tituloHorarios) tituloHorarios.textContent = isAdmin ? 'Horários (Clique para ver a cliente)' : 'Horários disponíveis';
+
       const gridHorarios = document.getElementById('horarios-grid');
       const horarios = appState.horariosAgenda || estadoPadrao.horariosAgenda;
       
@@ -877,10 +912,34 @@
       }
 
       db.collection('agendamentos').where('data', '==', dataStr).get().then(snapshot => {
-        const ocupados = snapshot.docs.map(doc => doc.data().hora);
+        const agendamentosDoDia = {};
+        snapshot.docs.forEach(doc => {
+           const d = doc.data();
+           agendamentosDoDia[d.hora] = d;
+        });
+
         gridHorarios.innerHTML = horarios.map(hr => {
-          const isOcupado = ocupados.includes(hr);
-          return `<button class="horario-btn ${isOcupado ? 'indisponivel' : ''}" ${isOcupado ? 'disabled style="opacity:0.5; cursor:not-allowed; text-decoration:line-through;"' : `onclick="selecionarHorarioReal('${hr}', this)"`}>${hr}</button>`;
+          const agendamento = agendamentosDoDia[hr];
+          const isOcupado = !!agendamento;
+
+          if (isAdmin) {
+              // VISÃO DO ADMIN: Mostra Nome e Telefone
+              if (isOcupado) {
+                  return `<div class="horario-btn admin-slot ocupado">
+                      <b>${esc(hr)}</b>
+                      <span>👤 ${esc(agendamento.nome)}</span>
+                      <span>📞 ${esc(agendamento.telefone)}</span>
+                  </div>`;
+              } else {
+                  return `<div class="horario-btn admin-slot livre">
+                      <b>${esc(hr)}</b>
+                      <span style="opacity:0.7;">Livre</span>
+                  </div>`;
+              }
+          } else {
+              // VISÃO DO CLIENTE: Mostra botão para agendar
+              return `<button class="horario-btn ${isOcupado ? 'indisponivel' : ''}" ${isOcupado ? 'disabled style="opacity:0.5; cursor:not-allowed; text-decoration:line-through;"' : `onclick="selecionarHorarioReal('${esc(hr)}', this)"`}>${esc(hr)}</button>`;
+          }
         }).join('');
       }).catch(err => {
         console.error("Erro ao buscar horários:", err);
@@ -890,26 +949,44 @@
 
     function selecionarHorarioReal(hr, btn) {
       document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('selecionado'));
-      btn.classList.add('selecionado');
+      if (btn && btn.classList) btn.classList.add('selecionado');
       horarioSelecionado = hr;
-      document.getElementById('resumo-horario').textContent = `${diaSelecionado.split('-').reverse().join('/')} às ${hr}`;
+      const dataFmt = diaSelecionado.split('-').reverse().join('/');
+      document.getElementById('resumo-horario').textContent = `${dataFmt} às ${hr}`;
       document.getElementById('modal-agendar').style.display = 'flex';
     }
 
     function salvarAgendamento() {
-      const nome = document.getElementById('agenda-nome').value;
-      const tel = document.getElementById('agenda-tel').value;
+      const nome = document.getElementById('agenda-nome').value.trim();
+      const tel = document.getElementById('agenda-tel').value.trim();
       if(!nome || !tel) return alert('Preencha seu nome e WhatsApp.');
+      if(!diaSelecionado || !horarioSelecionado) return alert('Escolha um horário.');
 
-      const agendamento = { data: diaSelecionado, hora: horarioSelecionado, nome: nome, telefone: tel, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
-
-      db.collection('agendamentos').add(agendamento).then(() => {
-        alert('Agendamento realizado com sucesso!');
-        localStorage.setItem('meu_agendamento', JSON.stringify(agendamento));
-        document.getElementById('modal-agendar').style.display = 'none';
-        verificarAgendamentoCliente();
-        mostrarToast('Horário reservado!');
-      }).catch(e => alert('Erro ao agendar: ' + e.message));
+      db.collection('agendamentos')
+        .where('data', '==', diaSelecionado)
+        .where('hora', '==', horarioSelecionado)
+        .get()
+        .then(snap => {
+          if (!snap.empty) {
+            document.getElementById('modal-agendar').style.display = 'none';
+            alert('Este horário acabou de ser reservado. Por favor, escolha outro.');
+            return;
+          }
+          const agendamento = { data: diaSelecionado, hora: horarioSelecionado, nome: nome, telefone: tel, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
+          return db.collection('agendamentos').add(agendamento).then(() => {
+            alert('Agendamento realizado com sucesso!');
+            localStorage.setItem('meu_agendamento', JSON.stringify({ data: diaSelecionado, hora: horarioSelecionado }));
+            document.getElementById('modal-agendar').style.display = 'none';
+            verificarAgendamentoCliente();
+            mostrarToast('Horário reservado!');
+            // Recarrega os horários se a tela estiver aberta
+            if (diaSelecionado) {
+                const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
+                if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
+            }
+          });
+        })
+        .catch(e => alert('Erro ao agendar: ' + e.message));
     }
 
     function verificarAgendamentoCliente() {
@@ -918,24 +995,24 @@
         const clienteJaAgendou = document.getElementById('cliente-ja-agendou');
         
         if (salvo) {
-            const ag = JSON.parse(salvo);
-            if(calendarContainer) calendarContainer.style.display = 'none';
-            if(clienteJaAgendou) clienteJaAgendou.style.display = 'block';
-            const btnW = document.getElementById('btn-whats-cliente');
-            if(btnW) btnW.href = `https://wa.me/${appState.whatsapp}?text=Olá, tenho um horário marcado dia ${ag.data} às ${ag.hora}`;
-        } else {
-            if(calendarContainer) calendarContainer.style.display = 'block';
-            if(clienteJaAgendou) clienteJaAgendou.style.display = 'none';
+            let ag = null;
+            try { ag = JSON.parse(salvo); } catch(e) { ag = null; localStorage.removeItem('meu_agendamento'); }
+            if (ag && ag.data && ag.hora) {
+              if(calendarContainer) calendarContainer.style.display = 'none';
+              if(clienteJaAgendou) clienteJaAgendou.style.display = 'block';
+              const dataFmt = ag.data.split('-').reverse().join('/');
+              const btnW = document.getElementById('btn-whats-cliente');
+              if(btnW) btnW.href = `https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá, tenho um horário marcado dia ' + dataFmt + ' às ' + ag.hora)}`;
+              return;
+            }
         }
+        if(calendarContainer) calendarContainer.style.display = 'block';
+        if(clienteJaAgendou) clienteJaAgendou.style.display = 'none';
     }
 
-    // --- CARREGAMENTO DOS AGENDAMENTOS (ADMIN) ---
     function carregarAgendamentosAdmin() {
       const container = document.getElementById('lista-agendamentos-admin');
-      if (!container) {
-        console.error("Elemento #lista-agendamentos-admin não encontrado no HTML.");
-        return;
-      }
+      if (!container) return;
       
       container.innerHTML = '<p style="font-size:12px; color:#666; text-align:center;">Carregando...</p>';
       
@@ -952,12 +1029,13 @@
         ags.sort((a,b) => (a.data + a.hora).localeCompare(b.data + b.hora));
         
         container.innerHTML = ags.map(ag => {
-            const dataFmt = ag.data.split('-').reverse().join('/');
+            const dataFmt = String(ag.data || '').split('-').reverse().join('/');
+            const telClean = String(ag.telefone || '').replace(/\D/g,'');
             return `<div class="admin-agenda-card">
-                <div class="data-hora"><span>📅 ${dataFmt}</span><span>⏰ ${ag.hora}</span></div>
-                <div class="cliente-info"><i class="fa-solid fa-user"></i> ${ag.nome}</div>
-                <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${ag.telefone}</div>
-                <a href="https://wa.me/55${ag.telefone.replace(/\D/g,'')}" target="_blank" class="btn-whats-agendamento">Chamar no WhatsApp</a>
+                <div class="data-hora"><span>📅 ${esc(dataFmt)}</span><span>⏰ ${esc(ag.hora)}</span></div>
+                <div class="cliente-info"><i class="fa-solid fa-user"></i> ${esc(ag.nome)}</div>
+                <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${esc(ag.telefone)}</div>
+                <a href="https://wa.me/55${telClean}" target="_blank" rel="noopener" class="btn-whats-agendamento">Chamar no WhatsApp</a>
             </div>`;
         }).join('');
       }).catch(err => {
@@ -966,22 +1044,24 @@
       });
     }
 
-    // --- RENDERIZAÇÃO DA HOME ---
+    // --- HOME ---
     function gerarHTMLVideo(url) {
       if (!url) return '';
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      const raw = String(url).trim();
+      if (/^(javascript|vbscript):/i.test(raw)) return '';
+      if (raw.includes('youtube.com') || raw.includes('youtu.be')) {
         let vidId = '';
-        try { if (url.includes('youtu.be/')) vidId = url.split('youtu.be/')[1].split(/[?#]/)[0]; else if (url.includes('youtube.com/shorts/')) vidId = url.split('youtube.com/shorts/')[1].split(/[?#]/)[0]; else { const urlParams = new URLSearchParams(new URL(url).search); vidId = urlParams.get('v'); } } catch(e) { vidId = url.split('v=')[1] || url.split('/').pop(); if (vidId) vidId = vidId.split('&')[0]; }
+        try { if (raw.includes('youtu.be/')) vidId = raw.split('youtu.be/')[1].split(/[?#]/)[0]; else if (raw.includes('youtube.com/shorts/')) vidId = raw.split('youtube.com/shorts/')[1].split(/[?#]/)[0]; else { const urlParams = new URLSearchParams(new URL(raw).search); vidId = urlParams.get('v'); } } catch(e) { vidId = raw.split('v=')[1] || raw.split('/').pop(); if (vidId) vidId = vidId.split('&')[0]; }
         if (!vidId) return `<div style="padding:20px; text-align:center; color:#fff; background:#000;">Link inválido.</div>`;
-        return `<iframe src="https://www.youtube.com/embed/${vidId}?playsinline=1&controls=1&rel=0" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
-      } else if (url.includes('tiktok.com')) {
-        let match = url.match(/video\/(\d+)/);
-        if (match) return `<iframe src="https://www.tiktok.com/embed/v2/${match[1]}" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
-        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:#000; color:#fff; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; text-decoration:none;">Abrir no TikTok</a></div>`;
-      } else if (url.includes('kwai')) {
-        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:linear-gradient(135deg, #FF8C00, #FF4500); color:#fff; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; text-decoration:none; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:999px;">Assistir no Kwai</a></div>`;
+        return `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(vidId)}?playsinline=1&controls=1&rel=0" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
+      } else if (raw.includes('tiktok.com')) {
+        let match = raw.match(/video\/(\d+)/);
+        if (match) return `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(match[1])}" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
+        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:#000; color:#fff; border-radius:16px;"><a href="${esc(safeHref(raw))}" target="_blank" rel="noopener" style="color:#fff; text-decoration:none;">Abrir no TikTok</a></div>`;
+      } else if (raw.includes('kwai')) {
+        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:linear-gradient(135deg, #FF8C00, #FF4500); color:#fff; border-radius:16px;"><a href="${esc(safeHref(raw))}" target="_blank" rel="noopener" style="color:#fff; text-decoration:none; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:999px;">Assistir no Kwai</a></div>`;
       }
-      return `<video src="${url}" controls playsinline style="width:100%; height:100%; object-fit:cover; border-radius:16px;"></video>`;
+      return `<video src="${esc(safeHref(raw))}" controls playsinline style="width:100%; height:100%; object-fit:cover; border-radius:16px;"></video>`;
     }
 
     function renderizarHome() {
@@ -991,61 +1071,69 @@
 
       const container = document.getElementById('app-container');
       container.style.backgroundColor = appState.bgColor || '#FFF2F6';
-      container.style.backgroundImage = appState.bgImage ? `url(${appState.bgImage})` : (appState.bgGradient || 'none');
+      container.style.backgroundImage = appState.bgImage ? `url(${cssUrl(safeImgSrc(appState.bgImage))})` : (appState.bgGradient || 'none');
 
       document.getElementById('app-name').textContent = appState.appName || 'Alexandra Barros';
-      document.getElementById('app-logo').innerHTML = appState.logoImage ? `<img src="${appState.logoImage}">` : (appState.logo || 'AB');
+      document.getElementById('app-logo').innerHTML = appState.logoImage ? `<img src="${esc(safeImgSrc(appState.logoImage))}">` : esc(appState.logo || 'AB');
 
       const homeSections = document.getElementById('home-sections');
       homeSections.innerHTML = '';
 
       const safeLayout = Array.isArray(appState.layoutOrder) ? appState.layoutOrder : estadoPadrao.layoutOrder;
+      const publicidades = Array.isArray(appState.publicidades) ? appState.publicidades : [];
+      const boutiqueProdutos = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : [];
 
       safeLayout.forEach(secao => {
         let html = '';
-        if (secao === 'banner') html = `<div class="vitrine-banner-nova"><h2>${appState.vitrineName}</h2><p>MODA | BELEZA | EXPERIÊNCIAS</p></div>`;
-        else if (secao === 'publicidade' && appState.publicidades.length > 0) {
+        if (secao === 'banner') html = `<div class="vitrine-banner-nova"><h2>${esc(appState.vitrineName)}</h2><p>MODA | BELEZA | EXPERIÊNCIAS</p></div>`;
+        else if (secao === 'publicidade' && publicidades.length > 0) {
           let pubHtml = '';
-          appState.publicidades.forEach(pub => {
-            let media = pub.video ? `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>` : (pub.imagem ? `<div class="pub-media"><img src="${pub.imagem}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
-            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${pub.id})">Conhecer Parceiro</button></div></div>`;
+          publicidades.forEach(pub => {
+            let media = pub.video 
+              ? `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>` 
+              : (pub.imagem ? `<div class="pub-media"><img src="${esc(safeImgSrc(pub.imagem))}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
+            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${esc(pub.titulo)}</h4><p>${esc(pub.descricao)}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${Number(pub.id)})">Conhecer Parceiro</button></div></div>`;
           });
           html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
         }
-        else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${appState.mensagem}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
+        else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${esc(appState.mensagem)}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
         else if (secao === 'indique') html = `<div class="banner-indique" onclick="abrirTela('indique'); document.querySelector('[data-tab=indique]').click();"><div><h3>Indique e Ganhe!</h3><p>Convide amigas</p></div><i class="fa-solid fa-gift"></i></div>`;
         else if (secao === 'videos' && appState.video) { let videoHtml = gerarHTMLVideo(appState.video); html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><div style="height:220px;">${videoHtml}</div></div>`; }
         else if (secao === 'planos') {
           let planosHtml = '';
           ['essencial', 'inteligente', 'master'].forEach(id => {
-            const data = appState.planos[id]; const destaque = id === 'inteligente';
-            planosHtml += `<div class="plano-card ${destaque ? 'destaque' : ''}" onclick="abrirPlano('${id}')">${destaque ? '<span class="plano-badge">Mais vendido</span>' : ''}<span class="plano-nome">${data.titulo}</span><span class="plano-preco">R$ ${appState.precos[id]}<small>/mês</small></span><ul class="plano-features">${data.features.map(f => `<li>${f}</li>`).join('')}</ul><button class="plano-btn">Ver detalhes</button></div>`;
+            const data = appState.planos[id] || estadoPadrao.planos[id];
+            const destaque = id === 'inteligente';
+            planosHtml += `<div class="plano-card ${destaque ? 'destaque' : ''}" onclick="abrirPlano('${id}')">${destaque ? '<span class="plano-badge">Mais vendido</span>' : ''}<span class="plano-nome">${esc(data.titulo)}</span><span class="plano-preco">R$ ${esc(appState.precos[id])}<small>/mês</small></span><ul class="plano-features">${(data.features || []).map(f => `<li>${esc(f)}</li>`).join('')}</ul><button class="plano-btn">Ver detalhes</button></div>`;
           });
           html = `<div class="section-title-nova">Planos</div><div class="planos-scroll">${planosHtml}</div>`;
         }
         else if (secao === 'espacos') {
-          const bgClube = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.clubeImage}');` : `background: linear-gradient(135deg, ${appState.clubeColor} 0%, #4C0519 100%);`;
-          const bgRenova = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.renovaseImage}');` : `background: linear-gradient(135deg, ${appState.renovaseColor} 0%, #4A2300 100%);`;
-          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="pedirCodigoClube()"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
+          const bgClube = appState.clubeImage 
+            ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url(${cssUrl(safeImgSrc(appState.clubeImage))});` 
+            : `background: linear-gradient(135deg, ${esc(appState.clubeColor || '#C2185B')} 0%, #4C0519 100%);`;
+          const bgRenova = appState.renovaseImage 
+            ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url(${cssUrl(safeImgSrc(appState.renovaseImage))});` 
+            : `background: linear-gradient(135deg, ${esc(appState.renovaseColor || '#B8852E')} 0%, #4A2300 100%);`;
+          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${esc(bgClube)}" onclick="pedirCodigoClube()"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${esc(safeImgSrc(appState.clubeImage))}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${esc(appState.clubeName)}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${esc(bgRenova)}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${esc(safeImgSrc(appState.renovaseImage))}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${esc(appState.renovaseName)}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
         }
         else if (secao === 'boutique') {
-          const prods = appState.boutiqueProdutos || [];
-          let prodsHtml = prods.map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i})"><div class="product-img-box-nova">${p.imagem ? `<img src="${p.imagem}">` : '🛍️'}</div><h4>${p.nome}</h4><p class="price">R$ ${p.preco}</p></button>`).join('');
-          html = `<div class="section-title-nova">${appState.boutiqueName}</div><div class="boutique-grid-nova">${prodsHtml}</div>`;
+          let prodsHtml = boutiqueProdutos.map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i})"><div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}">` : '🛍️'}</div><h4>${esc(p.nome)}</h4><p class="price">R$ ${esc(p.preco)}</p></button>`).join('');
+          html = `<div class="section-title-nova">${esc(appState.boutiqueName)}</div><div class="boutique-grid-nova">${prodsHtml}</div>`;
         }
         else if (secao === 'contato') {
-          const c = appState.contato;
-          let redesHtml = (c.redesSociais || []).map(r => `<a href="${r.link}" target="_blank" class="rede-btn ${r.classe || 'custom'}"><i class="fa-brands ${r.icone || 'fa-link'}"></i> ${r.nome}</a>`).join('');
+          const c = appState.contato || {};
+          let redesHtml = (c.redesSociais || []).map(r => `<a href="${esc(safeHref(r.link))}" target="_blank" rel="noopener" class="rede-btn ${esc(r.classe || 'custom')}"><i class="fa-brands ${esc(r.icone || 'fa-link')}"></i> ${esc(r.nome)}</a>`).join('');
           if (c.canais?.length) redesHtml += `<button onclick="abrirTelaCanais()" class="rede-btn canal"><i class="fa-solid fa-bullhorn"></i> Canais (${c.canais.length})</button>`;
-          html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${c.endereco}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${c.horario}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${c.telefone}</div><div class="contato-redes">${redesHtml}</div></div>`;
+          html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${esc(c.endereco)}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${esc(c.horario)}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${esc(c.telefone)}</div><div class="contato-redes">${redesHtml}</div></div>`;
         }
         if (html) homeSections.innerHTML += html;
       });
     }
 
     function abrirProduto(index) {
-      const p = appState.boutiqueProdutos[index]; if (!p) return;
-      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${p.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🛍️';
+      const p = (appState.boutiqueProdutos || [])[index]; if (!p) return;
+      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" style="width:100%; height:100%; object-fit:cover;">` : '🛍️';
       document.getElementById('produto-nome').textContent = p.nome;
       document.getElementById('produto-preco').textContent = `R$ ${p.preco}`;
       document.getElementById('produto-desc').textContent = 'Produto exclusivo da nossa loja.';
@@ -1053,12 +1141,12 @@
     }
 
     function abrirDetalhesParceiro(id) {
-      const pub = appState.publicidades.find(p => p.id === id); if (!pub) return;
-      document.getElementById('parceiro-img-grande').innerHTML = pub.imagem ? `<img src="${pub.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🤝';
+      const pub = (appState.publicidades || []).find(p => p.id === id); if (!pub) return;
+      document.getElementById('parceiro-img-grande').innerHTML = pub.imagem ? `<img src="${esc(safeImgSrc(pub.imagem))}" style="width:100%; height:100%; object-fit:cover;">` : '🤝';
       document.getElementById('parceiro-nome').textContent = pub.titulo;
       document.getElementById('parceiro-desc').textContent = pub.descricao;
-      const textoFormatado = pub.sobre ? pub.sobre.replace(/\n/g, '<br>') : 'Este é um dos nossos parceiros oficiais.';
-      document.getElementById('parceiro-conteudo').innerHTML = textoFormatado;
+      const sobre = pub.sobre ? esc(pub.sobre).replace(/\n/g, '<br>') : 'Este é um dos nossos parceiros oficiais.';
+      document.getElementById('parceiro-conteudo').innerHTML = sobre;
       abrirTela('parceiro');
     }
 
@@ -1074,16 +1162,32 @@
       let html = '';
 
       if (id === 'agenda-config') {
-        titulo.textContent = 'Configurar Horários';
+        titulo.textContent = 'Configurar Agenda';
         let horarios = appState.horariosAgenda || [];
-        let listaHTML = horarios.map((hr, i) => `<div style="display:flex; justify-content:space-between; background:#f5f5f5; padding:10px; margin-bottom:5px; border-radius:6px;"><span style="font-weight:bold;">${hr}</span><button onclick="removerHorario(${i})" style="background:#ffebee; color:red; border:none; padding:4px 8px; border-radius:4px;">X</button></div>`).join('');
+        let diasDisponiveis = appState.diasDisponiveis || [1,2,3,4,5,6];
+        
+        let diasHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map((dia, i) => {
+            const checked = diasDisponiveis.includes(i) ? 'checked' : '';
+            return `<label style="font-size:12px; display:flex; align-items:center; gap:4px; background:#f5f5f5; padding:8px; border-radius:6px; cursor:pointer;">
+                <input type="checkbox" id="dia-${i}" ${checked}> ${dia}
+            </label>`;
+        }).join('');
+
+        let listaHTML = horarios.map((hr, i) => `<div style="display:flex; justify-content:space-between; background:#f5f5f5; padding:10px; margin-bottom:5px; border-radius:6px;"><span style="font-weight:bold;">${esc(hr)}</span><button onclick="removerHorario(${i})" style="background:#ffebee; color:red; border:none; padding:4px 8px; border-radius:4px;">X</button></div>`).join('');
+        
         html = `
-          <p style="font-size:11px; margin-bottom:10px;">Adicione os horários disponíveis para atendimento.</p>
+          <p style="font-size:11px; margin-bottom:10px; font-weight:700;">Dias de Atendimento:</p>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-bottom:20px;">${diasHTML}</div>
+          
+          <p style="font-size:11px; margin-bottom:10px; font-weight:700;">Adicionar Horário:</p>
           <div style="display:flex; gap:5px; margin-bottom:15px;">
              <input type="time" id="novo-horario" style="flex:1; margin:0;">
              <button onclick="adicionarHorario()" style="background:var(--cor-principal); color:#fff; border:none; padding:0 15px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
           </div>
+          
+          <p style="font-size:11px; margin-bottom:10px; font-weight:700;">Horários Atuais:</p>
           <div>${listaHTML}</div>
+          
           <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;">
              <button onclick="localStorage.removeItem('meu_agendamento'); alert('Agendamento local limpo.');" style="width:100%; padding:10px; background:#eee; color:#333; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Limpar Meu Agendamento Local (Teste)</button>
           </div>
@@ -1097,81 +1201,85 @@
           let btnClass = 'btn-conectar off', btnTxt = 'Conectar', disabled = '';
           if (integ.conectada) { btnClass = 'btn-conectar on'; btnTxt = 'Conectado'; } 
           else { let limit = appState.planoAtual === 'basico' ? 2 : (appState.planoAtual === 'intermediario' ? 5 : 99); if (conectadas >= limit) { btnClass = 'btn-conectar limit'; btnTxt = 'Limite'; disabled = 'disabled'; } }
-          return `<div class="integracoes-card"><div class="integ-left"><div class="integ-icon" style="background: ${integ.cor};"><i class="fa-solid ${integ.icone}"></i></div><div class="integ-info"><h4>${integ.nome}</h4><p>${integ.desc}</p></div></div><button class="${btnClass}" onclick="toggleIntegracao('${integ.id}')" ${disabled}>${btnTxt}</button></div>`;
+          return `<div class="integracoes-card"><div class="integ-left"><div class="integ-icon" style="background: ${esc(integ.cor)};"><i class="fa-solid ${esc(integ.icone)}"></i></div><div class="integ-info"><h4>${esc(integ.nome)}</h4><p>${esc(integ.desc)}</p></div></div><button class="${btnClass}" onclick="toggleIntegracao('${esc(integ.id)}')" ${disabled}>${esc(btnTxt)}</button></div>`;
         }).join('');
-        html = `<div style="background:#fff; border-radius:10px; padding:12px; margin-bottom:15px; border:1px solid #ddd;"><p style="font-size:12px; font-weight:700; margin-bottom:8px;">Simular Plano:</p><div style="display:flex; gap:5px;"><button onclick="mudarPlanoSimulado('basico')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'basico' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'basico' ? '#fff' : '#333'}">Básico (2)</button><button onclick="mudarPlanoSimulado('intermediario')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'intermediario' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'intermediario' ? '#fff' : '#333'}">Inter (5)</button><button onclick="mudarPlanoSimulado('master')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'master' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'master' ? '#fff' : '#333'}">Master (∞)</button></div><p style="font-size:10px; color:#666; margin-top:8px; text-align:center;">Conectadas: ${conectadas} de ${limiteTxt}</p></div>${cardsHtml}`;
+        html = `<div style="background:#fff; border-radius:10px; padding:12px; margin-bottom:15px; border:1px solid #ddd;"><p style="font-size:12px; font-weight:700; margin-bottom:8px;">Simular Plano:</p><div style="display:flex; gap:5px;"><button onclick="mudarPlanoSimulado('basico')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'basico' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'basico' ? '#fff' : '#333'}">Básico (2)</button><button onclick="mudarPlanoSimulado('intermediario')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'intermediario' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'intermediario' ? '#fff' : '#333'}">Inter (5)</button><button onclick="mudarPlanoSimulado('master')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'master' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'master' ? '#fff' : '#333'}">Master (∞)</button></div><p style="font-size:10px; color:#666; margin-top:8px; text-align:center;">Conectadas: ${conectadas} de ${esc(limiteTxt)}</p></div>${cardsHtml}`;
       }
       else if (id === 'boutique') {
         titulo.textContent = 'Gerenciar Boutique';
-        let listaHTML = appState.boutiqueProdutos.map((prod, i) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;"><div style="font-size:12px; font-weight:600;">${prod.nome}</div><div style="display:flex; gap:5px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">X</button></div></div>`).join('');
-        html = `<label style="font-size:11px; font-weight:700;">Nome da Loja</label><input type="text" id="edit-boutique-name" value="${appState.boutiqueName}"><div style="margin-top:15px; margin-bottom:15px;">${listaHTML}</div><button onclick="abrirEditorProduto(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Adicionar Produto</button>`;
+        const prods = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : [];
+        let listaHTML = prods.map((prod, i) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;"><div style="font-size:12px; font-weight:600;">${esc(prod.nome)}</div><div style="display:flex; gap:5px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">X</button></div></div>`).join('');
+        html = `<label style="font-size:11px; font-weight:700;">Nome da Loja</label><input type="text" id="edit-boutique-name" value="${esc(appState.boutiqueName)}"><div style="margin-top:15px; margin-bottom:15px;">${listaHTML}</div><button onclick="abrirEditorProduto(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Adicionar Produto</button>`;
       }
       else if (id === 'identidade') {
         titulo.textContent = 'Nome & Senha';
-        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><p style="font-size:11px;color:#777;margin-top:10px;">A senha administrativa é gerenciada pelo Firebase Authentication.</p>`;
+        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${esc(appState.appName)}"><p style="font-size:11px;color:#777;margin-top:10px;">A senha administrativa é gerenciada pelo Firebase Authentication.</p>`;
       }
       else if (id === 'cores') {
         titulo.textContent = 'Cores do App';
-        html = `<label style="font-size:11px; font-weight:700;">Cor Principal</label><input type="color" id="edit-c1" value="${appState.colorPrimary}" style="height:40px;"><label style="font-size:11px; font-weight:700;">Cor Dourada</label><input type="color" id="edit-c2" value="${appState.colorGold}" style="height:40px;">`;
+        html = `<label style="font-size:11px; font-weight:700;">Cor Principal</label><input type="color" id="edit-c1" value="${esc(appState.colorPrimary)}" style="height:40px;"><label style="font-size:11px; font-weight:700;">Cor Dourada</label><input type="color" id="edit-c2" value="${esc(appState.colorGold)}" style="height:40px;">`;
       }
       else if (id === 'logo') {
         titulo.textContent = 'Logo';
-        html = `<input type="text" id="edit-logo-text" value="${appState.logo}"><input type="file" id="edit-logo-file" accept="image/*">`;
+        html = `<input type="text" id="edit-logo-text" value="${esc(appState.logo)}"><input type="file" id="edit-logo-file" accept="image/*">`;
       }
       else if (id === 'fundo') {
         titulo.textContent = 'Plano de Fundo';
-        html = `<label>Cor Sólida</label><input type="color" id="edit-bg-color" value="${appState.bgColor}"><input type="file" id="edit-bg-file" accept="image/*">`;
+        html = `<label>Cor Sólida</label><input type="color" id="edit-bg-color" value="${esc(appState.bgColor)}"><input type="file" id="edit-bg-file" accept="image/*">`;
       }
       else if (id === 'tela-inicial') {
         titulo.textContent = 'Clube e Renova-se';
-        html = `<h4 style="font-size:12px; color:#9D174D;">🌸 Clube</h4><input type="text" id="edit-clube-name" value="${appState.clubeName}"><input type="file" id="edit-clube-img" accept="image/*"><h4 style="font-size:12px; color:#9D174D; margin-top:10px;">✨ Renova-se</h4><input type="text" id="edit-renovase-name" value="${appState.renovaseName}"><input type="file" id="edit-renovase-img" accept="image/*">`;
+        html = `<h4 style="font-size:12px; color:#9D174D;">🌸 Clube</h4><input type="text" id="edit-clube-name" value="${esc(appState.clubeName)}"><input type="file" id="edit-clube-img" accept="image/*"><h4 style="font-size:12px; color:#9D174D; margin-top:10px;">✨ Renova-se</h4><input type="text" id="edit-renovase-name" value="${esc(appState.renovaseName)}"><input type="file" id="edit-renovase-img" accept="image/*">`;
       }
       else if (id === 'contato') {
         titulo.textContent = 'Redes & Contato';
-        const c = appState.contato;
-        let redesForm = c.redesSociais.map(r => `<div class="config-item-row"><input type="text" class="rede-nome" value="${r.nome}"><input type="url" class="rede-link" value="${r.link}"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join('');
-        let canaisForm = c.canais.map(can => `<div class="config-item-row" style="flex-direction:column; background:#f9f9f9; padding:8px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><span style="font-size:11px; font-weight:700;">Canal</span><button type="button" class="btn-del" onclick="this.closest('.config-item-row').remove()">X</button></div><input type="text" class="canal-nome" value="${can.nome}"><input type="url" class="canal-link" value="${can.link}"><input type="text" class="canal-desc" value="${can.descricao || ''}"></div>`).join('');
-        html = `<input type="text" id="edit-endereco" value="${c.endereco}" placeholder="Endereço"><input type="text" id="edit-horario" value="${c.horario}" placeholder="Horário"><input type="text" id="edit-telefone" value="${c.telefone}" placeholder="Telefone"><h4 style="font-size:12px; color:#9D174D; margin-top:10px;">Redes</h4><div id="redes-container">${redesForm}</div><button type="button" class="btn-add-item" onclick="addRedeConfig()">+ Rede</button><h4 style="font-size:12px; color:#9D174D;">Canais</h4><div id="canais-config-container">${canaisForm}</div><button type="button" class="btn-add-item" onclick="addCanalConfig()">+ Canal</button>`;
+        const c = appState.contato || {};
+        const redes = Array.isArray(c.redesSociais) ? c.redesSociais : [];
+        const canais = Array.isArray(c.canais) ? c.canais : [];
+        let redesForm = redes.map(r => `<div class="config-item-row"><input type="text" class="rede-nome" value="${esc(r.nome)}"><input type="url" class="rede-link" value="${esc(r.link)}"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join('');
+        let canaisForm = canais.map(can => `<div class="config-item-row" style="flex-direction:column; background:#f9f9f9; padding:8px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><span style="font-size:11px; font-weight:700;">Canal</span><button type="button" class="btn-del" onclick="this.closest('.config-item-row').remove()">X</button></div><input type="text" class="canal-nome" value="${esc(can.nome)}"><input type="url" class="canal-link" value="${esc(can.link)}"><input type="text" class="canal-desc" value="${esc(can.descricao || '')}"></div>`).join('');
+        html = `<input type="text" id="edit-endereco" value="${esc(c.endereco || '')}" placeholder="Endereço"><input type="text" id="edit-horario" value="${esc(c.horario || '')}" placeholder="Horário"><input type="text" id="edit-telefone" value="${esc(c.telefone || '')}" placeholder="Telefone"><h4 style="font-size:12px; color:#9D174D; margin-top:10px;">Redes</h4><div id="redes-container">${redesForm}</div><button type="button" class="btn-add-item" onclick="addRedeConfig()">+ Rede</button><h4 style="font-size:12px; color:#9D174D;">Canais</h4><div id="canais-config-container">${canaisForm}</div><button type="button" class="btn-add-item" onclick="addCanalConfig()">+ Canal</button>`;
       }
       else if (id === 'ia') {
         titulo.textContent = 'Assistente IA';
-        html = `<label style="font-size:11px; font-weight:700;">Nome da IA</label><input type="text" id="edit-ia-name" value="${appState.iaName}"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Chave OpenAI (Opcional)</label><input type="text" id="edit-ia-key" value="${appState.iaApiKey || ''}" placeholder="sk-..."><p style="font-size:10px; color:#666; margin-top:5px;">Se deixar em branco, a IA usará respostas pré-programadas.</p>`;
+        html = `<label style="font-size:11px; font-weight:700;">Nome da IA</label><input type="text" id="edit-ia-name" value="${esc(appState.iaName)}"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Chave OpenAI (Opcional)</label><input type="text" id="edit-ia-key" value="${esc(appState.iaApiKey || '')}" placeholder="sk-..."><p style="font-size:10px; color:#666; margin-top:5px;">Se deixar em branco, a IA usará respostas pré-programadas.</p>`;
       }
       else if (id === 'publicidade') {
         titulo.textContent = 'Gerenciar Publicidades';
-        let listaHTML = appState.publicidades.map((pub, i) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between;"><div style="font-size:12px; font-weight:600;">${pub.titulo}</div><div style="display:flex; gap:5px;"><button onclick="abrirEditorPublicidade(${i})" style="background:#9D174D; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">Editar</button><button onclick="removerPublicidade(${i})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">X</button></div></div>`).join('');
-        html = `<div style="margin-bottom:15px;">${listaHTML}</div>${appState.publicidades.length < 5 ? `<button onclick="abrirEditorPublicidade(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Nova Publicidade</button>` : '<p style="color:red; font-size:11px;">Limite atingido.</p>'}`;
+        const pubs = Array.isArray(appState.publicidades) ? appState.publicidades : [];
+        let listaHTML = pubs.map((pub, i) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between;"><div style="font-size:12px; font-weight:600;">${esc(pub.titulo)}</div><div style="display:flex; gap:5px;"><button onclick="abrirEditorPublicidade(${i})" style="background:#9D174D; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">Editar</button><button onclick="removerPublicidade(${i})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">X</button></div></div>`).join('');
+        html = `<div style="margin-bottom:15px;">${listaHTML}</div>${pubs.length < 5 ? `<button onclick="abrirEditorPublicidade(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Nova Publicidade</button>` : '<p style="color:red; font-size:11px;">Limite atingido.</p>'}`;
       }
       else if (id === 'layout') {
         titulo.textContent = 'Organizar Tela';
         let listaHTML = appState.layoutOrder.map((secao, index) => {
           const nomes = { banner: 'Banner', publicidade: 'Publicidade', cta: 'Cadastro', indique: 'Indique', videos: 'Vídeo', planos: 'Planos', espacos: 'Espaços', contato: 'Contato', boutique: 'Boutique' };
-          return `<div style="display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px; border-radius:6px; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">${nomes[secao]}</span><div><button onclick="moverSecao(${index}, -1)" style="background:#fff; border:1px solid #ccc; border-radius:4px; padding:2px 8px;">↑</button><button onclick="moverSecao(${index}, 1)" style="background:#fff; border:1px solid #ccc; border-radius:4px; padding:2px 8px;">↓</button></div></div>`;
+          return `<div style="display:flex; justify-content:space-between; align-items:center; background:#f5f5f5; padding:8px; border-radius:6px; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">${esc(nomes[secao] || secao)}</span><div><button onclick="moverSecao(${index}, -1)" style="background:#fff; border:1px solid #ccc; border-radius:4px; padding:2px 8px;">↑</button><button onclick="moverSecao(${index}, 1)" style="background:#fff; border:1px solid #ccc; border-radius:4px; padding:2px 8px;">↓</button></div></div>`;
         }).join('');
         html = `<p style="font-size:11px; margin-bottom:10px;">Use as setas para mudar a ordem:</p>${listaHTML}`;
       }
       else if (id === 'videos') {
         titulo.textContent = 'Configuração de Vídeos';
-        html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${appState.video || ''}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
+        html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${esc(appState.video || '')}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
       }
       else if (id === 'equipe') {
         titulo.textContent = 'Gerenciar Equipe';
-        let listaHTML = appState.equipe.map((emp) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><strong>${emp.nome} (${emp.cargo})</strong><button onclick="removerMembro(${emp.id})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Cessar</button></div><div style="font-size:11px; color:#666; margin-bottom:8px;">Senha: <b>${emp.senha}</b></div><button onclick="editarPermissoesMembro(${emp.id})" style="background:#9D174D; color:#fff; border:none; padding:6px; border-radius:4px; font-size:11px; width:100%; cursor:pointer;">Configurar Acessos</button></div>`).join('');
+        let listaHTML = (appState.equipe || []).map((emp) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><strong>${esc(emp.nome)} (${esc(emp.cargo)})</strong><button onclick="removerMembro(${Number(emp.id)})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Cessar</button></div><div style="font-size:11px; color:#666; margin-bottom:8px;">Senha: <b>${esc(emp.senha)}</b></div><button onclick="editarPermissoesMembro(${Number(emp.id)})" style="background:#9D174D; color:#fff; border:none; padding:6px; border-radius:4px; font-size:11px; width:100%; cursor:pointer;">Configurar Acessos</button></div>`).join('');
         html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Supervisor</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
       }
       else if (id === 'clube') {
         titulo.textContent = 'Planos e Preços';
         let htmlPlanos = '';
         ['essencial', 'inteligente', 'master'].forEach(tipo => {
-            const p = appState.planos[tipo];
-            let featuresHtml = p.features.map(f => `<div class="config-item-row feat-row" style="margin-bottom:4px;"><input type="text" class="feat-input" value="${f}" style="padding:6px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join('');
-            htmlPlanos += `<div class="config-plan-box" style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;"><h4 style="text-transform:uppercase; font-size:12px; margin-bottom:10px; color:var(--cor-principal); border-bottom:1px solid #ccc; padding-bottom:5px;">Plano ${p.titulo}</h4><label style="font-size:11px; font-weight:700;">Preço (R$)</label><input type="number" id="preco-${tipo}" value="${appState.precos[tipo]}" style="margin-bottom:5px; padding:6px;"><label style="font-size:11px; font-weight:700;">Subtítulo</label><input type="text" id="sub-${tipo}" value="${p.subtitulo}" style="margin-bottom:5px; padding:6px;"><label style="font-size:11px; font-weight:700; display:block; margin-top:10px; margin-bottom:5px;">Itens inclusos:</label><div id="features-${tipo}" style="margin-bottom:8px;">${featuresHtml}</div><button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')" style="padding:6px; font-size:11px; margin-bottom:0;">+ Adicionar Item</button></div>`;
+            const p = appState.planos[tipo] || estadoPadrao.planos[tipo];
+            let featuresHtml = (p.features || []).map(f => `<div class="config-item-row feat-row" style="margin-bottom:4px;"><input type="text" class="feat-input" value="${esc(f)}" style="padding:6px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join('');
+            htmlPlanos += `<div class="config-plan-box" style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;"><h4 style="text-transform:uppercase; font-size:12px; margin-bottom:10px; color:var(--cor-principal); border-bottom:1px solid #ccc; padding-bottom:5px;">Plano ${esc(p.titulo)}</h4><label style="font-size:11px; font-weight:700;">Preço (R$)</label><input type="number" id="preco-${tipo}" value="${esc(appState.precos[tipo])}" style="margin-bottom:5px; padding:6px;"><label style="font-size:11px; font-weight:700;">Subtítulo</label><input type="text" id="sub-${tipo}" value="${esc(p.subtitulo)}" style="margin-bottom:5px; padding:6px;"><label style="font-size:11px; font-weight:700; display:block; margin-top:10px; margin-bottom:5px;">Itens inclusos:</label><div id="features-${tipo}" style="margin-bottom:8px;">${featuresHtml}</div><button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')" style="padding:6px; font-size:11px; margin-bottom:0;">+ Adicionar Item</button></div>`;
         });
         html = htmlPlanos;
       }
       else if (id === 'links') {
         titulo.textContent = 'Links dos Ambientes';
-        html = `<label style="font-size:11px; font-weight:700;">Link do Clube (Opcional)</label><input type="url" id="edit-link-clube" value="${appState.clubeLink || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Link do Renova-se (Opcional)</label><input type="url" id="edit-link-renovase" value="${appState.renovaseLink || ''}" placeholder="https://...">`;
+        html = `<label style="font-size:11px; font-weight:700;">Link do Clube (Opcional)</label><input type="url" id="edit-link-clube" value="${esc(appState.clubeLink || '')}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Link do Renova-se (Opcional)</label><input type="url" id="edit-link-renovase" value="${esc(appState.renovaseLink || '')}" placeholder="https://...">`;
       }
       else if (id === 'vip') {
         titulo.textContent = 'Gerenciar Clube VIP';
@@ -1183,8 +1291,13 @@
           let htmlClientes = '';
           querySnapshot.forEach((doc) => {
             const cliente = doc.data(); const idCliente = doc.id; const temAcesso = cliente.codigoAcesso ? true : false;
-            const btnAcao = temAcesso ? `<button disabled style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700; width:100%;">✅ Liberado</button><p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${cliente.codigoAcesso}</b></p>` : `<button onclick="liberarAcessoVIP('${idCliente}', '${cliente.nome}', '${cliente.telefone}')" style="background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; width:100%; cursor:pointer;">Liberar Acesso</button>`;
-            htmlClientes += `<div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;"><div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;"><div><strong style="font-size:13px; color:var(--cor-principal);">${cliente.nome}</strong><br><span style="font-size:11px; color:#666;">${cliente.telefone}</span><br><span style="font-size:10px; color:#999;">${cliente.email}</span></div></div>${btnAcao}</div>`;
+            const nomeEsc = esc(JSON.stringify(cliente.nome || ''));
+            const telEsc = esc(JSON.stringify(cliente.telefone || ''));
+            const idEsc = esc(JSON.stringify(idCliente));
+            const btnAcao = temAcesso 
+              ? `<button disabled style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700; width:100%;">✅ Liberado</button><p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${esc(cliente.codigoAcesso)}</b></p>` 
+              : `<button onclick="liberarAcessoVIP(${idEsc}, ${nomeEsc}, ${telEsc})" style="background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; width:100%; cursor:pointer;">Liberar Acesso</button>`;
+            htmlClientes += `<div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;"><div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;"><div><strong style="font-size:13px; color:var(--cor-principal);">${esc(cliente.nome)}</strong><br><span style="font-size:11px; color:#666;">${esc(cliente.telefone)}</span><br><span style="font-size:10px; color:#999;">${esc(cliente.email)}</span></div></div>${btnAcao}</div>`;
           });
           document.getElementById('lista-clientes-vip').innerHTML = htmlClientes;
         }).catch((error) => { console.error("Erro ao buscar clientes: ", error); document.getElementById('lista-clientes-vip').innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar clientes.</p>'; });
@@ -1194,7 +1307,7 @@
       
       document.getElementById('modal-editor').style.display = 'flex';
       
-      if (id === 'integracoes' || id === 'vip' || id === 'agenda-config') {
+      if (id === 'integracoes' || id === 'vip') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1232,7 +1345,7 @@
       indexPubEditando = index; configAtualAberta = 'publicidade-edit';
       const pub = index === -1 ? { titulo: '', descricao: '', sobre: '', imagem: null, video: null } : appState.publicidades[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Nova Publicidade' : 'Editar Publicidade';
-      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título (Nome do Parceiro)</label><input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Loja da Maria"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><input type="text" id="pub-descricao" value="${pub.descricao || ''}" placeholder="Ex: Moda Feminina e Acessórios"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Sobre a Parceria</label><textarea id="pub-sobre" rows="4" placeholder="Escreva os detalhes...">${pub.sobre || ''}</textarea><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Imagem (Máx 10MB)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Link do Vídeo (YouTube, TikTok, Kwai)</label><input type="url" id="pub-video-link" value="${pub.video || ''}" placeholder="https://..."></div>`;
+      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título (Nome do Parceiro)</label><input type="text" id="pub-titulo" value="${esc(pub.titulo || '')}" placeholder="Ex: Loja da Maria"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><input type="text" id="pub-descricao" value="${esc(pub.descricao || '')}" placeholder="Ex: Moda Feminina e Acessórios"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Sobre a Parceria</label><textarea id="pub-sobre" rows="4" placeholder="Escreva os detalhes...">${esc(pub.sobre || '')}</textarea><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Imagem (Máx 10MB)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Link do Vídeo (YouTube, TikTok, Kwai)</label><input type="url" id="pub-video-link" value="${esc(pub.video || '')}" placeholder="https://..."></div>`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Publicidade';
@@ -1259,7 +1372,7 @@
       indexProdEditando = index; configAtualAberta = 'boutique-edit';
       const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar Produto';
-      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto (Máx 10MB)</label><input type="file" id="prod-imagem" accept="image/*">`;
+      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${esc(prod.nome || '')}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${esc(prod.preco || '')}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto (Máx 10MB)</label><input type="file" id="prod-imagem" accept="image/*">`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Produto';
@@ -1292,8 +1405,8 @@
     function editarPermissoesMembro(id) {
       const emp = appState.equipe.find(e => e.id === id); if (!emp) return;
       document.getElementById('editor-titulo').textContent = `Acessos de ${emp.nome}`;
-      let checkboxes = todasPermissoes.map(p => `<label style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px; background:#f5f5f5; padding:6px; border-radius:6px;"><input type="checkbox" id="perm-${p.id}" ${emp.perms.includes(p.id) ? 'checked' : ''}>${p.nome}</label>`).join('');
-      document.getElementById('editor-content').innerHTML = `<div style="max-height: 300px; overflow-y: auto; margin-bottom:15px;">${checkboxes}</div><button onclick="salvarPermissoesMembro(${id})" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700; margin-bottom:8px;">Salvar Permissões</button><button onclick="abrirConfiguracao('equipe')" style="width:100%; padding:10px; background:#ccc; color:#333; border:none; border-radius:6px; font-weight:700;">Voltar</button>`;
+      let checkboxes = todasPermissoes.map(p => `<label style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px; background:#f5f5f5; padding:6px; border-radius:6px;"><input type="checkbox" id="perm-${p.id}" ${emp.perms.includes(p.id) ? 'checked' : ''}>${esc(p.nome)}</label>`).join('');
+      document.getElementById('editor-content').innerHTML = `<div style="max-height: 300px; overflow-y: auto; margin-bottom:15px;">${checkboxes}</div><button onclick="salvarPermissoesMembro(${Number(id)})" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700; margin-bottom:8px;">Salvar Permissões</button><button onclick="abrirConfiguracao('equipe')" style="width:100%; padding:10px; background:#ccc; color:#333; border:none; border-radius:6px; font-weight:700;">Voltar</button>`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'none';
       document.getElementById('btn-voltar-editor').textContent = '↩ Fechar'; document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1354,6 +1467,15 @@
       else if (id === 'videos') {
         appState.video = document.getElementById('edit-video-link').value;
         salvarEstado(); renderizarHome();
+      }
+      else if (id === 'agenda-config') {
+        appState.diasDisponiveis = [];
+        for(let i=0; i<=6; i++) {
+            const cb = document.getElementById(`dia-${i}`);
+            if (cb && cb.checked) appState.diasDisponiveis.push(i);
+        }
+        salvarEstado();
+        atualizarViewAgenda();
       }
       fecharEditor();
     }
@@ -1423,6 +1545,7 @@
       aplicarRestricoes(); 
       gerarCalendarioReal();
       carregarEstado();
+      inicializacaoIndicacao();
     });
   </script>
 
