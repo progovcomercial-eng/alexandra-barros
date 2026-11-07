@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#9D174D">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AleClub">
+  <meta name="apple-mobile-web-app-title" content="Alexandra Barros">
   <link rel="apple-touch-icon" href="logo_login.png">
 
   <title>Alexandra Barros - App Oficial</title>
@@ -31,12 +31,12 @@
     body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; }
     .app-container { width: 100%; max-width: 450px; background-color: var(--cor-fundo); min-height: 100vh; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); transition: background 0.3s; background-size: cover; background-position: center; }
     .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-    .debug-switcher { background: #222; color: #fff; padding: 10px; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around; border-bottom: 2px solid var(--cor-principal); z-index: 100; }
-    .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
+    
     .app-header { background-color: var(--cor-principal); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
     .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
     .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
-    .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
+    .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; font-weight: 700; text-align: left; }
+
     .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
     .vitrine-banner-nova { background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
@@ -124,10 +124,7 @@
     
     .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
     
-    /* CORES VIVAS E ACESSÍVEIS */
     .horario-btn { border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; transition: all 0.2s; }
-    .horario-btn.livre-cliente { background: #E0F7FA; border: 1px solid #00BCD4; color: #006064; cursor: pointer; }
-    .horario-btn.ocupado-cliente { background: #880E4F; border: 1px solid #4A148C; color: #FFFFFF; text-decoration: line-through; opacity: 0.8; cursor: not-allowed; }
     
     .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 85px; font-weight: 400; font-size: 11px; border-radius: 8px; }
     .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; font-weight: 700; }
@@ -149,6 +146,11 @@
     .btn-remarcar:hover { background: #e0e0e0; }
     .btn-cancelar { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; margin-left: 5px; }
     .btn-cancelar:hover { background: #ffcdd2; }
+
+    /* ESTILO DO MURAL DA AGENDA (VISÃO CLIENTE) */
+    .mural-box { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; border-left: 5px solid var(--cor-principal); text-align: center; }
+    .mural-box h3 { font-family: 'Playfair Display', serif; color: var(--cor-principal); font-size: 20px; margin-bottom: 12px; }
+    .mural-texto { font-size: 14px; line-height: 1.6; color: var(--cor-texto-escuro); margin-bottom: 20px; white-space: pre-wrap; }
 
     .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .indique-box i { font-size: 48px; color: var(--cor-dourada); margin-bottom: 16px; }
@@ -207,10 +209,12 @@
     .btn-conectar.on { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .btn-conectar.off { background: var(--cor-principal); color: #fff; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
+    
     .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
     .nav-item.active { color: var(--cor-principal); }
     .nav-item i { font-size: 18px; }
+
     .pagina-hero { border-radius: 22px; padding: 26px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); }
     .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
     .pagina-titulo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--cor-dourada); margin-bottom: 6px; }
@@ -226,18 +230,6 @@
 <body>
 
   <div class="app-container" id="app-container">
-
-    <div class="debug-switcher">
-      <div>
-        Simular Acesso:
-        <select id="role-select" onchange="aplicarRestricoes()">
-          <option value="dona" selected>Dona (Comando Geral)</option>
-          <option value="gerente">Gerente (Maria)</option>
-          <option value="supervisor">Recepcionista (João)</option>
-          <option value="cliente">Cliente (Sem acesso)</option>
-        </select>
-      </div>
-    </div>
 
     <div class="app-header">
       <div class="avatar-ab" id="app-logo">AB</div>
@@ -261,7 +253,20 @@
       <!-- TELA DE AGENDA -->
       <div id="tela-agenda" class="tela">
         
-        <div id="calendario-container">
+        <!-- VISÃO DO CLIENTE: MURAL DE AVISOS -->
+        <div id="agenda-cliente-mural" style="display:none;">
+          <div class="section-title-nova" style="margin-top:0;">Mural de Avisos</div>
+          <div class="mural-box">
+            <h3>Fique por dentro!</h3>
+            <div class="mural-texto" id="texto-mural-cliente">Carregando avisos...</div>
+            <button onclick="window.open('https://wa.me/5511997450293?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio.', '_blank')" class="btn-cta-grande" style="background:#00BB2D; margin-bottom:0;">
+              <i class="fa-brands fa-whatsapp"></i> Agendar pelo WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <!-- VISÃO DO ADMIN: CALENDÁRIO -->
+        <div id="calendario-container" style="display:none;">
           <div class="section-title-nova" style="margin-top:0;">Agenda de Atendimentos</div>
           
           <div class="calendario-header">
@@ -277,20 +282,7 @@
           </div>
         </div>
 
-        <!-- VISÃO DO CLIENTE: JÁ AGENDOU -->
-        <div id="cliente-ja-agendou" style="display:none; background:#fff; padding:20px; border-radius:12px; text-align:center; border:1px solid #ddd; margin-top:20px;">
-          <i class="fa-solid fa-calendar-check" style="font-size:40px; color:var(--cor-principal); margin-bottom:10px;"></i>
-          <h3 style="color:var(--cor-principal); margin-bottom:5px;">Você já tem um horário!</h3>
-          <p style="font-size:12px; color:#666; margin-bottom:15px;">Seu agendamento foi registrado. Aguarde o contato da nossa equipe.</p>
-          <a id="btn-whats-cliente" href="#" target="_blank" class="btn-cta-grande" style="background:#00BB2D; text-decoration:none;">Falar no WhatsApp</a>
-          
-          <div style="display:flex; gap: 8px; margin-top: 8px;">
-            <button onclick="solicitarRemarcacaoCliente()" class="btn-undo" style="margin-top: 0; flex: 1;">Remarcar</button>
-            <button onclick="cancelarAgendamentoCliente()" class="btn-undo" style="margin-top: 0; flex: 1; background: #ffebee; color: #c62828; border-color: #ffcdd2;">Cancelar</button>
-          </div>
-        </div>
-
-        <!-- VISÃO DA EQUIPE: LISTA EXTRA -->
+        <!-- VISÃO DO ADMIN: LISTA EXTRA -->
         <div id="agenda-admin" style="display:none; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
           <div class="section-title-nova" style="margin-top:0;">Próximos Agendamentos (Lista)</div>
           <div id="lista-agendamentos-admin"></div>
@@ -349,30 +341,31 @@
         <button class="btn-cta-grande" onclick="voltarInicio()"><i class="fa-solid fa-check"></i> Entendi</button>
       </div>
 
+      <!-- TELA DE PERFIL (MOSTRA PARA TODOS, MAS BLOQUEIA SE NÃO FOR ADMIN) -->
       <div id="tela-perfil" class="tela">
         <div class="perfil-hero">
           <div class="perfil-avatar" id="perfil-avatar">AB</div>
-          <div class="perfil-nome" id="perfil-nome">Alexandra Barros</div>
-          <div class="perfil-cargo" id="perfil-cargo">Proprietária</div>
+          <div class="perfil-nome" id="perfil-nome">Acesso Restrito</div>
+          <div class="perfil-cargo" id="perfil-cargo">Área Administrativa</div>
         </div>
 
         <div id="acesso-configuracoes-master">
-          <div class="section-title-nova">Configurações</div>
-          <div class="painel-master-box">
-            <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
-            
-            <div id="area-login-admin">
-              <p style="font-size:12px;text-align:center;margin-bottom:10px;">Acesso exclusivo da administração.</p>
-              <input type="email" id="admin-email" autocomplete="username" value="progovcomercial@gmail.com" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:8px;">
-              <input type="password" id="admin-password" autocomplete="current-password" placeholder="Senha cadastrada no Firebase" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
-              <button id="btn-admin-login" onclick="verificarSenhaAdmin()" style="width:100%;padding:10px;background:var(--cor-principal);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;">Entrar como administradora</button>
-              <p id="admin-auth-status" role="status" style="font-size:11px;margin-top:9px;text-align:center;color:#777;">Entre com a conta autorizada.</p>
-            </div>
-            <div id="admin-logado" style="display:none;text-align:center;margin-bottom:12px;">
-              <p id="admin-identidade" style="font-size:12px;margin-bottom:8px;"></p>
-              <button onclick="sairAdmin()" style="padding:8px 14px;border:1px solid var(--cor-principal);background:#fff;color:var(--cor-principal);border-radius:8px;font-weight:700;">Sair da administração</button>
-            </div>
-            <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
+          <div class="section-title-nova" id="titulo-painel-master">Painel Master</div>
+          
+          <div class="painel-master-box" id="box-login-admin">
+            <p style="font-size:13px; text-align:center; margin-bottom:15px; color:#666;">Faça login para acessar as configurações e a agenda completa.</p>
+            <input type="email" id="admin-email" placeholder="E-mail de acesso" style="width:100%;padding:12px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
+            <input type="password" id="admin-password" placeholder="Sua senha" style="width:100%;padding:12px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
+            <button id="btn-admin-login" onclick="verificarSenhaAdmin()" style="width:100%;padding:12px;background:var(--cor-principal);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;">Entrar como Administrador</button>
+            <p id="admin-auth-status" role="status" style="font-size:11px;margin-top:9px;text-align:center;color:#777;"></p>
+          </div>
+
+          <div id="admin-logado" style="display:none;">
+             <div style="text-align:center; margin-bottom:16px;">
+                <p style="font-size:13px; font-weight:600; margin-bottom:8px;">Conectado como: <span id="admin-identidade" style="color:var(--cor-principal);"></span></p>
+                <button onclick="sairAdmin()" style="padding:8px 14px;border:1px solid var(--cor-principal);background:#fff;color:var(--cor-principal);border-radius:8px;font-weight:700;">Sair do Painel</button>
+             </div>
+             <div class="master-grid" id="master-grid-botoes"></div>
           </div>
         </div>
       </div>
@@ -429,14 +422,14 @@
       </div>
     </div>
 
-    <!-- MODAL AGENDAMENTO -->
+    <!-- MODAL AGENDAMENTO (ADMIN) -->
     <div id="modal-agendar" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
-        <h3 id="modal-agendar-titulo">Confirmar Agendamento</h3>
+        <h3 id="modal-agendar-titulo">Novo Agendamento</h3>
         <p style="font-size:12px; text-align:center; margin-bottom:15px; color:#666;">Dia: <b id="resumo-dia" style="color:var(--cor-principal);"></b></p>
         
-        <div id="div-horario-admin" style="display:none; background:#f0f0f0; padding:10px; border-radius:8px; margin-bottom:10px;">
-          <label style="font-size:11px; font-weight:700; display:block; margin-bottom:5px;">Horário do Atendimento (Admin):</label>
+        <div id="div-horario-admin" style="background:#f0f0f0; padding:10px; border-radius:8px; margin-bottom:10px;">
+          <label style="font-size:11px; font-weight:700; display:block; margin-bottom:5px;">Horário do Atendimento:</label>
           <div style="display:flex; gap:10px; align-items:center;">
             <input type="time" id="agenda-hora-inicio" style="flex:1;">
             <span style="font-size:12px; font-weight:bold;">até</span>
@@ -444,13 +437,11 @@
           </div>
         </div>
 
-        <p id="resumo-horario-cliente" style="font-size:12px; text-align:center; margin-bottom:15px; color:#666; display:none;">Horário: <b id="resumo-horario" style="color:var(--cor-principal);"></b></p>
-
         <input type="text" id="agenda-nome" placeholder="Nome do Cliente" required>
         <input type="tel" id="agenda-tel" placeholder="WhatsApp do Cliente (com DDD)" required>
         <input type="text" id="agenda-servico" placeholder="O que será feito? (Ex: Unha, Cílios)" required>
         
-        <button class="btn-enviar-cadastro" onclick="salvarAgendamento()" id="btn-salvar-agendamento">Confirmar Reserva</button>
+        <button class="btn-enviar-cadastro" onclick="salvarAgendamento()" id="btn-salvar-agendamento">Agendar</button>
         <button class="btn-undo" onclick="fecharModalAgendar()">Cancelar</button>
       </div>
     </div>
@@ -511,12 +502,13 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
-    const EMAIL_ADMIN_AUTORIZADO = 'progovcomercial@gmail.com';
+    
     let adminAutenticado = false;
     let usuarioAutenticado = null;
+    let modoAdminAtivo = false;
 
     const manifest = {
-      name: "AleClube App", short_name: "AleClube", start_url: ".", display: "standalone",
+      name: "Alexandra Barros", short_name: "AleClub", start_url: ".", display: "standalone",
       background_color: "#FFF2F6", theme_color: "#9D174D",
       icons: [
         { src: "logo_login.png", sizes: "192x192", type: "image/png", purpose: "any" },
@@ -538,7 +530,8 @@
       { id: 'equipe', nome: 'Equipe' }, { id: 'links', nome: 'Links' },
       { id: 'contato', nome: 'Redes & Contato' }, { id: 'ia', nome: 'Assistente IA' },
       { id: 'clube', nome: 'Planos e Preços' }, { id: 'vip', nome: 'Gerenciar Clube VIP' },
-      { id: 'agenda-config', nome: 'Configurar Agenda' }
+      { id: 'agenda-config', nome: 'Configurar Agenda' }, { id: 'mural', nome: 'Mural da Agenda' },
+      { id: 'link-envio', nome: 'Enviar Link' }
     ];
 
     const estadoPadrao = {
@@ -569,7 +562,8 @@
       agendaFim: '18:00',
       agendaIntervalo: '30',
       horariosAgenda: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'],
-      diasDisponiveis: [1, 2, 3, 4, 5, 6] // 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sáb
+      diasDisponiveis: [1, 2, 3, 4, 5, 6],
+      muralAgenda: 'Bem-vinda ao nosso espaço de agendamentos!\n\nPara agendar seu horário, por favor, chame nossa equipe no WhatsApp. Atendemos de segunda a sábado, das 09h às 18h.\n\nAgradecemos a preferência! 🌸'
     };
 
     let appState = JSON.parse(JSON.stringify(estadoPadrao));
@@ -581,11 +575,45 @@
     let currentDate = new Date();
     let diaSelecionado = null;
     let horarioSelecionado = null;
-    let ultimoRoleAplicado = null;
 
-    // VARIÁVEIS PARA REMARCAÇÃO
     let idAgendamentoRemarcando = null;
     let dadosRemarcando = null;
+
+    // --- VERIFICAÇÃO DE LOGIN ---
+    auth.onAuthStateChanged((user) => {
+        usuarioAutenticado = user;
+        adminAutenticado = !!user;
+        modoAdminAtivo = !!user;
+
+        const boxLogin = document.getElementById('box-login-admin');
+        const boxLogado = document.getElementById('admin-logado');
+        const identidade = document.getElementById('admin-identidade');
+        
+        if (user) {
+            document.getElementById('app-name').innerHTML = 'Painel Admin';
+            document.getElementById('admin-email').value = user.email;
+            if(identidade) identidade.textContent = user.email;
+            if(boxLogin) boxLogin.style.display = 'none';
+            if(boxLogado) boxLogado.style.display = 'block';
+            aplicarRestricoes();
+            atualizarViewAgenda();
+        } else {
+            modoAdminAtivo = false;
+            const nomeCliente = localStorage.getItem('clienteNome');
+            if (nomeCliente) {
+                document.getElementById('app-name').innerHTML = `Olá, ${esc(nomeCliente.split(' ')[0])}`;
+            } else {
+                document.getElementById('app-name').innerHTML = appState.appName || 'Alexandra Barros';
+            }
+            if(boxLogin) boxLogin.style.display = 'block';
+            if(boxLogado) boxLogado.style.display = 'none';
+            document.getElementById('admin-password').value = '';
+            document.getElementById('admin-auth-status').textContent = '';
+            aplicarRestricoes();
+            atualizarViewAgenda();
+        }
+        carregarEstado();
+    });
 
     // --- FERRAMENTAS DE HORÁRIO ---
     function gerarArrayHorarios(inicio, fim, intervalo) {
@@ -612,8 +640,13 @@
         return `${hF}:${mF}`;
     }
 
-    // --- FIREBASE ---
-    function atualizarInterfaceEstado() { renderizarHome(); aplicarRestricoes(); gerarCalendarioReal(); verificarClienteLogado(); }
+    function atualizarInterfaceEstado() { 
+        renderizarHome(); 
+        aplicarRestricoes(); 
+        gerarCalendarioReal(); 
+        verificarClienteLogado(); 
+    }
+
     let estadoListenerIniciado = false;
     function carregarEstado() {
       if (estadoListenerIniciado) return;
@@ -626,10 +659,11 @@
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
             .catch((e) => console.error("Erro ao criar estado inicial:", e));
         } else { atualizarInterfaceEstado(); }
-      }, (error) => { console.error("Erro ao carregar dados:", error); mostrarToast("Falha na sincronização. Confira as regras do Firebase."); });
+      }, (error) => { console.error("Erro ao carregar dados:", error); });
     }
+    
     async function salvarEstado() {
-      if (!adminAutenticado) { mostrarToast("Entre como administradora para salvar."); return false; }
+      if (!adminAutenticado) { mostrarToast("Entre como administrador para salvar."); return false; }
       try {
         const dadosSeguros = { ...appState }; delete dadosSeguros.senhaAdmin;
         await db.collection("appData").doc("estadoGlobal").set(dadosSeguros); return true;
@@ -640,7 +674,8 @@
     function verificarClienteLogado() {
       const nome = localStorage.getItem('clienteNome');
       const banner = document.getElementById('welcome-banner');
-      if (nome && banner) {
+      
+      if (nome && banner && !modoAdminAtivo) {
         banner.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--cor-dourada); margin-right:5px;"></i> Olá, ${esc(nome)}! Seja bem-vinda. <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--cor-dourada); margin-left:5px;"></i>`;
         banner.style.display = 'block';
       } else if (banner) {
@@ -664,6 +699,7 @@
         document.getElementById('modal-cadastro').style.display = 'none';
         mostrarToast('✅ Cadastro realizado com sucesso!');
         voltarInicio();
+        document.getElementById('app-name').innerHTML = `Olá, ${esc(nome.split(' ')[0])}`;
         verificarClienteLogado();
         renderizarHome();
 
@@ -671,7 +707,6 @@
       } catch (error) { console.error("Erro ao cadastrar:", error); alert("Erro ao cadastrar."); }
     }
 
-    // --- CLUBE VIP ---
     function pedirCodigoClube() { document.getElementById('modal-codigo-clube').style.display = 'flex'; }
     async function verificarCodigoClube() {
       const codigo = document.getElementById('input-codigo-clube').value.trim().toUpperCase();
@@ -699,106 +734,69 @@
       } catch (error) { console.error(error); alert("Erro ao gerar o código."); }
     }
 
+    async function deletarClienteVIP(idCliente) {
+        if (!adminAutenticado) { mostrarToast('Ação exclusiva da administração.'); return; }
+        if (!confirm('Atenção: Tem certeza que deseja APAGAR o cadastro deste cliente permanentemente?')) return;
+        try {
+            await db.collection("clientes").doc(idCliente).delete();
+            mostrarToast('✅ Cliente apagado do sistema.');
+            abrirConfiguracao('vip');
+        } catch (error) {
+            console.error("Erro ao deletar cliente: ", error);
+            alert('Erro ao apagar cliente. Verifique as regras do Firestore.');
+        }
+    }
+
     async function verificarSenhaAdmin() {
       const email = (document.getElementById('admin-email')?.value || '').trim().toLowerCase();
       const senha = document.getElementById('admin-password')?.value || '';
       const status = document.getElementById('admin-auth-status');
       const botao = document.getElementById('btn-admin-login');
-      if (email !== EMAIL_ADMIN_AUTORIZADO) { if(status) status.textContent = 'E-mail não autorizado.'; return; }
-      if (!senha) { if(status) status.textContent = 'Digite sua senha do Firebase.'; return; }
+      
+      if (!email || !senha) { if(status) status.textContent = 'Digite e-mail e senha.'; return; }
       if (botao) { botao.disabled = true; botao.textContent = 'Entrando...'; }
-      try { await auth.signInWithEmailAndPassword(email, senha); }
-      catch (e) { console.error('Erro no login:', e); if(status) status.textContent = 'Login não realizado. Confira e-mail e senha.'; }
-      finally { if(botao) { botao.disabled = false; botao.textContent = 'Entrar como administradora'; } }
+      
+      try { 
+        await auth.signInWithEmailAndPassword(email, senha); 
+        mostrarToast('✅ Login realizado!');
+      }
+      catch (e) { 
+        console.error('Erro no login:', e); 
+        if(status) status.textContent = 'E-mail ou senha incorretos.'; 
+        if (botao) { botao.disabled = false; botao.textContent = 'Entrar como Administrador'; }
+      }
     }
-    async function sairAdmin() { try { await auth.signOut(); } catch(e) { console.error(e); } }
     
-    auth.onAuthStateChanged((user) => {
-      usuarioAutenticado = user || null;
-      adminAutenticado = !!(user && user.email && user.email.toLowerCase() === EMAIL_ADMIN_AUTORIZADO);
-      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
-      const status = document.getElementById('admin-auth-status'), identidade = document.getElementById('admin-identidade');
-      if(login) login.style.display = adminAutenticado ? 'none' : 'block';
-      if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
-      if(identidade && adminAutenticado) identidade.textContent = 'Conectada: ' + user.email;
-      if(status && !adminAutenticado) status.textContent = 'Entre com a conta autorizada.';
-      aplicarRestricoes(); carregarEstado();
-    });
-
-    function atualizarViewAgenda() {
-      const role = document.getElementById('role-select').value;
-      const isAdmin = (role === 'dona' || role === 'gerente' || role === 'supervisor');
-
-      const calendarContainer = document.getElementById('calendario-container');
-      if (calendarContainer) calendarContainer.style.display = 'block';
-
-      const elClienteJaAgendou = document.getElementById('cliente-ja-agendou');
-      if (elClienteJaAgendou) {
-          if (isAdmin) {
-              elClienteJaAgendou.style.display = 'none';
-          } else {
-              verificarAgendamentoCliente();
-          }
-      }
-
-      const elAdmin = document.getElementById('agenda-admin');
-      if (elAdmin) {
-        if (isAdmin) {
-          elAdmin.style.display = 'block';
-          carregarAgendamentosAdmin();
-        } else {
-          elAdmin.style.display = 'none';
-        }
-      }
-
-      gerarCalendarioReal();
+    async function sairAdmin() { 
+        try { 
+            await auth.signOut(); 
+            mostrarToast('Você saiu do painel.');
+        } catch(e) { 
+            console.error(e); 
+        } 
     }
 
     function aplicarRestricoes() {
-      const role = document.getElementById('role-select').value;
-      const roleMudou = (ultimoRoleAplicado !== null && role !== ultimoRoleAplicado);
-      ultimoRoleAplicado = role;
-
-      let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
-      
-      if(role === 'cliente') perms = [];
-
-      document.getElementById('perfil-cargo').textContent = role === 'dona' ? 'Proprietária' : 'Equipe';
-      document.getElementById('perfil-nome').textContent = role === 'dona' ? appState.appName : 'Usuário';
-      
       const grid = document.getElementById('master-grid-botoes');
-      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
       
-      if(role !== 'dona' && !adminAutenticado) {
-         if(login) login.style.display = 'block';
-         if(logado) logado.style.display = 'none';
-      } else if (adminAutenticado) {
-         if(login) login.style.display = 'none';
-         if(logado) logado.style.display = 'block';
-      }
-
-      if(grid) {
-        grid.style.display = perms.length > 0 ? 'grid' : 'none';
-        grid.innerHTML = perms.map(id => { 
-          const p = todasPermissoes.find(x => x.id === id); 
-          return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${esc(p.nome)}</h4><span class="plus">+</span></button>` : ''; 
-        }).join('');
-      }
-
-      if (roleMudou) {
-        diaSelecionado = null;
-        horarioSelecionado = null;
-        idAgendamentoRemarcando = null;
-        dadosRemarcando = null;
-        const hrContainer = document.getElementById('horarios-container');
-        if (hrContainer) hrContainer.style.display = 'none';
-        currentDate = new Date();
-
-        const telaAgenda = document.getElementById('tela-agenda');
-        if (telaAgenda && telaAgenda.classList.contains('ativa')) {
-          atualizarViewAgenda();
-        }
-        renderizarHome(); 
+      if (modoAdminAtivo) {
+         document.getElementById('perfil-cargo').textContent = 'Administrador';
+         document.getElementById('perfil-nome').textContent = 'Painel Master';
+         document.getElementById('box-login-admin').style.display = 'none';
+         document.getElementById('admin-logado').style.display = 'block';
+         
+         if(grid) {
+            grid.style.display = 'grid';
+            grid.innerHTML = todasPermissoes.map(p => 
+              `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${esc(p.nome)}</h4><span class="plus">+</span></button>`
+            ).join('');
+         }
+      } else {
+         document.getElementById('perfil-cargo').textContent = 'Acesso Restrito';
+         document.getElementById('perfil-nome').textContent = 'Painel Master';
+         document.getElementById('box-login-admin').style.display = 'block';
+         document.getElementById('admin-logado').style.display = 'none';
+         if(grid) grid.style.display = 'none';
       }
     }
 
@@ -811,11 +809,11 @@
       body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${esc(txt)}</div>`); inp.value = '';
       
       const t = txt.toLowerCase(); let resposta = "";
-      if (t.includes('clube') || t.includes('vip')) resposta = "O Clube da Ale é exclusivo! Você precisa de um código de convite. Se já tiver, clique no banner rosa na tela inicial.";
-      else if (t.includes('plano') || t.includes('preço')) resposta = "Temos 3 planos: Essencial, Inteligente e Master. Veja na tela inicial!";
-      else if (t.includes('whatsapp') || t.includes('contato')) resposta = "Fale com a Alexandra clicando nos botões verdes do WhatsApp na seção Contato.";
-      else if (t.includes('agenda') || t.includes('horário')) resposta = "Para agendar, vá na aba Agenda, escolha o dia, o horário e preencha seu nome e WhatsApp! 📅";
-      else resposta = "Desculpe, ainda estou aprendendo. Mas você pode falar diretamente com a Alexandra no WhatsApp! 💬";
+      if (t.includes('clube') || t.includes('vip')) resposta = "O Clube da Ale é exclusivo! Você precisa de um código de convite.";
+      else if (t.includes('plano') || t.includes('preço')) resposta = "Temos 3 planos: Essencial, Inteligente e Master.";
+      else if (t.includes('whatsapp') || t.includes('contato')) resposta = "Fale com a Alexandra clicando nos botões verdes do WhatsApp.";
+      else if (t.includes('agenda') || t.includes('horário')) resposta = "Para agendar, vá na aba Agenda e clique no botão do WhatsApp! 📅";
+      else resposta = "Desculpe, ainda estou aprendendo. Mas você pode falar diretamente com a Alexandra! 💬";
 
       setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">${esc(resposta)}</div>`); body.scrollTop = body.scrollHeight; }, 600);
     }
@@ -842,6 +840,26 @@
       abrirTela('inicio');
       document.querySelectorAll('.nav-item').forEach((b) => b.classList.remove('active'));
       document.querySelector('.nav-item[data-tab="inicio"]').classList.add('active');
+    }
+
+    function atualizarViewAgenda() {
+      const elMuralCliente = document.getElementById('agenda-cliente-mural');
+      const elCalendario = document.getElementById('calendario-container');
+      const elAdminLista = document.getElementById('agenda-admin');
+
+      if (modoAdminAtivo) {
+          elMuralCliente.style.display = 'none';
+          elCalendario.style.display = 'block';
+          elAdminLista.style.display = 'block';
+          carregarAgendamentosAdmin();
+          gerarCalendarioReal();
+      } else {
+          elMuralCliente.style.display = 'block';
+          elCalendario.style.display = 'none';
+          elAdminLista.style.display = 'none';
+          
+          document.getElementById('texto-mural-cliente').textContent = appState.muralAgenda || "Nenhum aviso no momento.";
+      }
     }
 
     function abrirPlano(tipo) {
@@ -906,12 +924,12 @@
     
     function mudarPlanoSimulado(plano) { appState.planoAtual = plano; salvarEstado(); abrirConfiguracao('integracoes'); }
 
-    // --- AGENDA ---
+    // --- AGENDA (LÓGICA ADMIN) ---
     function gerarCalendarioReal() {
+      if (!modoAdminAtivo) return;
       const grid = document.getElementById('calendario-grid');
       if(!grid) return;
 
-      const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
       const firstDay = new Date(year, month, 1).getDay();
@@ -935,10 +953,9 @@
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
         const dataBtn = new Date(year, month, i);
         
-        const isPast = dataBtn < hoje && !isAdmin;
         const isDiaIndisponivel = !diasDisponiveis.includes(dataBtn.getDay());
 
-        if (isPast || isDiaIndisponivel) {
+        if (isDiaIndisponivel) {
           html += `<button class="dia-btn indisponivel" disabled>${i}</button>`;
         } else {
           html += `<button class="dia-btn" onclick="selecionarDiaReal('${dateStr}', this)">${i}</button>`;
@@ -951,19 +968,6 @@
 
     function mudarMes(dir) {
       let novoMes = new Date(currentDate.getFullYear(), currentDate.getMonth() + dir, 1);
-      let hoje = new Date();
-      
-      let limiteMaximo = new Date(hoje.getFullYear(), hoje.getMonth() + 4, 1);
-      if (novoMes > limiteMaximo) {
-        mostrarToast('⚠️ Agendamentos liberados apenas para os próximos 4 meses.');
-        return;
-      }
-
-      let limiteMinimo = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-      if (novoMes < limiteMinimo && !['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value)) {
-        return;
-      }
-
       currentDate = novoMes;
       gerarCalendarioReal();
     }
@@ -973,19 +977,11 @@
       if (btn && btn.classList) btn.classList.add('selecionado');
       diaSelecionado = dataStr;
       
-      const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
-      
       const hrContainer = document.getElementById('horarios-container');
       if(hrContainer) hrContainer.style.display = 'block';
       
       const tituloHorarios = document.getElementById('titulo-horarios');
-      if (tituloHorarios) {
-         if (idAgendamentoRemarcando) {
-             tituloHorarios.textContent = 'Escolha o NOVO horário';
-         } else {
-             tituloHorarios.textContent = isAdmin ? 'Horários (Clique no verde para agendar)' : 'Horários disponíveis';
-         }
-      }
+      if (tituloHorarios) tituloHorarios.textContent = 'Horários (Clique no verde para agendar)';
 
       const gridHorarios = document.getElementById('horarios-grid');
       const horarios = gerarArrayHorarios(appState.agendaInicio || '09:00', appState.agendaFim || '18:00', appState.agendaIntervalo || '30');
@@ -1015,26 +1011,22 @@
 
           const isOcupado = !!agendamentoConflitante;
 
-          if (isAdmin) {
-              if (isOcupado) {
-                  return `<div class="horario-btn admin-slot ocupado">
-                      <b>${esc(agendamentoConflitante.horaInicio || agendamentoConflitante.hora)} - ${esc(agendamentoConflitante.horaFim || agendamentoConflitante.hora)}</b>
-                      <span>👤 ${esc(agendamentoConflitante.nome)}</span>
-                      <span>📞 ${esc(agendamentoConflitante.telefone)}</span>
-                      <span>✨ ${esc(agendamentoConflitante.servico || 'Não especificado')}</span>
-                      <div style="display:flex; gap:5px; margin-top:5px;">
-                        <button onclick="abrirRemarcarAdmin('${esc(agendamentoConflitante.idFirestore)}', '${esc(agendamentoConflitante.nome)}', '${esc(agendamentoConflitante.telefone)}', '${esc(agendamentoConflitante.servico)}')" class="btn-mini-remarcar">Remarcar</button>
-                        <button onclick="cancelarAgendamentoAdmin('${esc(agendamentoConflitante.idFirestore)}')" class="btn-mini-cancelar">Cancelar</button>
-                      </div>
-                  </div>`;
-              } else {
-                  return `<div class="horario-btn admin-slot livre" onclick="abrirModalAgendamentoAdmin('${esc(hr)}')">
-                      <b>${esc(hr)}</b>
-                      <span style="opacity:0.7;">Livre (Clique p/ Agendar)</span>
-                  </div>`;
-              }
+          if (isOcupado) {
+              return `<div class="horario-btn admin-slot ocupado">
+                  <b>${esc(agendamentoConflitante.horaInicio || agendamentoConflitante.hora)} - ${esc(agendamentoConflitante.horaFim || agendamentoConflitante.hora)}</b>
+                  <span>👤 ${esc(agendamentoConflitante.nome)}</span>
+                  <span>📞 ${esc(agendamentoConflitante.telefone)}</span>
+                  <span>✨ ${esc(agendamentoConflitante.servico || 'Não especificado')}</span>
+                  <div style="display:flex; gap:5px; margin-top:5px;">
+                    <button onclick="abrirRemarcarAdmin('${esc(agendamentoConflitante.idFirestore)}', '${esc(agendamentoConflitante.nome)}', '${esc(agendamentoConflitante.telefone)}', '${esc(agendamentoConflitante.servico)}')" class="btn-mini-remarcar">Remarcar</button>
+                    <button onclick="cancelarAgendamentoAdmin('${esc(agendamentoConflitante.idFirestore)}')" class="btn-mini-cancelar">Cancelar</button>
+                  </div>
+              </div>`;
           } else {
-              return `<button class="horario-btn ${isOcupado ? 'ocupado-cliente' : 'livre-cliente'}" ${isOcupado ? 'disabled' : `onclick="selecionarHorarioReal('${esc(hr)}', this)"`}>${esc(hr)}</button>`;
+              return `<div class="horario-btn admin-slot livre" onclick="abrirModalAgendamentoAdmin('${esc(hr)}')">
+                  <b>${esc(hr)}</b>
+                  <span style="opacity:0.7;">Livre (Clique p/ Agendar)</span>
+              </div>`;
           }
         }).join('');
       }).catch(err => {
@@ -1043,33 +1035,12 @@
       });
     }
 
-    function selecionarHorarioReal(hr, btn) {
-      document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('selecionado'));
-      if (btn && btn.classList) btn.classList.add('selecionado');
-      horarioSelecionado = hr;
-      
-      const dataFmt = diaSelecionado.split('-').reverse().join('/');
-      document.getElementById('resumo-dia').textContent = dataFmt;
-      document.getElementById('resumo-horario').textContent = hr;
-      
-      const nomeLogado = localStorage.getItem('clienteNome');
-      if (nomeLogado) document.getElementById('agenda-nome').value = nomeLogado;
-      
-      document.getElementById('div-horario-admin').style.display = 'none';
-      document.getElementById('resumo-horario-cliente').style.display = 'block';
-      document.getElementById('modal-agendar-titulo').textContent = 'Confirmar Agendamento';
-      document.getElementById('btn-salvar-agendamento').textContent = 'Confirmar Reserva';
-      
-      document.getElementById('modal-agendar').style.display = 'flex';
-    }
-
     function abrirModalAgendamentoAdmin(hr) {
       horarioSelecionado = hr;
       const dataFmt = diaSelecionado.split('-').reverse().join('/');
       document.getElementById('resumo-dia').textContent = dataFmt;
       
       document.getElementById('div-horario-admin').style.display = 'block';
-      document.getElementById('resumo-horario-cliente').style.display = 'none';
       document.getElementById('modal-agendar-titulo').textContent = 'Novo Agendamento (Admin)';
       document.getElementById('btn-salvar-agendamento').textContent = 'Agendar Cliente';
       
@@ -1108,17 +1079,11 @@
       if(!nome || !tel || !servico) return alert('Preencha nome, WhatsApp e o serviço.');
       if(!diaSelecionado) return alert('Escolha um dia.');
 
-      const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
+      let hInicio = document.getElementById('agenda-hora-inicio').value;
+      let hFim = document.getElementById('agenda-hora-fim').value;
       
-      let hInicio = horarioSelecionado;
-      let hFim = calcHoraFim(horarioSelecionado, 60);
-      
-      if (isAdmin) {
-          hInicio = document.getElementById('agenda-hora-inicio').value;
-          hFim = document.getElementById('agenda-hora-fim').value;
-          if(!hInicio || !hFim) return alert('Preencha a hora de início e fim.');
-          if(hInicio >= hFim) return alert('A hora de início deve ser antes da hora de fim.');
-      }
+      if(!hInicio || !hFim) return alert('Preencha a hora de início e fim.');
+      if(hInicio >= hFim) return alert('A hora de início deve ser antes da hora de fim.');
 
       const agendamento = { 
           data: diaSelecionado, 
@@ -1151,91 +1116,23 @@
                 return;
             }
 
-            const docRef = await db.collection('agendamentos').add(agendamento);
-            
-            if (!isAdmin) {
-                localStorage.setItem('meu_agendamento', JSON.stringify({ data: diaSelecionado, horaInicio: hInicio, horaFim: hFim }));
-                localStorage.setItem('meu_agendamento_id', docRef.id);
-            }
+            await db.collection('agendamentos').add(agendamento);
             alert('Agendamento realizado com sucesso!');
         }
         
         document.getElementById('modal-agendar').style.display = 'none';
-        if (!isAdmin) verificarAgendamentoCliente();
-        
         mostrarToast('Horário reservado!');
         
         if (diaSelecionado) {
             const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
             if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
         }
-        if (isAdmin) carregarAgendamentosAdmin();
+        carregarAgendamentosAdmin();
 
       } catch (e) { 
           alert('Erro ao agendar: ' + e.message); 
           console.error(e);
       }
-    }
-
-    function verificarAgendamentoCliente() {
-        const salvo = localStorage.getItem('meu_agendamento');
-        const calendarContainer = document.getElementById('calendario-container');
-        const clienteJaAgendou = document.getElementById('cliente-ja-agendou');
-        
-        if (salvo) {
-            let ag = null;
-            try { ag = JSON.parse(salvo); } catch(e) { ag = null; localStorage.removeItem('meu_agendamento'); }
-            if (ag && ag.data && ag.horaInicio) {
-              if(calendarContainer) calendarContainer.style.display = 'none';
-              if(clienteJaAgendou) clienteJaAgendou.style.display = 'block';
-              const dataFmt = ag.data.split('-').reverse().join('/');
-              const btnW = document.getElementById('btn-whats-cliente');
-              if(btnW) btnW.href = `https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá, tenho um horário marcado dia ' + dataFmt + ' às ' + ag.horaInicio)}`;
-              return;
-            }
-        }
-        if(calendarContainer) calendarContainer.style.display = 'block';
-        if(clienteJaAgendou) clienteJaAgendou.style.display = 'none';
-    }
-
-    function solicitarRemarcacaoCliente() {
-        const ag = JSON.parse(localStorage.getItem('meu_agendamento'));
-        const id = localStorage.getItem('meu_agendamento_id');
-        
-        if (!id) return alert('Erro ao localizar agendamento.');
-
-        idAgendamentoRemarcando = id;
-        db.collection('agendamentos').doc(id).get().then(doc => {
-            if(doc.exists) {
-                const d = doc.data();
-                dadosRemarcando = { nome: d.nome, telefone: d.telefone, servico: d.servico };
-                mostrarToast('Escolha o novo dia e horário no calendário.');
-                document.getElementById('cliente-ja-agendou').style.display = 'none';
-                document.getElementById('calendario-container').style.display = 'block';
-                document.getElementById('calendario-container').scrollIntoView({behavior: 'smooth'});
-            }
-        });
-    }
-
-    async function cancelarAgendamentoCliente() {
-        if(!confirm('Tem certeza que deseja cancelar o seu agendamento?')) return;
-        
-        const idAgendamento = localStorage.getItem('meu_agendamento_id');
-        if (idAgendamento) {
-            try {
-                await db.collection('agendamentos').doc(idAgendamento).delete();
-            } catch(e) { console.error("Erro ao deletar agendamento:", e); }
-        }
-        
-        localStorage.removeItem('meu_agendamento');
-        localStorage.removeItem('meu_agendamento_id');
-        verificarAgendamentoCliente();
-        mostrarToast('Agendamento cancelado. Você pode escolher um novo!');
-        
-        if (diaSelecionado) {
-            const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
-            if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
-        }
     }
 
     function abrirRemarcarAdmin(id, nome, telefone, servico) {
@@ -1336,8 +1233,9 @@
       container.style.backgroundColor = appState.bgColor || '#FFF2F6';
       container.style.backgroundImage = appState.bgImage ? `url(${cssUrl(safeImgSrc(appState.bgImage))})` : (appState.bgGradient || 'none');
 
-      document.getElementById('app-name').textContent = appState.appName || 'Alexandra Barros';
       document.getElementById('app-logo').innerHTML = appState.logoImage ? `<img src="${esc(safeImgSrc(appState.logoImage))}">` : esc(appState.logo || 'AB');
+      
+      verificarClienteLogado();
 
       const homeSections = document.getElementById('home-sections');
       homeSections.innerHTML = '';
@@ -1360,7 +1258,7 @@
           html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
         }
         else if (secao === 'cta') {
-            if (!localStorage.getItem('clienteNome')) {
+            if (!localStorage.getItem('clienteNome') && !modoAdminAtivo) {
                 html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${esc(appState.mensagem)}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
             }
         }
@@ -1428,7 +1326,21 @@
       const titulo = document.getElementById('editor-titulo');
       let html = '';
 
-      if (id === 'agenda-config') {
+      if (id === 'link-envio') {
+        titulo.textContent = 'Enviar Link para Clientes';
+        let linkApp = window.location.origin + window.location.pathname;
+        html = `
+          <p style="font-size:12px; color:#666; margin-bottom:15px;">Copie o link abaixo e envie para suas clientes. Elas poderão acessar o app, ver a vitrine, o mural de avisos e entrar em contato.</p>
+          <div style="display:flex; gap:8px; margin-bottom:20px;">
+              <input type="text" id="link-app-clientes" value="${esc(linkApp)}" readonly style="flex:1; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:12px; background:#f9f9f9;">
+              <button onclick="copiarLinkApp()" style="background:var(--cor-principal); color:#fff; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">Copiar</button>
+          </div>
+          <button onclick="compartilharLinkApp()" style="width:100%; padding:14px; background:#00BB2D; color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px;">
+              <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i> Compartilhar no WhatsApp
+          </button>
+        `;
+      }
+      else if (id === 'agenda-config') {
         titulo.textContent = 'Configurar Agenda';
         
         let inicio = appState.agendaInicio || '09:00';
@@ -1466,10 +1378,13 @@
               <option value="45" ${intervalo === '45' ? 'selected' : ''}>A cada 45 minutos</option>
               <option value="60" ${intervalo === '60' ? 'selected' : ''}>A cada 1 hora</option>
           </select>
-          
-          <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;">
-             <button onclick="localStorage.removeItem('meu_agendamento'); localStorage.removeItem('meu_agendamento_id'); alert('Agendamento local limpo.');" style="width:100%; padding:10px; background:#eee; color:#333; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Limpar Meu Agendamento Local (Teste)</button>
-          </div>
+        `;
+      }
+      else if (id === 'mural') {
+        titulo.textContent = 'Mural da Agenda';
+        html = `
+          <p style="font-size:11px; color:#666; margin-bottom:10px;">Escreva abaixo o texto que os clientes verão na aba Agenda. Aqui você pode colocar regras, avisos, promoções, etc.</p>
+          <textarea id="edit-mural" rows="6" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-family:inherit; font-size:13px;">${esc(appState.muralAgenda || '')}</textarea>
         `;
       }
       else if (id === 'integracoes') {
@@ -1573,10 +1488,19 @@
             const nomeEsc = esc(JSON.stringify(cliente.nome || ''));
             const telEsc = esc(JSON.stringify(cliente.telefone || ''));
             const idEsc = esc(JSON.stringify(idCliente));
-            const btnAcao = temAcesso 
-              ? `<button disabled style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700; width:100%;">✅ Liberado</button><p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${esc(cliente.codigoAcesso)}</b></p>` 
-              : `<button onclick="liberarAcessoVIP(${idEsc}, ${nomeEsc}, ${telEsc})" style="background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; width:100%; cursor:pointer;">Liberar Acesso</button>`;
-            htmlClientes += `<div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;"><div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;"><div><strong style="font-size:13px; color:var(--cor-principal);">${esc(cliente.nome)}</strong><br><span style="font-size:11px; color:#666;">${esc(cliente.telefone)}</span><br><span style="font-size:10px; color:#999;">${esc(cliente.email)}</span></div></div>${btnAcao}</div>`;
+            
+            const btnAcao = `
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    ${temAcesso 
+                      ? `<button disabled style="flex:1; background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700;">✅ Liberado</button>` 
+                      : `<button onclick="liberarAcessoVIP(${idEsc}, ${nomeEsc}, ${telEsc})" style="flex:1; background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Liberar Acesso</button>`
+                    }
+                    <button onclick="deletarClienteVIP(${idEsc})" style="background:#ffebee; color:#c62828; border:1px solid #ffcdd2; padding:6px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Apagar</button>
+                </div>
+                ${temAcesso ? `<p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${esc(cliente.codigoAcesso)}</b></p>` : ''}
+            `;
+
+            htmlClientes += `<div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;"><div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:5px;"><div><strong style="font-size:13px; color:var(--cor-principal);">${esc(cliente.nome)}</strong><br><span style="font-size:11px; color:#666;">${esc(cliente.telefone)}</span><br><span style="font-size:10px; color:#999;">${esc(cliente.email)}</span></div></div>${btnAcao}</div>`;
           });
           document.getElementById('lista-clientes-vip').innerHTML = htmlClientes;
         }).catch((error) => { console.error("Erro ao buscar clientes: ", error); document.getElementById('lista-clientes-vip').innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar clientes.</p>'; });
@@ -1597,6 +1521,18 @@
          document.getElementById('btn-voltar-editor').textContent = '↩ Desfazer';
          document.getElementById('btn-voltar-editor').onclick = desfazerConfig;
       }
+    }
+
+    function copiarLinkApp() {
+      const input = document.getElementById('link-app-clientes');
+      input.select(); input.setSelectionRange(0, 99999);
+      try { document.execCommand('copy'); mostrarToast('✅ Link copiado!'); } catch (e) { alert('Copie manualmente.'); }
+    }
+
+    function compartilharLinkApp() {
+        const link = document.getElementById('link-app-clientes').value;
+        const texto = encodeURIComponent('Acesse nosso aplicativo oficial pelo link: ' + link);
+        window.open(`https://api.whatsapp.com/send?text=${texto}`, '_blank');
     }
 
     function addFeatureRow(tipo) {
@@ -1730,6 +1666,11 @@
         appState.video = document.getElementById('edit-video-link').value;
         salvarEstado(); renderizarHome();
       }
+      else if (id === 'mural') {
+        appState.muralAgenda = document.getElementById('edit-mural').value;
+        salvarEstado();
+        if(!modoAdminAtivo) atualizarViewAgenda();
+      }
       else if (id === 'agenda-config') {
         appState.diasDisponiveis = [];
         for(let i=0; i<=6; i++) {
@@ -1741,7 +1682,7 @@
         appState.agendaIntervalo = document.getElementById('agenda-intervalo').value;
         
         salvarEstado();
-        atualizarViewAgenda();
+        if(modoAdminAtivo) atualizarViewAgenda();
       }
       fecharEditor();
     }
