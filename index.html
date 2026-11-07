@@ -442,15 +442,16 @@
 
   <script>
     // --- CONFIGURAÇÃO DO FIREBASE ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyA-sA-g6fCm7Zcv41DBsF1NyQJTFvjays",
-      authDomain: "aleclube.firebaseapp.com",
-      projectId: "aleclube",
-      storageBucket: "aleclube.firebasestorage.app",
-      messagingSenderId: "1086356924442",
-      appId: "1:1086356924442:web:17fe110f263a01b57189a3",
-      measurementId: "G-15ZM50X9B8"
-    };
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
+  authDomain: "aleclube.firebaseapp.com",
+  projectId: "aleclube",
+  storageBucket: "aleclube.firebasestorage.app",
+  messagingSenderId: "1086356924442",
+  appId: "1:1086356924442:web:17fe110f263a01b57189a3",
+  measurementId: "G-15ZM50X9B8"
+};
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
