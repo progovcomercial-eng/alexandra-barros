@@ -121,16 +121,22 @@
     .dia-btn.selecionado { background: var(--cor-principal); color: #fff; border-color: var(--cor-principal); }
     .dia-btn.indisponivel { background: #f5f5f5; color: #ccc; cursor: not-allowed; text-decoration: line-through; }
     .dia-btn.vazio { background: transparent; border: none; cursor: default; }
-    .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
-    .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; transition: all 0.2s; }
-    .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
     
-    /* ESTILOS PARA O ADMIN VER OS HORÁRIOS */
-    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 75px; font-weight: 400; font-size: 11px; cursor: default; border-radius: 8px; }
-    .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; }
-    .horario-btn.admin-slot.ocupado { background: #fff0f0; border-color: #ffcdd2; color: #b71c1c; }
-    .horario-btn.admin-slot.livre { background: #f1f8e9; border-color: #c5e1a5; color: #33691e; cursor: pointer; }
-    .horario-btn.admin-slot.livre:hover { background: #dcedc8; }
+    .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+    
+    /* CORES VIVAS E ACESSÍVEIS */
+    /* Cliente: Livre = Verde Água / Ocupado = Vinho Escuro */
+    .horario-btn { border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; transition: all 0.2s; }
+    .horario-btn.livre-cliente { background: #E0F7FA; border: 1px solid #00BCD4; color: #006064; cursor: pointer; }
+    .horario-btn.ocupado-cliente { background: #880E4F; border: 1px solid #4A148C; color: #FFFFFF; text-decoration: line-through; opacity: 0.8; cursor: not-allowed; }
+    
+    /* Admin: Livre = Verde Água / Ocupado = Vinho Escuro */
+    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 75px; font-weight: 400; font-size: 11px; border-radius: 8px; }
+    .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; font-weight: 700; }
+    .horario-btn.admin-slot.livre { background: #E0F7FA; border: 1px solid #00BCD4; color: #006064; cursor: pointer; }
+    .horario-btn.admin-slot.livre:hover { background: #B2EBF2; }
+    .horario-btn.admin-slot.ocupado { background: #880E4F; border: 1px solid #4A148C; color: #FFFFFF; cursor: default; }
+    .horario-btn.admin-slot.ocupado span { color: #F8BBD0; }
 
     .admin-agenda-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 4px solid var(--cor-principal); display: flex; flex-direction: column; gap: 5px; }
     .admin-agenda-card .data-hora { font-size: 14px; font-weight: 700; color: var(--cor-principal); display: flex; justify-content: space-between; }
@@ -252,7 +258,6 @@
       <!-- TELA DE AGENDA -->
       <div id="tela-agenda" class="tela">
         
-        <!-- CALENDÁRIO COMPARTILHADO -->
         <div id="calendario-container">
           <div class="section-title-nova" style="margin-top:0;">Agenda de Atendimentos</div>
           
@@ -420,13 +425,26 @@
     <!-- MODAL AGENDAMENTO -->
     <div id="modal-agendar" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
-        <h3>Confirmar Agendamento</h3>
-        <p style="font-size:12px; text-align:center; margin-bottom:15px; color:#666;">Horário: <b id="resumo-horario" style="color:var(--cor-principal);"></b></p>
+        <h3 id="modal-agendar-titulo">Confirmar Agendamento</h3>
+        <p style="font-size:12px; text-align:center; margin-bottom:15px; color:#666;">Dia: <b id="resumo-dia" style="color:var(--cor-principal);"></b></p>
+        
+        <div id="div-horario-admin" style="display:none; background:#f0f0f0; padding:10px; border-radius:8px; margin-bottom:10px;">
+          <label style="font-size:11px; font-weight:700; display:block; margin-bottom:5px;">Horário do Atendimento (Admin):</label>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input type="time" id="agenda-hora-inicio" style="flex:1;">
+            <span style="font-size:12px; font-weight:bold;">até</span>
+            <input type="time" id="agenda-hora-fim" style="flex:1;">
+          </div>
+        </div>
+
+        <p id="resumo-horario-cliente" style="font-size:12px; text-align:center; margin-bottom:15px; color:#666; display:none;">Horário: <b id="resumo-horario" style="color:var(--cor-principal);"></b></p>
+
         <input type="text" id="agenda-nome" placeholder="Nome do Cliente" required>
         <input type="tel" id="agenda-tel" placeholder="WhatsApp do Cliente (com DDD)" required>
         <input type="text" id="agenda-servico" placeholder="O que será feito? (Ex: Unha, Cílios)" required>
-        <button class="btn-enviar-cadastro" onclick="salvarAgendamento()">Confirmar Reserva</button>
-        <button class="btn-undo" onclick="document.getElementById('modal-agendar').style.display='none'">Cancelar</button>
+        
+        <button class="btn-enviar-cadastro" onclick="salvarAgendamento()" id="btn-salvar-agendamento">Confirmar Reserva</button>
+        <button class="btn-undo" onclick="fecharModalAgendar()">Cancelar</button>
       </div>
     </div>
 
@@ -558,16 +576,18 @@
     let horarioSelecionado = null;
     let ultimoRoleAplicado = null;
 
-    // --- GERAÇÃO AUTOMÁTICA DE HORÁRIOS ---
+    // VARIÁVEIS PARA REMARCAÇÃO
+    let idAgendamentoRemarcando = null;
+    let dadosRemarcando = null;
+
+    // --- FERRAMENTAS DE HORÁRIO ---
     function gerarArrayHorarios(inicio, fim, intervalo) {
       let horarios = [];
-      if(!inicio || !fim || !intervalo) return appState.horariosAgenda; // Fallback
-      
+      if(!inicio || !fim || !intervalo) return appState.horariosAgenda;
       let [hI, mI] = inicio.split(':').map(Number);
       let [hF, mF] = fim.split(':').map(Number);
       let atual = hI * 60 + mI;
       let limite = hF * 60 + mF;
-      
       while(atual < limite) {
           let h = Math.floor(atual / 60).toString().padStart(2, '0');
           let m = (atual % 60).toString().padStart(2, '0');
@@ -575,6 +595,14 @@
           atual += Number(intervalo);
       }
       return horarios;
+    }
+
+    function calcHoraFim(inicio, duracaoMin = 60) {
+        let [h, m] = inicio.split(':').map(Number);
+        let total = h * 60 + m + duracaoMin;
+        let hF = Math.floor(total / 60).toString().padStart(2, '0');
+        let mF = (total % 60).toString().padStart(2, '0');
+        return `${hF}:${mF}`;
     }
 
     // --- FIREBASE ---
@@ -630,7 +658,7 @@
         mostrarToast('✅ Cadastro realizado com sucesso!');
         voltarInicio();
         verificarClienteLogado();
-        renderizarHome(); // Recarrega a tela inicial para esconder o botão de cadastro
+        renderizarHome();
 
         document.getElementById('cad-nome').value = ''; document.getElementById('cad-email').value = ''; document.getElementById('cad-tel').value = '';
       } catch (error) { console.error("Erro ao cadastrar:", error); alert("Erro ao cadastrar."); }
@@ -753,6 +781,8 @@
       if (roleMudou) {
         diaSelecionado = null;
         horarioSelecionado = null;
+        idAgendamentoRemarcando = null;
+        dadosRemarcando = null;
         const hrContainer = document.getElementById('horarios-container');
         if (hrContainer) hrContainer.style.display = 'none';
         currentDate = new Date();
@@ -761,7 +791,7 @@
         if (telaAgenda && telaAgenda.classList.contains('ativa')) {
           atualizarViewAgenda();
         }
-        renderizarHome(); // Recarrega a home para mostrar ou esconder o botão de cadastro
+        renderizarHome(); 
       }
     }
 
@@ -942,11 +972,15 @@
       if(hrContainer) hrContainer.style.display = 'block';
       
       const tituloHorarios = document.getElementById('titulo-horarios');
-      if (tituloHorarios) tituloHorarios.textContent = isAdmin ? 'Horários (Clique no verde para agendar)' : 'Horários disponíveis';
+      if (tituloHorarios) {
+         if (idAgendamentoRemarcando) {
+             tituloHorarios.textContent = 'Escolha o NOVO horário';
+         } else {
+             tituloHorarios.textContent = isAdmin ? 'Horários (Clique no verde para agendar)' : 'Horários disponíveis';
+         }
+      }
 
       const gridHorarios = document.getElementById('horarios-grid');
-      
-      // GERA OS HORÁRIOS BASEADO NO INÍCIO E FIM
       const horarios = gerarArrayHorarios(appState.agendaInicio || '09:00', appState.agendaFim || '18:00', appState.agendaIntervalo || '30');
       
       if (horarios.length === 0) {
@@ -955,24 +989,35 @@
       }
 
       db.collection('agendamentos').where('data', '==', dataStr).get().then(snapshot => {
-        const agendamentosDoDia = {};
+        const agendamentosDoDia = [];
         snapshot.docs.forEach(doc => {
            const d = doc.data();
-           agendamentosDoDia[d.hora] = { ...d, idFirestore: doc.id }; // Salva o ID do Firestore
+           agendamentosDoDia.push({ idFirestore: doc.id, ...d });
         });
 
         gridHorarios.innerHTML = horarios.map(hr => {
-          const agendamento = agendamentosDoDia[hr];
-          const isOcupado = !!agendamento;
+          // Verifica se o slot está ocupado por algum agendamento que engloba esse horário
+          let agendamentoConflitante = null;
+          for (let ag of agendamentosDoDia) {
+              const inicio = ag.horaInicio || ag.hora;
+              const fim = ag.horaFim || ag.hora;
+              // Se o horário atual for >= inicio e < fim, está ocupado
+              if (hr >= inicio && hr < fim) {
+                  agendamentoConflitante = ag;
+                  break;
+              }
+          }
+
+          const isOcupado = !!agendamentoConflitante;
 
           if (isAdmin) {
               if (isOcupado) {
                   return `<div class="horario-btn admin-slot ocupado">
-                      <b>${esc(hr)}</b>
-                      <span>👤 ${esc(agendamento.nome)}</span>
-                      <span>📞 ${esc(agendamento.telefone)}</span>
-                      <span>✨ ${esc(agendamento.servico || 'Não especificado')}</span>
-                      <button onclick="remarcarAdmin('${esc(agendamento.idFirestore)}')" style="margin-top:5px; font-size:9px; padding:2px 5px; border-radius:4px; background:#fff; border:1px solid #b71c1c; color:#b71c1c; cursor:pointer;">Remarcar</button>
+                      <b>${esc(agendamentoConflitante.horaInicio || agendamentoConflitante.hora)} - ${esc(agendamentoConflitante.horaFim || agendamentoConflitante.hora)}</b>
+                      <span>👤 ${esc(agendamentoConflitante.nome)}</span>
+                      <span>📞 ${esc(agendamentoConflitante.telefone)}</span>
+                      <span>✨ ${esc(agendamentoConflitante.servico || 'Não especificado')}</span>
+                      <button onclick="abrirRemarcarAdmin('${esc(agendamentoConflitante.idFirestore)}', '${esc(agendamentoConflitante.nome)}', '${esc(agendamentoConflitante.telefone)}', '${esc(agendamentoConflitante.servico)}')" style="margin-top:5px; font-size:9px; padding:2px 5px; border-radius:4px; background:#fff; border:1px solid #880E4F; color:#880E4F; cursor:pointer;">Remarcar</button>
                   </div>`;
               } else {
                   return `<div class="horario-btn admin-slot livre" onclick="abrirModalAgendamentoAdmin('${esc(hr)}')">
@@ -981,7 +1026,7 @@
                   </div>`;
               }
           } else {
-              return `<button class="horario-btn ${isOcupado ? 'indisponivel' : ''}" ${isOcupado ? 'disabled style="opacity:0.5; cursor:not-allowed; text-decoration:line-through;"' : `onclick="selecionarHorarioReal('${esc(hr)}', this)"`}>${esc(hr)}</button>`;
+              return `<button class="horario-btn ${isOcupado ? 'ocupado-cliente' : 'livre-cliente'}" ${isOcupado ? 'disabled' : `onclick="selecionarHorarioReal('${esc(hr)}', this)"`}>${esc(hr)}</button>`;
           }
         }).join('');
       }).catch(err => {
@@ -994,11 +1039,19 @@
       document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('selecionado'));
       if (btn && btn.classList) btn.classList.add('selecionado');
       horarioSelecionado = hr;
+      
       const dataFmt = diaSelecionado.split('-').reverse().join('/');
-      document.getElementById('resumo-horario').textContent = `${dataFmt} às ${hr}`;
+      document.getElementById('resumo-dia').textContent = dataFmt;
+      document.getElementById('resumo-horario').textContent = hr;
       
       const nomeLogado = localStorage.getItem('clienteNome');
       if (nomeLogado) document.getElementById('agenda-nome').value = nomeLogado;
+      
+      // Configura a tela para o modo CLIENTE
+      document.getElementById('div-horario-admin').style.display = 'none';
+      document.getElementById('resumo-horario-cliente').style.display = 'block';
+      document.getElementById('modal-agendar-titulo').textContent = 'Confirmar Agendamento';
+      document.getElementById('btn-salvar-agendamento').textContent = 'Confirmar Reserva';
       
       document.getElementById('modal-agendar').style.display = 'flex';
     }
@@ -1006,56 +1059,121 @@
     function abrirModalAgendamentoAdmin(hr) {
       horarioSelecionado = hr;
       const dataFmt = diaSelecionado.split('-').reverse().join('/');
-      document.getElementById('resumo-horario').textContent = `${dataFmt} às ${hr}`;
+      document.getElementById('resumo-dia').textContent = dataFmt;
       
-      document.getElementById('agenda-nome').value = '';
-      document.getElementById('agenda-tel').value = '';
-      document.getElementById('agenda-servico').value = '';
+      // Configura a tela para o modo ADMIN
+      document.getElementById('div-horario-admin').style.display = 'block';
+      document.getElementById('resumo-horario-cliente').style.display = 'none';
+      document.getElementById('modal-agendar-titulo').textContent = 'Novo Agendamento (Admin)';
+      document.getElementById('btn-salvar-agendamento').textContent = 'Agendar Cliente';
+      
+      document.getElementById('agenda-hora-inicio').value = hr;
+      document.getElementById('agenda-hora-fim').value = calcHoraFim(hr, 60); // Padrão 1 hora
+      
+      // Se estiver em modo de remarcação, preenche os dados
+      if (idAgendamentoRemarcando && dadosRemarcando) {
+          document.getElementById('agenda-nome').value = dadosRemarcando.nome;
+          document.getElementById('agenda-tel').value = dadosRemarcando.telefone;
+          document.getElementById('agenda-servico').value = dadosRemarcando.servico;
+          document.getElementById('modal-agendar-titulo').textContent = 'Remarcar Agendamento';
+          document.getElementById('btn-salvar-agendamento').textContent = 'Salvar Nova Data';
+      } else {
+          document.getElementById('agenda-nome').value = '';
+          document.getElementById('agenda-tel').value = '';
+          document.getElementById('agenda-servico').value = '';
+      }
       
       document.getElementById('modal-agendar').style.display = 'flex';
     }
 
-    function salvarAgendamento() {
+    function fecharModalAgendar() {
+        document.getElementById('modal-agendar').style.display = 'none';
+        // Se estava remarcando, limpa as variáveis para não bugar
+        if (idAgendamentoRemarcando) {
+            idAgendamentoRemarcando = null;
+            dadosRemarcando = null;
+            mostrarToast('Remarcação cancelada.');
+        }
+    }
+
+    async function salvarAgendamento() {
       const nome = document.getElementById('agenda-nome').value.trim();
       const tel = document.getElementById('agenda-tel').value.trim();
       const servico = document.getElementById('agenda-servico').value.trim();
       
       if(!nome || !tel || !servico) return alert('Preencha nome, WhatsApp e o serviço.');
-      if(!diaSelecionado || !horarioSelecionado) return alert('Escolha um horário.');
+      if(!diaSelecionado) return alert('Escolha um dia.');
 
-      db.collection('agendamentos')
-        .where('data', '==', diaSelecionado)
-        .where('hora', '==', horarioSelecionado)
-        .get()
-        .then(snap => {
-          if (!snap.empty) {
-            document.getElementById('modal-agendar').style.display = 'none';
-            alert('Este horário acabou de ser reservado. Por favor, escolha outro.');
-            return;
-          }
-          const agendamento = { data: diaSelecionado, hora: horarioSelecionado, nome: nome, telefone: tel, servico: servico, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
-          return db.collection('agendamentos').add(agendamento).then((docRef) => {
-            alert('Agendamento realizado com sucesso!');
+      const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
+      
+      let hInicio = horarioSelecionado;
+      let hFim = calcHoraFim(horarioSelecionado, 60); // Cliente padrão 1h
+      
+      if (isAdmin) {
+          hInicio = document.getElementById('agenda-hora-inicio').value;
+          hFim = document.getElementById('agenda-hora-fim').value;
+          if(!hInicio || !hFim) return alert('Preencha a hora de início e fim.');
+          if(hInicio >= hFim) return alert('A hora de início deve ser antes da hora de fim.');
+      }
+
+      const agendamento = { 
+          data: diaSelecionado, 
+          horaInicio: hInicio, 
+          horaFim: hFim, 
+          nome: nome, 
+          telefone: tel, 
+          servico: servico, 
+          criadoEm: firebase.firestore.FieldValue.serverTimestamp() 
+      };
+
+      try {
+        // Se estiver remarcando, atualiza o documento existente
+        if (idAgendamentoRemarcando) {
+            await db.collection('agendamentos').doc(idAgendamentoRemarcando).update(agendamento);
+            alert('Agendamento remarcado com sucesso!');
+            idAgendamentoRemarcando = null;
+            dadosRemarcando = null;
+        } else {
+            // Se for um agendamento novo
+            // Checagem de conflito (básica para o cliente)
+            const snap = await db.collection('agendamentos').where('data', '==', diaSelecionado).get();
+            let conflito = false;
+            snap.docs.forEach(doc => {
+                const ag = doc.data();
+                const i = ag.horaInicio || ag.hora;
+                const f = ag.horaFim || ag.hora;
+                if (hInicio < f && hFim > i) conflito = true; // Lógica de overlap
+            });
             
-            const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
+            if (conflito) {
+                alert('Ops! Este horário já está ocupado. Por favor, escolha outro.');
+                return;
+            }
+
+            const docRef = await db.collection('agendamentos').add(agendamento);
+            
             if (!isAdmin) {
-                localStorage.setItem('meu_agendamento', JSON.stringify({ data: diaSelecionado, hora: horarioSelecionado }));
+                localStorage.setItem('meu_agendamento', JSON.stringify({ data: diaSelecionado, horaInicio: hInicio, horaFim: hFim }));
                 localStorage.setItem('meu_agendamento_id', docRef.id);
             }
-            
-            document.getElementById('modal-agendar').style.display = 'none';
-            if (!isAdmin) verificarAgendamentoCliente();
-            
-            mostrarToast('Horário reservado!');
-            
-            if (diaSelecionado) {
-                const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
-                if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
-            }
-            if (isAdmin) carregarAgendamentosAdmin();
-          });
-        })
-        .catch(e => alert('Erro ao agendar: ' + e.message));
+            alert('Agendamento realizado com sucesso!');
+        }
+        
+        document.getElementById('modal-agendar').style.display = 'none';
+        if (!isAdmin) verificarAgendamentoCliente();
+        
+        mostrarToast('Horário reservado!');
+        
+        if (diaSelecionado) {
+            const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
+            if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
+        }
+        if (isAdmin) carregarAgendamentosAdmin();
+
+      } catch (e) { 
+          alert('Erro ao agendar: ' + e.message); 
+          console.error(e);
+      }
     }
 
     function verificarAgendamentoCliente() {
@@ -1066,12 +1184,12 @@
         if (salvo) {
             let ag = null;
             try { ag = JSON.parse(salvo); } catch(e) { ag = null; localStorage.removeItem('meu_agendamento'); }
-            if (ag && ag.data && ag.hora) {
+            if (ag && ag.data && ag.horaInicio) {
               if(calendarContainer) calendarContainer.style.display = 'none';
               if(clienteJaAgendou) clienteJaAgendou.style.display = 'block';
               const dataFmt = ag.data.split('-').reverse().join('/');
               const btnW = document.getElementById('btn-whats-cliente');
-              if(btnW) btnW.href = `https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá, tenho um horário marcado dia ' + dataFmt + ' às ' + ag.hora)}`;
+              if(btnW) btnW.href = `https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá, tenho um horário marcado dia ' + dataFmt + ' às ' + ag.horaInicio)}`;
               return;
             }
         }
@@ -1079,33 +1197,31 @@
         if(clienteJaAgendou) clienteJaAgendou.style.display = 'none';
     }
 
-    async function solicitarRemarcacaoCliente() {
-        if(!confirm('Tem certeza que deseja desmarcar e escolher um novo horário?')) return;
+    function solicitarRemarcacaoCliente() {
+        const ag = JSON.parse(localStorage.getItem('meu_agendamento'));
+        const id = localStorage.getItem('meu_agendamento_id');
         
-        const idAgendamento = localStorage.getItem('meu_agendamento_id');
-        if (idAgendamento) {
-            try {
-                await db.collection('agendamentos').doc(idAgendamento).delete();
-            } catch(e) { console.error("Erro ao deletar agendamento:", e); }
-        }
-        
-        localStorage.removeItem('meu_agendamento');
-        localStorage.removeItem('meu_agendamento_id');
-        verificarAgendamentoCliente();
-        mostrarToast('Horário desmarcado. Escolha um novo!');
+        if (!id) return alert('Erro ao localizar agendamento.');
+
+        idAgendamentoRemarcando = id;
+        // Como o cliente não tem os dados salvos localmente as vezes, buscamos no firestore
+        db.collection('agendamentos').doc(id).get().then(doc => {
+            if(doc.exists) {
+                const d = doc.data();
+                dadosRemarcando = { nome: d.nome, telefone: d.telefone, servico: d.servico };
+                mostrarToast('Escolha o novo dia e horário no calendário.');
+                document.getElementById('cliente-ja-agendou').style.display = 'none';
+                document.getElementById('calendario-container').style.display = 'block';
+                document.getElementById('calendario-container').scrollIntoView({behavior: 'smooth'});
+            }
+        });
     }
 
-    async function remarcarAdmin(idAgendamento) {
-        if(!confirm('Desmarcar este horário para liberar a vaga?')) return;
-        try {
-            await db.collection('agendamentos').doc(idAgendamento).delete();
-            mostrarToast('Horário liberado.');
-            carregarAgendamentosAdmin();
-            if(diaSelecionado) {
-                const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
-                if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
-            }
-        } catch(e) { console.error(e); alert('Erro ao remarcar.'); }
+    function abrirRemarcarAdmin(id, nome, telefone, servico) {
+        idAgendamentoRemarcando = id;
+        dadosRemarcando = { nome, telefone, servico };
+        mostrarToast('Escolha o novo dia e horário no calendário.');
+        document.getElementById('calendario-container').scrollIntoView({behavior: 'smooth'});
     }
 
     function carregarAgendamentosAdmin() {
@@ -1124,19 +1240,27 @@
         
         let ags = []; 
         snapshot.forEach(doc => ags.push({ id: doc.id, ...doc.data() }));
-        ags.sort((a,b) => (a.data + a.hora).localeCompare(b.data + b.hora));
+        // Ordena pela data e depois pela hora de início
+        ags.sort((a,b) => {
+            const aStr = a.data + (a.horaInicio || a.hora);
+            const bStr = b.data + (b.horaInicio || b.hora);
+            return aStr.localeCompare(bStr);
+        });
         
         container.innerHTML = ags.map(ag => {
             const dataFmt = String(ag.data || '').split('-').reverse().join('/');
             const telClean = String(ag.telefone || '').replace(/\D/g,'');
+            const hI = ag.horaInicio || ag.hora;
+            const hF = ag.horaFim || ag.hora;
+            
             return `<div class="admin-agenda-card">
-                <div class="data-hora"><span>📅 ${esc(dataFmt)}</span><span>⏰ ${esc(ag.hora)}</span></div>
+                <div class="data-hora"><span>📅 ${esc(dataFmt)}</span><span>⏰ ${esc(hI)} - ${esc(hF)}</span></div>
                 <div class="cliente-info"><i class="fa-solid fa-user"></i> ${esc(ag.nome)}</div>
                 <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${esc(ag.telefone)}</div>
                 <div class="cliente-servico"><i class="fa-solid fa-wand-magic-sparkles"></i> Serviço: ${esc(ag.servico || 'Não especificado')}</div>
                 <div style="display:flex; gap:5px; margin-top:10px;">
                     <a href="https://wa.me/55${telClean}" target="_blank" rel="noopener" class="btn-whats-agendamento" style="margin-top:0;">Chamar no Zap</a>
-                    <button onclick="remarcarAdmin('${ag.id}')" class="btn-remarcar" style="margin-top:0;">Remarcar</button>
+                    <button onclick="abrirRemarcarAdmin('${ag.id}', '${esc(ag.nome)}', '${esc(ag.telefone)}', '${esc(ag.servico || '')}')" class="btn-remarcar" style="margin-top:0;">Remarcar</button>
                 </div>
             </div>`;
         }).join('');
