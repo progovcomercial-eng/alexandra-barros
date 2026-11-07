@@ -188,9 +188,19 @@ export const createAppointment = onCall(
       throw new HttpsError("invalid-argument", "Esse horário não está disponível para agendamento.");
     }
 
-    const nowDate = new Date();
-    const requested = new Date(`${date}T${time}:00`);
-    if (Number.isNaN(requested.getTime()) || requested.getTime() <= nowDate.getTime()) {
+    // Comparação no fuso da clínica; Cloud Functions normalmente executa em UTC.
+    const nowParts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Sao_Paulo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(new Date());
+    const nowValues = Object.fromEntries(nowParts.map((part) => [part.type, part.value]));
+    const clinicNow = `${nowValues.year}-${nowValues.month}-${nowValues.day} ${nowValues.hour}:${nowValues.minute}`;
+    if (`${date} ${time}` <= clinicNow) {
       throw new HttpsError("failed-precondition", "Escolha uma data e horário futuros.");
     }
 
