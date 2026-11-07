@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Meta tags PWA -->
   <meta name="theme-color" content="#9D174D">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,103 +17,47 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- Scripts do Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
   <style>
     :root {
-      --cor-fundo: #FFF2F6;
-      --cor-card-fundo: #FFFFFF;
-      --cor-principal: #9D174D;
-      --cor-dourada: #D4AF37;
-      --cor-texto-escuro: #333333;
-      --cor-texto-mutado: #777777;
+      --cor-fundo: #FFF2F6; --cor-card-fundo: #FFFFFF; --cor-principal: #9D174D;
+      --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
       --cor-whatsapp: #00BB2D;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; }
+    .app-container { width: 100%; max-width: 450px; background-color: var(--cor-fundo); min-height: 100vh; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); transition: background 0.3s; background-size: cover; background-position: center; }
+    .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
 
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #E8DCE0;
-      color: var(--cor-texto-escuro);
-      display: flex; justify-content: center;
-      min-height: 100vh;
-    }
-
-    .app-container {
-      width: 100%; max-width: 450px;
-      background-color: var(--cor-fundo);
-      min-height: 100vh;
-      position: relative;
-      display: flex; flex-direction: column;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      transition: background 0.3s;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .app-content {
-      flex: 1; overflow-y: auto;
-      padding: 20px;
-      padding-bottom: 100px; 
-    }
-
-    /* TELA DE LOGIN */
-    #tela-login {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;
-      background: linear-gradient(135deg, var(--cor-principal), #4C0519);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #fff; padding: 20px;
-    }
-    .login-logo-img {
-      width: 250px; max-width: 85%; height: auto; margin-bottom: 30px;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
-      border-radius: 20px;
-    }
-    .login-sub { font-size: 12px; opacity: 0.8; margin-bottom: 20px; letter-spacing: 1px; }
-    .login-input { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: #fff; text-align: center; font-size: 16px; margin-bottom: 15px; outline: none; }
-    .login-input::placeholder { font-size: 14px; opacity: 0.7; }
-    .login-btn { width: 100%; max-width: 250px; padding: 15px; border-radius: 10px; border: none; background: var(--cor-dourada); color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
-    .login-btn:active { transform: scale(0.96); }
-
-    /* BARRA DE SIMULAÇÃO */
-    .debug-switcher {
-      background: #222; color: #fff; padding: 10px; font-size: 11px;
-      display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around;
-      border-bottom: 2px solid var(--cor-principal); z-index: 100;
-    }
+    .debug-switcher { background: #222; color: #fff; padding: 10px; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-around; border-bottom: 2px solid var(--cor-principal); z-index: 100; }
     .debug-switcher select { font-size: 11px; padding: 2px 4px; background: #444; color: white; border: none; border-radius: 4px; font-family: inherit; }
 
-    /* HEADER */
-    .app-header {
-      background-color: var(--cor-principal); padding: 20px 16px;
-      text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-    }
+    .app-header { background-color: var(--cor-principal); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
     .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
     .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
     .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; font-weight: 700; }
 
-    /* HOME - BANNER */
-    .vitrine-banner-nova {
-      background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519);
-      border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF;
-      margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2);
-      position: relative; overflow: hidden;
-    }
+    .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
+
+    .vitrine-banner-nova { background: linear-gradient(135deg, #B91C1C, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
     .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
 
-    /* PUBLICIDADE DINÂMICA */
     .pub-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .pub-scroll::-webkit-scrollbar { display: none; }
     .pub-card { flex-shrink: 0; width: 260px; scroll-snap-align: start; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid rgba(157, 23, 77, 0.1); position: relative; }
     .pub-media { width: 100%; height: 130px; background: #eee; position: relative; }
-    .pub-media img, .pub-media video { width: 100%; height: 100%; object-fit: cover; }
+    .pub-media img, .pub-media video, .pub-media iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
     .pub-info { padding: 16px; flex: 1; display: flex; flex-direction: column; }
     .pub-info h4 { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
     .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
     .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
 
-    /* CTA CADASTRO */
     .cta-cadastro { background: linear-gradient(135deg, #FFF8FA, #FFE4EE); border: 1.5px solid var(--cor-dourada); border-radius: 18px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
     .cta-cadastro-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     .cta-cadastro-texto { flex: 1; }
@@ -122,17 +65,14 @@
     .cta-cadastro-texto p { font-size: 10.5px; color: var(--cor-texto-mutado); }
     .btn-cadastrar-agora { background: var(--cor-principal); color: #fff; border: none; padding: 10px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
 
-    /* BANNER INDIQUE */
     .banner-indique { background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); color: #4A2300; }
     .banner-indique h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
     .banner-indique p { font-size: 11px; opacity: 0.8; }
     .banner-indique i { font-size: 24px; color: #fff; }
 
-    /* SEÇÕES */
     .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
     .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
 
-    /* PLANOS */
     .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .planos-scroll::-webkit-scrollbar { display: none; }
     .plano-card { flex-shrink: 0; width: 172px; scroll-snap-align: start; background: var(--cor-card-fundo); border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 18px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; }
@@ -145,7 +85,6 @@
     .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
     .plano-btn { width: 100%; padding: 9px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    /* ESPAÇOS (CLUBE / RENOVA-SE) */
     .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
     .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
     .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); }
@@ -159,7 +98,6 @@
     .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
     .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
 
-    /* CONTATO COMPACTO */
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 11px; color: var(--cor-texto-mutado); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
     .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 13px; }
@@ -171,7 +109,6 @@
     .rede-btn.em { background: #333333; }
     .rede-btn.canal { background: #128C7E; flex: 1 1 100%; flex-direction: row; gap: 10px; padding: 14px 0; font-size: 13px; margin-top: 5px; }
 
-    /* TELA DE CANAIS EXCLUSIVA */
     .canal-item-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-decoration: none; color: inherit; border: 1px solid rgba(0,0,0,0.03); transition: transform 0.2s; }
     .canal-item-card:active { transform: scale(0.98); }
     .canal-item-icon { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #128C7E, #25D366); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
@@ -180,7 +117,6 @@
     .canal-item-info p { font-size: 11px; color: var(--cor-texto-mutado); }
     .canal-item-arrow { color: #ccc; }
 
-    /* BOUTIQUE */
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
     .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
     .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
@@ -188,23 +124,29 @@
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
     .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
 
-    /* VÍDEO */
     .video-container { display: none; margin-bottom: 24px; }
-    .video-container video { width: 100%; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .video-container video, .video-container iframe { width: 100%; height: 220px; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; }
 
     /* AGENDA */
     .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .calendario-header h3 { font-size: 16px; color: var(--cor-principal); }
+    .calendario-header button { background: none; border: none; color: var(--cor-principal); font-size: 18px; cursor: pointer; padding: 0 10px; }
     .calendario-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 24px; }
     .dia-semana { text-align: center; font-size: 11px; font-weight: 700; color: var(--cor-texto-mutado); margin-bottom: 4px; }
     .dia-btn { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 0; font-family: inherit; font-weight: 600; font-size: 13px; cursor: pointer; transition: all .2s; }
     .dia-btn.selecionado { background: var(--cor-principal); color: #fff; border-color: var(--cor-principal); }
     .dia-btn.indisponivel { background: #f5f5f5; color: #ccc; cursor: not-allowed; text-decoration: line-through; }
+    .dia-btn.vazio { background: transparent; border: none; cursor: default; }
     .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
     .horario-btn { background: #fff; border: 1px solid var(--cor-dourada); border-radius: 8px; padding: 10px; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--cor-principal); cursor: pointer; }
     .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
 
-    /* INDIQUE */
+    .admin-agenda-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 4px solid var(--cor-principal); display: flex; flex-direction: column; gap: 5px; }
+    .admin-agenda-card .data-hora { font-size: 14px; font-weight: 700; color: var(--cor-principal); display: flex; justify-content: space-between; }
+    .admin-agenda-card .cliente-info { font-size: 12px; color: var(--cor-texto-escuro); font-weight: 600; margin-top: 5px; }
+    .admin-agenda-card .cliente-tel { font-size: 11px; color: var(--cor-texto-mutado); }
+    .btn-whats-agendamento { background: #00BB2D; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; }
+
     .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .indique-box i { font-size: 48px; color: var(--cor-dourada); margin-bottom: 16px; }
     .indique-box h3 { font-size: 18px; color: var(--cor-principal); margin-bottom: 8px; }
@@ -213,11 +155,9 @@
     .link-indique input { flex: 1; border: none; background: transparent; padding: 8px; font-family: inherit; font-size: 12px; color: #555; }
     .link-indique button { background: var(--cor-principal); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
-    /* BOTÕES GERAIS */
     .btn-cta-grande { width: 100%; padding: 16px; background: var(--cor-principal); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
     .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); padding: 8px 14px; border-radius: 999px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-bottom: 18px; }
 
-    /* PERFIL E PAINEL MASTER */
     .perfil-hero { background: linear-gradient(135deg, #9D174D, #4C0519); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
     .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
     .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
@@ -231,7 +171,6 @@
     .master-card h4 { font-size: 11px; color: var(--cor-principal); font-weight: 700; margin: 0; line-height: 1.2; }
     .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
 
-    /* TELAS E ANIMAÇÕES */
     .tela { display: none; }
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -256,7 +195,7 @@
     .btn-ia-acao:active { background: var(--cor-principal); color: #fff; }
 
     /* MODAIS E EDITORES */
-    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 360px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 85vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
     .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #D4AF37; border-radius: 8px; font-family: inherit; font-size: 13px; }
@@ -264,13 +203,11 @@
     .btn-enviar-cadastro { background: #9D174D; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 12px; }
     .btn-undo { background: #f5f5f5; color: #555; border: 1px solid #ccc; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
-    /* CONFIG ITEM ROWS */
     .config-item-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
     .config-item-row input { margin: 0; flex: 1; }
     .config-item-row .btn-del { background: #ffebee; color: #c62828; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-add-item { background: #e0e0e0; color: #333; border: none; padding: 8px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer; margin-bottom: 15px; }
 
-    /* CENTRAL DE INTEGRAÇÕES */
     .integracoes-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
     .integ-left { display: flex; align-items: center; gap: 12px; }
     .integ-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: bold; }
@@ -281,47 +218,19 @@
     .btn-conectar.off { background: var(--cor-principal); color: #fff; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
 
-    /* PALETAS E EMOJIS */
-    .paleta-cores { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-    .cor-opcao { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-    .cor-opcao:hover { transform: scale(1.1); border-color: #333; }
-    .emoji-grid { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-    .emoji-opcao { font-size: 24px; padding: 8px; background: #f5f5f5; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; }
-    .emoji-opcao:hover { background: #e0e0e0; }
-
-    /* NAV INFERIOR */
     .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
     .nav-item.active { color: var(--cor-principal); }
     .nav-item i { font-size: 18px; }
 
-    /* TELA PLANO E PRODUTO */
-    .pagina-hero {
-      border-radius: 22px; padding: 26px 20px; text-align: center;
-      color: #fff; margin-bottom: 20px;
-      box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22);
-    }
+    .pagina-hero { border-radius: 22px; padding: 26px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); }
     .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
-    .pagina-titulo {
-      font-family: 'Playfair Display', serif; font-size: 24px;
-      color: var(--cor-dourada); margin-bottom: 6px;
-    }
+    .pagina-titulo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--cor-dourada); margin-bottom: 6px; }
     .pagina-subtitulo { font-size: 12px; opacity: 0.88; }
 
     .beneficios-lista { list-style: none; padding: 0; margin: 0 0 24px 0; }
-    .beneficios-lista li {
-      display: flex; align-items: center; gap: 10px;
-      background: #fff; border-radius: 12px;
-      padding: 12px 14px; margin-bottom: 8px;
-      font-size: 12.5px; color: var(--cor-texto-escuro);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    }
-    .beneficio-icone {
-      width: 22px; height: 22px; border-radius: 50%;
-      background: var(--cor-dourada); color: #fff;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; flex-shrink: 0;
-    }
+    .beneficios-lista li { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 12.5px; color: var(--cor-texto-escuro); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .beneficio-icone { width: 22px; height: 22px; border-radius: 50%; background: var(--cor-dourada); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
 
     .produto-nome { text-align: center; color: var(--cor-principal); margin-bottom: 8px; font-family: 'Playfair Display', serif; font-size: 22px; }
     .produto-preco { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--cor-texto-escuro); }
@@ -330,22 +239,8 @@
 </head>
 <body>
 
-  <!-- TELA DE LOGIN -->
-  <div id="tela-login">
-    <img src="logo_login.png" alt="Logo AleClube" class="login-logo-img">
-    <div class="login-sub">Acesso Restrito ao Painel</div>
-    
-    <!-- Campo de E-mail adicionado -->
-    <input type="email" id="login-email" class="login-input" placeholder="Digite seu e-mail" value="progvocacional@gmail.com">
-    <input type="password" id="login-senha" class="login-input" placeholder="Digite a senha">
-    
-    <button class="login-btn" onclick="fazerLogin()">Entrar no App</button>
-    <p style="font-size:10px; margin-top:20px; opacity:0.6;">Senha cadastrada no Firebase</p>
-  </div>
+  <div class="app-container" id="app-container">
 
-  <div class="app-container" id="app-container" style="display:none;">
-
-    <!-- SIMULADOR -->
     <div class="debug-switcher">
       <div>
         Simular Acesso:
@@ -358,7 +253,6 @@
       </div>
     </div>
 
-    <!-- HEADER -->
     <div class="app-header">
       <div class="avatar-ab" id="app-logo">AB</div>
       <div class="header-title" id="app-name">Alexandra Barros</div>
@@ -366,36 +260,56 @@
 
     <div class="app-content" id="app-content">
 
-      <!-- ============ TELA INÍCIO ============ -->
       <div id="tela-inicio" class="tela ativa">
+        <div id="welcome-banner" class="welcome-banner">Olá, seja bem-vindo(a)!</div>
         <div id="home-sections"></div>
       </div>
 
-      <!-- ============ TELA DE CANAIS ============ -->
       <div id="tela-canais" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="section-title-nova" style="margin-top:0;">Nossos Canais</div>
-        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades, ofertas e novidades exclusivas.</p>
+        <p style="font-size:12px; color:var(--cor-texto-mutado); margin-bottom:20px;">Siga nossos canais oficiais para ficar por dentro de todas as novidades.</p>
         <div id="canais-lista-container"></div>
       </div>
 
-      <!-- ============ TELA AGENDA ============ -->
+      <!-- TELA DE AGENDA -->
       <div id="tela-agenda" class="tela">
-        <div class="section-title-nova" style="margin-top:0;">Escolha o dia</div>
-        <div class="calendario-header"><h3>Novembro 2026</h3></div>
+        
+        <!-- VISÃO DO CLIENTE -->
+        <div id="agenda-cliente" style="display:block;">
+          <div class="section-title-nova" style="margin-top:0;">Escolha o dia e horário</div>
+          
+          <div id="cliente-ja-agendou" style="display:none; background:#fff; padding:20px; border-radius:12px; text-align:center; border:1px solid #ddd;">
+            <i class="fa-solid fa-calendar-check" style="font-size:40px; color:var(--cor-principal); margin-bottom:10px;"></i>
+            <h3 style="color:var(--cor-principal); margin-bottom:5px;">Você já tem um horário!</h3>
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Seu agendamento foi registrado. Aguarde o contato da nossa equipe.</p>
+            <a id="btn-whats-cliente" href="#" target="_blank" class="btn-cta-grande" style="background:#00BB2D; text-decoration:none;">Falar no WhatsApp</a>
+          </div>
 
-        <div class="calendario-grid" id="calendario-grid"></div>
-
-        <div id="horarios-container" style="display:none;">
-          <div class="section-title-nova" style="margin-top:16px;">Horários disponíveis</div>
-          <div class="horarios-grid" id="horarios-grid"></div>
-          <button class="btn-cta-grande" onclick="confirmarAgendamento()" style="margin-top:20px;">
-            <i class="fa-brands fa-whatsapp"></i> Confirmar no WhatsApp
-          </button>
+          <div id="calendario-container">
+            <div class="calendario-header">
+              <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+              <h3 id="mes-ano-atual">Novembro 2026</h3>
+              <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="calendario-grid" id="calendario-grid"></div>
+            
+            <div id="horarios-container" style="display:none;">
+              <div class="section-title-nova" style="margin-top:16px;">Horários disponíveis</div>
+              <div class="horarios-grid" id="horarios-grid"></div>
+            </div>
+          </div>
         </div>
+
+        <!-- VISÃO DO ADMIN -->
+        <div id="agenda-admin" style="display:none;">
+          <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+          <div class="section-title-nova" style="margin-top:0;">Agendamentos Marcados</div>
+          <div id="lista-agendamentos-admin"></div>
+        </div>
+
       </div>
 
-      <!-- ============ TELA INDIQUE ============ -->
       <div id="tela-indique" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="indique-box">
@@ -406,16 +320,12 @@
             <input type="text" id="link-indicacao" readonly>
             <button onclick="copiarLink()">Copiar</button>
           </div>
-          <a id="btn-share-indique" href="#" target="_blank" class="btn-cta-grande" style="text-decoration:none; background:#00BB2D;" onclick="mostrarToast('Abrindo WhatsApp...')">
+          <button onclick="compartilharIndicacao()" class="btn-cta-grande" style="background:#00BB2D;">
             <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
-          </a>
-          <p style="font-size:11px; color:var(--cor-texto-mutado); margin-top:14px;">
-            Seu código: <b id="codigo-indicacao" style="color:var(--cor-principal);"></b>
-          </p>
+          </button>
         </div>
       </div>
 
-      <!-- ============ TELA PLANO ============ -->
       <div id="tela-plano" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" id="plano-hero" style="background: linear-gradient(135deg, #9D174D 0%, #560021 100%);">
@@ -432,7 +342,6 @@
         <button class="btn-cta-grande" id="plano-btn-acao" onclick="abrirModalCadastro()"><i class="fa-solid fa-bolt"></i> Assinar agora</button>
       </div>
 
-      <!-- ============ TELA PRODUTO ============ -->
       <div id="tela-produto" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div id="produto-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🛍️</div>
@@ -442,7 +351,16 @@
         <button class="btn-cta-grande" onclick="abrirModalCadastro()"><i class="fa-solid fa-bag-shopping"></i> Comprar agora</button>
       </div>
 
-      <!-- ============ TELA PERFIL ============ -->
+      <div id="tela-parceiro" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🤝</div>
+        <h1 class="produto-nome" id="parceiro-nome">Parceiro</h1>
+        <p class="produto-preco" id="parceiro-desc" style="font-size: 14px; font-weight: 600; margin-bottom: 16px;">Descrição curta</p>
+        <div class="section-title-nova">Sobre a Parceria</div>
+        <div id="parceiro-conteudo" style="font-size: 13px; line-height: 1.6; color: var(--cor-texto-escuro); background: #fff; padding: 16px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"></div>
+        <button class="btn-cta-grande" onclick="voltarInicio()"><i class="fa-solid fa-check"></i> Entendi</button>
+      </div>
+
       <div id="tela-perfil" class="tela">
         <div class="perfil-hero">
           <div class="perfil-avatar" id="perfil-avatar">AB</div>
@@ -454,26 +372,31 @@
           <div class="section-title-nova">Configurações</div>
           <div class="painel-master-box">
             <div class="section-title-nova" style="margin-top: 0; margin-bottom:10px; font-size:12px;">Painel Master</div>
-            <div class="master-grid" id="master-grid-botoes"></div>
+            
+            <div id="area-login-admin">
+              <p style="font-size:12px;text-align:center;margin-bottom:10px;">Acesso exclusivo da administração.</p>
+              <input type="email" id="admin-email" autocomplete="username" value="progovcomercial@gmail.com" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:8px;">
+              <input type="password" id="admin-password" autocomplete="current-password" placeholder="Senha cadastrada no Firebase" style="width:100%;padding:10px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
+              <button id="btn-admin-login" onclick="verificarSenhaAdmin()" style="width:100%;padding:10px;background:var(--cor-principal);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;">Entrar como administradora</button>
+              <p id="admin-auth-status" role="status" style="font-size:11px;margin-top:9px;text-align:center;color:#777;">Entre com a conta autorizada.</p>
+            </div>
+            <div id="admin-logado" style="display:none;text-align:center;margin-bottom:12px;">
+              <p id="admin-identidade" style="font-size:12px;margin-bottom:8px;"></p>
+              <button onclick="sairAdmin()" style="padding:8px 14px;border:1px solid var(--cor-principal);background:#fff;color:var(--cor-principal);border-radius:8px;font-weight:700;">Sair da administração</button>
+            </div>
+            <div class="master-grid" id="master-grid-botoes" style="display:none;"></div>
           </div>
-        </div>
-
-        <div style="text-align:center; margin-top: 30px;">
-          <!-- NOVO BOTÃO DE LOGOUT -->
-          <button onclick="fazerLogout()" style="background:var(--cor-principal); border:none; color:#fff; padding:12px 20px; border-radius:10px; font-weight:700; font-size:13px; width:100%; margin-bottom: 15px; cursor:pointer;">Sair da Conta (Logout)</button>
-          
-          <button onclick="resetarApp()" style="background:none; border:none; color:#ccc; font-size:11px; text-decoration:underline; cursor:pointer;">Apagar configurações do banco e voltar ao padrão</button>
         </div>
       </div>
 
-    </div><!-- /app-content -->
+    </div>
 
     <!-- BOTÃO IA -->
     <button class="assistente-ia-flutuante" onclick="abrirChat()" aria-label="Assistente IA">
       <i class="fa-solid fa-wand-magic-sparkles"></i>
     </button>
 
-    <!-- CHAT IA -->
+    <!-- TELA CHAT IA -->
     <div id="tela-chat" class="tela">
       <div class="chat-container">
         <div class="chat-header">
@@ -483,33 +406,54 @@
         </div>
         
         <div class="chat-body" id="chat-body">
-          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸</div>
-          <div class="msg msg-bot" style="border:1px solid #eee; padding:14px;">
-            <b>💡 Dica:</b> Eu posso te ensinar a configurar todo o seu aplicativo!<br>
-            <button type="button" class="btn-ia-acao" onclick="iniciarAula()">🎓 Quero fazer a aula de configuração</button>
-          </div>
+          <div class="msg msg-bot">Olá! Sou a Assistente Ale. 🌸 Como posso te ajudar hoje?</div>
         </div>
         
         <div class="chat-input-area">
-          <input type="text" id="chat-input" placeholder="Digite aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
+          <input type="text" id="chat-input" placeholder="Digite sua dúvida aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
           <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- MODAL CADASTRO -->
+    <!-- MODAL DO CÓDIGO DO CLUBE -->
+    <div id="modal-codigo-clube" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro">
+        <h3>Clube da Ale 🤫</h3>
+        <p style="font-size:12px; text-align:center; margin-bottom:15px;">Este espaço é exclusivo. Digite seu código de convite para liberar o acesso.</p>
+        <input type="text" id="input-codigo-clube" placeholder="Ex: VIP-A3F9" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
+        <button onclick="verificarCodigoClube()" class="btn-enviar-cadastro">Verificar Código</button>
+        <button onclick="document.getElementById('modal-codigo-clube').style.display='none'" class="btn-undo">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- MODAL DE CADASTRO DO CLIENTE -->
     <div id="modal-cadastro" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
-        <h3>Bem-vindo(a) à Vitrine Ale</h3>
+        <h3 style="margin-bottom:15px;">Faça seu Cadastro</h3>
         <form onsubmit="enviarCadastro(event)">
-          <input type="text" placeholder="Seu nome completo" required>
+          <input type="text" id="cad-nome" placeholder="Seu nome completo" required>
+          <input type="email" id="cad-email" placeholder="Seu melhor e-mail" required>
           <input type="tel" id="cad-tel" placeholder="WhatsApp (com DDD)" required>
-          <button type="submit" class="btn-enviar-cadastro">Criar minha conta</button>
+          <button type="submit" class="btn-enviar-cadastro">Cadastrar</button>
+          <button type="button" onclick="document.getElementById('modal-cadastro').style.display='none'" style="width:100%; margin-top:10px; border:none; background:none; color:#777; font-size:12px; cursor:pointer; text-decoration:underline;">Cancelar</button>
         </form>
       </div>
     </div>
 
-    <!-- MODAL EDITOR -->
+    <!-- MODAL AGENDAMENTO CLIENTE -->
+    <div id="modal-agendar" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro">
+        <h3>Confirmar Agendamento</h3>
+        <p style="font-size:12px; text-align:center; margin-bottom:15px; color:#666;">Horário: <b id="resumo-horario" style="color:var(--cor-principal);"></b></p>
+        <input type="text" id="agenda-nome" placeholder="Seu Nome Completo" required>
+        <input type="tel" id="agenda-tel" placeholder="Seu WhatsApp (com DDD)" required>
+        <button class="btn-enviar-cadastro" onclick="salvarAgendamento()">Confirmar Reserva</button>
+        <button class="btn-undo" onclick="document.getElementById('modal-agendar').style.display='none'">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- MODAL EDITOR MASTER -->
     <div id="modal-editor" class="modal-cadastro-fixo" style="align-items: center;">
       <div class="cartao-cadastro" style="background: #fff;">
         <h3 id="editor-titulo">Editar</h3>
@@ -529,15 +473,8 @@
 
   </div>
 
-  <!-- SDK do Firebase (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
   <script>
-    // =====================================================
-    // CONFIGURAÇÃO FIREBASE
-    // =====================================================
+    // --- CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
       authDomain: "aleclube.firebaseapp.com",
@@ -548,20 +485,20 @@
       measurementId: "G-15ZM50X9B8"
     };
 
-    // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
+    const EMAIL_ADMIN_AUTORIZADO = 'progovcomercial@gmail.com';
+    let adminAutenticado = false;
+    let usuarioAutenticado = null;
 
-    // Configuração PWA (Manifest)
     const manifest = {
-      name: "AleClube App",
-      short_name: "AleClube",
-      start_url: ".",
-      display: "standalone",
-      background_color: "#FFF2F6",
-      theme_color: "#9D174D",
-      icons: [{ src: "logo_login.png", sizes: "512x512", type: "image/png" }]
+      name: "AleClube App", short_name: "AleClube", start_url: ".", display: "standalone",
+      background_color: "#FFF2F6", theme_color: "#9D174D",
+      icons: [
+        { src: "logo_login.png", sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: "logo_login.png", sizes: "512x512", type: "image/png", purpose: "any" }
+      ]
     };
     const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/json'}));
     const link = document.createElement('link');
@@ -569,59 +506,22 @@
     link.href = manifestURL;
     document.head.appendChild(link);
 
-    // =====================================================
-    // PERMISSÕES E ESTADO
-    // =====================================================
     const todasPermissoes = [
-      { id: 'identidade', nome: 'Nome & Senha' },
-      { id: 'cores', nome: 'Cores' },
-      { id: 'logo', nome: 'Logo' },
-      { id: 'fundo', nome: 'Plano de Fundo' },
-      { id: 'tela-inicial', nome: 'Clube e Renova-se' },
-      { id: 'boutique', nome: 'Boutique / Loja' },
-      { id: 'integracoes', nome: 'Integrações' },
-      { id: 'layout', nome: 'Organizar Tela' },
-      { id: 'videos', nome: 'Vídeos' },
-      { id: 'publicidade', nome: 'Patrocinadores' },
-      { id: 'equipe', nome: 'Equipe' },
-      { id: 'links', nome: 'Links' },
-      { id: 'contato', nome: 'Redes & Contato' },
-      { id: 'ia', nome: 'Assistente IA' },
-      { id: 'clube', nome: 'Preços Planos' }
+      { id: 'identidade', nome: 'Nome & Senha' }, { id: 'cores', nome: 'Cores' },
+      { id: 'logo', nome: 'Logo' }, { id: 'fundo', nome: 'Plano de Fundo' },
+      { id: 'tela-inicial', nome: 'Clube e Renova-se' }, { id: 'boutique', nome: 'Boutique / Loja' },
+      { id: 'integracoes', nome: 'Integrações' }, { id: 'layout', nome: 'Organizar Tela' },
+      { id: 'videos', nome: 'Vídeos (Link)' }, { id: 'publicidade', nome: 'Patrocinadores' },
+      { id: 'equipe', nome: 'Equipe' }, { id: 'links', nome: 'Links' },
+      { id: 'contato', nome: 'Redes & Contato' }, { id: 'ia', nome: 'Assistente IA' },
+      { id: 'clube', nome: 'Planos e Preços' }, { id: 'vip', nome: 'Gerenciar Clube VIP' },
+      { id: 'agenda-config', nome: 'Configurar Agenda' }
     ];
 
     const estadoPadrao = {
-      appName: 'Alexandra Barros',
-      logo: 'AB',
-      logoImage: null,
-      colorPrimary: '#9D174D',
-      colorGold: '#D4AF37',
-      colorText: '#333333',
-      bgColor: '#FFF2F6',
-      bgGradient: null,
-      bgImage: null,
-      video: null,
-      whatsapp: '5511997450293',
-      mensagem: 'Ganhe pontos e ofertas exclusivas',
-      vitrineName: 'VITRINE ALE',
-      clubeName: 'Clube da Ale',
-      clubeColor: '#C2185B',
-      clubeImage: null,
-      clubeLink: null,
-      renovaseName: 'Renova-se',
-      renovaseColor: '#B8852E',
-      renovaseImage: null,
-      renovaseLink: null,
-      boutiqueName: 'Boutique do Alê',
-      boutiqueProdutos: [
-        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', imagem: null },
-        { id: 2, nome: 'Brincos AleClube', preco: '99,90', imagem: null }
-      ],
-      iaName: 'Assistente Ale',
-      iaWelcome: 'Olá, Alexandra! Eu sou a Assistente Ale. 🌸',
-      iaApiKey: '',
-      publicidades: [],
-      planoAtual: 'master',
+      appName: 'Alexandra Barros', logo: 'AB', logoImage: null, colorPrimary: '#9D174D', colorGold: '#D4AF37', colorText: '#333333', bgColor: '#FFF2F6', bgGradient: null, bgImage: null, video: null, whatsapp: '5511997450293', mensagem: 'Ganhe pontos e ofertas exclusivas', vitrineName: 'VITRINE ALE', clubeName: 'Clube da Ale', clubeColor: '#C2185B', clubeImage: null, clubeLink: null, renovaseName: 'Renova-se', renovaseColor: '#B8852E', renovaseImage: null, renovaseLink: null, boutiqueName: 'Boutique do Alê',
+      boutiqueProdutos: [ { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', imagem: null }, { id: 2, nome: 'Brincos AleClube', preco: '99,90', imagem: null } ],
+      iaName: 'Assistente Ale', iaWelcome: 'Olá, Alexandra! Eu sou a Assistente Ale. 🌸', iaApiKey: '', publicidades: [], planoAtual: 'master',
       integracoes: [
         { id: 'hotmart', nome: 'Hotmart', desc: 'Venda produtos digitais', icone: 'fa-fire', cor: '#E24A33', conectada: false },
         { id: 'kiwify', nome: 'Kiwify', desc: 'Checkout e afiliados', icone: 'fa-bolt', cor: '#00A8FF', conectada: false },
@@ -631,29 +531,18 @@
         { id: 'openai', nome: 'OpenAI (IA)', desc: 'Inteligência Artificial', icone: 'fa-robot', cor: '#10A37F', conectada: false }
       ],
       contato: {
-        endereco: 'Rua Silvio Donini 223 - Centro, Diadema',
-        horario: 'Segunda a sexta, das 9h às 18h',
-        telefone: '(11) 99745-0293',
-        redesSociais: [
-          { nome: 'WhatsApp', link: 'https://wa.me/5511997450293', icone: 'fa-whatsapp', classe: 'wa' },
-          { nome: 'Instagram', link: 'https://instagram.com/dra.alexandrabarrosofc', icone: 'fa-instagram', classe: 'ig' },
-          { nome: 'E-mail', link: 'mailto:estetica.alexandria@gmail.com', icone: 'fa-envelope', classe: 'em' }
-        ],
-        canais: [
-          { nome: 'Canal Bio Ale', link: 'https://wa.me/5511997450293?text=Quero%20seguir%20o%20canal', descricao: 'Novidades e ofertas no WhatsApp' }
-        ]
+        endereco: 'Rua Silvio Donini 223 - Centro, Diadema', horario: 'Segunda a sexta, das 9h às 18h', telefone: '(11) 99745-0293',
+        redesSociais: [ { nome: 'WhatsApp', link: 'https://wa.me/5511997450293', icone: 'fa-whatsapp', classe: 'wa' }, { nome: 'Instagram', link: 'https://instagram.com/dra.alexandrabarrosofc', icone: 'fa-instagram', classe: 'ig' }, { nome: 'E-mail', link: 'mailto:estetica.alexandria@gmail.com', icone: 'fa-envelope', classe: 'em' } ],
+        canais: [ { nome: 'Canal Bio Ale', link: 'https://wa.me/5511997450293?text=Quero%20seguir%20o%20canal', descricao: 'Novidades e ofertas no WhatsApp' } ]
       },
       layoutOrder: ['banner', 'publicidade', 'cta', 'indique', 'videos', 'planos', 'espacos', 'boutique', 'contato'],
-      equipe: [
-        { id: 1, nome: 'Maria', cargo: 'gerente', senha: '123', perms: ['identidade', 'cores', 'logo', 'mensagens', 'clube'] },
-        { id: 2, nome: 'João', cargo: 'supervisor', senha: '123', perms: ['publicidade', 'mensagens'] }
-      ],
-      precos: { essencial: '29', inteligente: '59', master: '99' },
+      equipe: [], precos: { essencial: '29', inteligente: '59', master: '99' },
       planos: {
         essencial: { titulo: 'Essencial', subtitulo: 'O básico', features: ['Vitrine básica', 'Cadastro de produtos'] },
         inteligente: { titulo: 'Inteligente', subtitulo: 'O mais escolhido', features: ['Shopee + ML', 'Relatórios'] },
         master: { titulo: 'Master', subtitulo: 'Completo', features: ['Tudo incluso', 'Assistente IA'] }
-      }
+      },
+      horariosAgenda: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00']
     };
 
     let appState = JSON.parse(JSON.stringify(estadoPadrao));
@@ -661,102 +550,192 @@
     let configAtualAberta = '';
     let indexPubEditando = -1;
     let indexProdEditando = -1;
+    
+    // Variáveis da Agenda
+    let currentDate = new Date();
     let diaSelecionado = null;
     let horarioSelecionado = null;
 
-    // =====================================================
-    // AUTENTICAÇÃO E BANCO DE DADOS (FIRESTORE)
-    // =====================================================
-    function fazerLogin() {
-      const email = document.getElementById('login-email').value;
-      const senha = document.getElementById('login-senha').value;
-      const btn = document.querySelector('.login-btn');
-      
-      btn.textContent = 'Entrando...';
-      btn.disabled = true;
-
-      auth.signInWithEmailAndPassword(email, senha)
-        .then(() => {
-          btn.textContent = 'Entrar no App';
-          btn.disabled = false;
-        })
-        .catch((error) => {
-          btn.textContent = 'Entrar no App';
-          btn.disabled = false;
-          alert('Erro no login:\n' + error.code + '\nVerifique e-mail e senha.');
-        });
-    }
-
-    function fazerLogout() {
-      if(confirm("Tem certeza que deseja sair?")) {
-        auth.signOut();
-      }
-    }
-
-    // Salva os dados na nuvem (Firestore)
-    function salvarEstado() {
-      if (!auth.currentUser) return; 
-      
-      db.collection('configuracoes').doc('appState').set(appState)
-        .then(() => console.log("Configurações salvas na nuvem!"))
-        .catch((e) => alert('Erro ao salvar no banco: ' + e.message));
-    }
-
-    // Carrega os dados da nuvem (Firestore)
+    // --- FUNÇÕES DO FIREBASE ---
+    function atualizarInterfaceEstado() { renderizarHome(); aplicarRestricoes(); gerarCalendarioReal(); verificarClienteLogado(); }
+    let estadoListenerIniciado = false;
     function carregarEstado() {
-      db.collection('configuracoes').doc('appState').get()
-        .then((doc) => {
-          if (doc.exists) {
-            appState = { ...estadoPadrao, ...doc.data() };
-          } else {
-            salvarEstado(); 
-          }
-          
-          renderizarHome();
-          aplicarRestricoes();
-          gerarCalendario();
-          inicializarIndicacao();
-        })
-        .catch((error) => {
-          console.error("Erro ao carregar do banco:", error);
-          renderizarHome(); // Carrega padrão em caso de erro
+      if (estadoListenerIniciado) return;
+      estadoListenerIniciado = true;
+      db.collection("appData").doc("estadoGlobal").onSnapshot((docSnap) => {
+        if (docSnap.exists) {
+          const dados = docSnap.data() || {}; delete dados.senhaAdmin;
+          appState = { ...estadoPadrao, ...dados }; atualizarInterfaceEstado();
+        } else if (adminAutenticado) {
+          db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
+            .catch((e) => console.error("Erro ao criar estado inicial:", e));
+        } else { atualizarInterfaceEstado(); }
+      }, (error) => { console.error("Erro ao carregar dados:", error); mostrarToast("Falha na sincronização. Confira as regras do Firebase."); });
+    }
+    async function salvarEstado() {
+      if (!adminAutenticado) { mostrarToast("Entre como administradora para salvar."); return false; }
+      try {
+        const dadosSeguros = { ...appState }; delete dadosSeguros.senhaAdmin;
+        await db.collection("appData").doc("estadoGlobal").set(dadosSeguros); return true;
+      } catch (e) { alert("Não foi possível salvar. Confira conexão e regras do Firebase."); console.error(e); return false; }
+    }
+
+    // --- CLIENTE REGISTRO E WELCOME ---
+    function verificarClienteLogado() {
+      const nome = localStorage.getItem('clienteNome');
+      const banner = document.getElementById('welcome-banner');
+      if (nome && banner) {
+        banner.innerHTML = `<i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-right:5px;"></i> Olá, ${nome}! Seja bem-vinda. <i class="fa-solid fa-sparkles" style="color:var(--cor-dourada); margin-left:5px;"></i>`;
+        banner.style.display = 'block';
+      } else if (banner) {
+        banner.style.display = 'none';
+      }
+    }
+
+    async function enviarCadastro(e) {
+      e.preventDefault();
+      const nome = document.getElementById('cad-nome').value;
+      const email = document.getElementById('cad-email').value;
+      const telefone = document.getElementById('cad-tel').value;
+
+      try {
+        await db.collection("clientes").add({
+          nome: nome, email: email, telefone: telefone,
+          dataCadastro: new Date().toISOString(), status: 'pendente'
         });
+        
+        localStorage.setItem('clienteNome', nome);
+        document.getElementById('modal-cadastro').style.display = 'none';
+        mostrarToast('✅ Cadastro realizado com sucesso!');
+        voltarInicio();
+        verificarClienteLogado();
+
+        document.getElementById('cad-nome').value = ''; document.getElementById('cad-email').value = ''; document.getElementById('cad-tel').value = '';
+      } catch (error) { console.error("Erro ao cadastrar:", error); alert("Erro ao cadastrar."); }
     }
 
-    function resetarApp() {
-      if (confirm('Apagar tudo do banco de dados e voltar ao padrão?')) {
-        appState = JSON.parse(JSON.stringify(estadoPadrao));
-        db.collection('configuracoes').doc('appState').set(appState)
-          .then(() => {
-            renderizarHome(); 
-            aplicarRestricoes(); 
-            voltarInicio();
-            mostrarToast("App resetado no banco de dados!");
-          });
-      }
+    // --- ACESSO AO CLUBE VIP ---
+    function pedirCodigoClube() { document.getElementById('modal-codigo-clube').style.display = 'flex'; }
+    async function verificarCodigoClube() {
+      const codigo = document.getElementById('input-codigo-clube').value.trim().toUpperCase();
+      if (!codigo) return alert('Digite um código.');
+      try {
+        const doc = await db.collection("codigos_clube").doc(codigo).get();
+        if (doc.exists) {
+          mostrarToast('✅ Código válido! Bem-vinda ao Clube.');
+          document.getElementById('modal-codigo-clube').style.display = 'none';
+          document.getElementById('input-codigo-clube').value = '';
+          abrirLinkAmbiente('clube'); 
+        } else { alert('❌ Código inválido ou expirado.'); }
+      } catch (e) { console.error(e); alert('Erro de conexão.'); }
     }
 
-    // Monitor de Sessão do Firebase
+    // --- GERENCIAMENTO VIP (DONA) ---
+    async function liberarAcessoVIP(idCliente, nomeCliente, telefoneCliente) {
+      if (!adminAutenticado) { mostrarToast('Ação exclusiva da administração.'); return; }
+      if (!confirm(`Confirmar pagamento e liberar acesso para ${nomeCliente}?`)) return;
+      const novoCodigo = 'VIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+      try {
+        await db.collection("clientes").doc(idCliente).update({ status: 'pago', codigoAcesso: novoCodigo, dataPagamento: new Date().toISOString() });
+        await db.collection("codigos_clube").doc(novoCodigo).set({ liberadoPara: nomeCliente, telefone: telefoneCliente, dataCriacao: new Date().toISOString() });
+        alert(`✅ Acesso Liberado!\n\nCódigo de ${nomeCliente}: \n\n👉 ${novoCodigo} 👈\n\nCopie e envie para a cliente.`);
+        abrirConfiguracao('vip'); 
+      } catch (error) { console.error(error); alert("Erro ao gerar o código."); }
+    }
+
+    async function verificarSenhaAdmin() {
+      const email = (document.getElementById('admin-email')?.value || '').trim().toLowerCase();
+      const senha = document.getElementById('admin-password')?.value || '';
+      const status = document.getElementById('admin-auth-status');
+      const botao = document.getElementById('btn-admin-login');
+      if (email !== EMAIL_ADMIN_AUTORIZADO) { if(status) status.textContent = 'E-mail não autorizado.'; return; }
+      if (!senha) { if(status) status.textContent = 'Digite sua senha do Firebase.'; return; }
+      if (botao) { botao.disabled = true; botao.textContent = 'Entrando...'; }
+      try { await auth.signInWithEmailAndPassword(email, senha); }
+      catch (e) { console.error('Erro no login:', e); if(status) status.textContent = 'Login não realizado. Confira e-mail e senha.'; }
+      finally { if(botao) { botao.disabled = false; botao.textContent = 'Entrar como administradora'; } }
+    }
+    async function sairAdmin() { try { await auth.signOut(); } catch(e) { console.error(e); } }
+    
     auth.onAuthStateChanged((user) => {
-      if (user) {
-        document.getElementById('tela-login').style.display = 'none';
-        document.getElementById('app-container').style.display = 'flex';
-        carregarEstado(); // Puxa os dados do Firestore
-      } else {
-        document.getElementById('tela-login').style.display = 'flex';
-        document.getElementById('app-container').style.display = 'none';
-      }
+      usuarioAutenticado = user || null;
+      adminAutenticado = !!(user && user.email && user.email.toLowerCase() === EMAIL_ADMIN_AUTORIZADO);
+      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
+      const status = document.getElementById('admin-auth-status'), identidade = document.getElementById('admin-identidade');
+      if(login) login.style.display = adminAutenticado ? 'none' : 'block';
+      if(logado) logado.style.display = adminAutenticado ? 'block' : 'none';
+      if(identidade && adminAutenticado) identidade.textContent = 'Conectada: ' + user.email;
+      if(status && !adminAutenticado) status.textContent = 'Entre com a conta autorizada.';
+      aplicarRestricoes(); carregarEstado();
     });
 
-    // =====================================================
-    // NAVEGAÇÃO E FUNÇÕES VISUAIS
-    // =====================================================
+    function aplicarRestricoes() {
+      const role = document.getElementById('role-select').value;
+      let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
+      
+      if(role === 'cliente') perms = [];
+
+      document.getElementById('perfil-cargo').textContent = role === 'dona' ? 'Proprietária' : 'Equipe';
+      document.getElementById('perfil-nome').textContent = role === 'dona' ? appState.appName : 'Usuário';
+      
+      const grid = document.getElementById('master-grid-botoes');
+      const login = document.getElementById('area-login-admin'), logado = document.getElementById('admin-logado');
+      
+      if(role !== 'dona' && !adminAutenticado) {
+         if(login) login.style.display = 'block';
+         if(logado) logado.style.display = 'none';
+      } else if (adminAutenticado) {
+         if(login) login.style.display = 'none';
+         if(logado) logado.style.display = 'block';
+      }
+
+      if(grid) {
+        grid.style.display = perms.length > 0 ? 'grid' : 'none';
+        grid.innerHTML = perms.map(id => { 
+          const p = todasPermissoes.find(x => x.id === id); 
+          return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>` : ''; 
+        }).join('');
+      }
+    }
+
+    // --- ASSISTENTE IA ---
+    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
+    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
+    function enviarMsgIA() { 
+      const inp = document.getElementById('chat-input'); const txt = inp.value.trim(); if(!txt) return;
+      const body = document.getElementById('chat-body');
+      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); inp.value = '';
+      
+      const t = txt.toLowerCase(); let resposta = "";
+      if (t.includes('clube') || t.includes('vip')) resposta = "O Clube da Ale é exclusivo! Você precisa de um código de convite. Se já tiver, clique no banner rosa na tela inicial.";
+      else if (t.includes('plano') || t.includes('preço')) resposta = "Temos 3 planos: Essencial, Inteligente e Master. Veja na tela inicial!";
+      else if (t.includes('whatsapp') || t.includes('contato')) resposta = "Fale com a Alexandra clicando nos botões verdes do WhatsApp na seção Contato.";
+      else if (t.includes('agenda') || t.includes('horário')) resposta = "Para agendar, vá na aba Agenda, escolha o dia, o horário e preencha seu nome e WhatsApp! 📅";
+      else resposta = "Desculpe, ainda estou aprendendo. Mas você pode falar diretamente com a Alexandra no WhatsApp! 💬";
+
+      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">${resposta}</div>`); body.scrollTop = body.scrollHeight; }, 600);
+    }
+
+    // --- NAVEGAÇÃO E FUNÇÕES GERAIS ---
     function abrirTela(id) {
-      document.getElementById('tela-chat').style.display = 'none';
       document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
       const tela = document.getElementById('tela-' + id);
       if (tela) tela.classList.add('ativa');
       document.querySelector('.app-content').scrollTop = 0;
+      
+      if (id === 'agenda') {
+        const role = document.getElementById('role-select').value;
+        if (role === 'dona' || role === 'gerente' || role === 'supervisor') {
+          document.getElementById('agenda-cliente').style.display = 'none';
+          document.getElementById('agenda-admin').style.display = 'block';
+          carregarAgendamentosAdmin();
+        } else {
+          document.getElementById('agenda-cliente').style.display = 'block';
+          document.getElementById('agenda-admin').style.display = 'none';
+          verificarAgendamentoCliente();
+          gerarCalendarioReal();
+        }
+      }
     }
 
     function trocarTela(btn, tab) {
@@ -771,7 +750,6 @@
       document.querySelector('.nav-item[data-tab="inicio"]').classList.add('active');
     }
 
-    // AMBIENTES E PLANOS
     function abrirPlano(tipo) {
       const p = appState.planos[tipo] || estadoPadrao.planos[tipo];
       const emojis = { essencial: '🌱', inteligente: '🚀', master: '👑' };
@@ -789,12 +767,7 @@
     }
 
     function abrirLinkAmbiente(tipo) {
-      const toast = (msg) => {
-        const t = document.createElement('div');
-        t.textContent = msg;
-        t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 22px;border-radius:999px;font-size:12px;z-index:99999;font-family:Montserrat,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3);';
-        document.body.appendChild(t); setTimeout(() => t.remove(), 1800);
-      };
+      const toast = (msg) => { const t = document.createElement('div'); t.textContent = msg; t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 22px;border-radius:999px;font-size:12px;z-index:99999;font-family:Montserrat,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3);'; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); };
       try {
         const link = tipo === 'clube' ? appState.clubeLink : appState.renovaseLink;
         if (link && String(link).trim() !== '') { toast('Abrindo site...'); window.open(link, '_blank'); return; }
@@ -807,10 +780,7 @@
         set('plano-beneficios', dados.itens.map(i => `<li><span class="beneficio-icone">✓</span> ${i}</li>`).join(''), true);
         const hero = document.getElementById('plano-hero'); if (hero) hero.style.background = `linear-gradient(135deg, ${dados.cor} 0%, #4C0519 100%)`;
         const btn = document.getElementById('plano-btn-acao');
-        if (btn) {
-          btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Quero fazer parte';
-          btn.onclick = () => { window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá! Tenho interesse no ' + dados.titulo)}`, '_blank'); };
-        }
+        if (btn) { btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Quero fazer parte'; btn.onclick = () => { window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Olá! Tenho interesse no ' + dados.titulo)}`, '_blank'); }; }
         abrirTela('plano');
       } catch (err) { console.error(err); }
     }
@@ -833,38 +803,173 @@
       else {
         const conectadas = appState.integracoes.filter(i => i.conectada).length;
         let limite = 99;
-        if (appState.planoAtual === 'basico') limite = 2;
-        else if (appState.planoAtual === 'intermediario') limite = 5;
-        if (conectadas >= limite) { alert(`Atenção: Seu plano atual (${appState.planoAtual.toUpperCase()}) permite conectar apenas ${limite} integrações.`); return; }
+        if (appState.planoAtual === 'basico') limite = 2; else if (appState.planoAtual === 'intermediario') limite = 5;
+        if (conectadas >= limite) { alert(`Atenção: Seu plano atual permite conectar apenas ${limite} integrações.`); return; }
         integ.conectada = true; mostrarToast(`✅ ${integ.nome} conectado!`);
       }
       salvarEstado(); abrirConfiguracao('integracoes'); 
     }
+    
     function mudarPlanoSimulado(plano) { appState.planoAtual = plano; salvarEstado(); abrirConfiguracao('integracoes'); }
 
-    function gerarCalendario() {
+    // --- CALENDÁRIO E AGENDAMENTO ---
+    function gerarCalendarioReal() {
       const grid = document.getElementById('calendario-grid');
       if(!grid) return;
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      document.getElementById('mes-ano-atual').textContent = `${meses[month]} ${year}`;
+
       let html = `<div class="dia-semana">D</div><div class="dia-semana">S</div><div class="dia-semana">T</div><div class="dia-semana">Q</div><div class="dia-semana">Q</div><div class="dia-semana">S</div><div class="dia-semana">S</div>`;
-      for (let i = 1; i <= 30; i++) {
-        const indisponivel = (i % 7 === 0 || i % 7 === 6);
-        html += `<button class="dia-btn ${indisponivel ? 'indisponivel' : ''}" ${indisponivel ? 'disabled' : `onclick="selecionarDia(${i}, this)"`}>${i}</button>`;
+
+      for (let i = 0; i < firstDay; i++) {
+        html += `<div class="dia-btn vazio"></div>`;
+      }
+
+      const hoje = new Date();
+      hoje.setHours(0,0,0,0);
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+        const dataBtn = new Date(year, month, i);
+        const isPast = dataBtn < hoje;
+        const isSunday = dataBtn.getDay() === 0;
+
+        if (isPast || isSunday) {
+          html += `<button class="dia-btn indisponivel" disabled>${i}</button>`;
+        } else {
+          html += `<button class="dia-btn" onclick="selecionarDiaReal('${dateStr}', this)">${i}</button>`;
+        }
       }
       grid.innerHTML = html;
-    }
-    function selecionarDia(dia, btn) {
-      document.querySelectorAll('.dia-btn').forEach(b => b.classList.remove('selecionado'));
-      btn.classList.add('selecionado'); diaSelecionado = dia;
-      document.getElementById('horarios-container').style.display = 'block';
-      document.getElementById('horarios-grid').innerHTML = `<button class="horario-btn" onclick="selecionarHorario('09:00', this)">09:00</button><button class="horario-btn" onclick="selecionarHorario('10:30', this)">10:30</button><button class="horario-btn" onclick="selecionarHorario('14:00', this)">14:00</button>`;
-    }
-    function selecionarHorario(hr, btn) { document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('selecionado')); btn.classList.add('selecionado'); horarioSelecionado = hr; }
-    function confirmarAgendamento() {
-      if (!diaSelecionado || !horarioSelecionado) return alert('Selecione um dia e um horário.');
-      window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de agendar no dia ${diaSelecionado} às ${horarioSelecionado}.`)}`, '_blank');
+      document.getElementById('horarios-container').style.display = 'none';
     }
 
-    // HOME E PRODUTOS
+    function mudarMes(dir) {
+      currentDate.setMonth(currentDate.getMonth() + dir);
+      gerarCalendarioReal();
+    }
+
+    function selecionarDiaReal(dataStr, btn) {
+      document.querySelectorAll('.dia-btn').forEach(b => b.classList.remove('selecionado'));
+      btn.classList.add('selecionado');
+      diaSelecionado = dataStr;
+      
+      document.getElementById('horarios-container').style.display = 'block';
+      const gridHorarios = document.getElementById('horarios-grid');
+      
+      const horarios = appState.horariosAgenda || estadoPadrao.horariosAgenda;
+      
+      if (horarios.length === 0) {
+        gridHorarios.innerHTML = '<p style="font-size:12px; color:#666;">Nenhum horário configurado.</p>';
+        return;
+      }
+
+      db.collection('agendamentos').where('data', '==', dataStr).get().then(snapshot => {
+        const ocupados = snapshot.docs.map(doc => doc.data().hora);
+        gridHorarios.innerHTML = horarios.map(hr => {
+          const isOcupado = ocupados.includes(hr);
+          return `<button class="horario-btn ${isOcupado ? 'indisponivel' : ''}" ${isOcupado ? 'disabled style="opacity:0.5; cursor:not-allowed; text-decoration:line-through;"' : `onclick="selecionarHorarioReal('${hr}', this)"`}>${hr}</button>`;
+        }).join('');
+      }).catch(err => {
+        console.error("Erro ao buscar horários:", err);
+        gridHorarios.innerHTML = '<p style="color:red; font-size:12px;">Erro ao carregar horários. Verifique as regras do banco.</p>';
+      });
+    }
+
+    function selecionarHorarioReal(hr, btn) {
+      document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('selecionado'));
+      btn.classList.add('selecionado');
+      horarioSelecionado = hr;
+      document.getElementById('resumo-horario').textContent = `${diaSelecionado.split('-').reverse().join('/')} às ${hr}`;
+      document.getElementById('modal-agendar').style.display = 'flex';
+    }
+
+    function salvarAgendamento() {
+      const nome = document.getElementById('agenda-nome').value;
+      const tel = document.getElementById('agenda-tel').value;
+      if(!nome || !tel) return alert('Preencha seu nome e WhatsApp.');
+
+      const agendamento = { data: diaSelecionado, hora: horarioSelecionado, nome: nome, telefone: tel, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
+
+      db.collection('agendamentos').add(agendamento).then(() => {
+        alert('Agendamento realizado com sucesso!');
+        localStorage.setItem('meu_agendamento', JSON.stringify(agendamento));
+        document.getElementById('modal-agendar').style.display = 'none';
+        verificarAgendamentoCliente();
+        mostrarToast('Horário reservado!');
+      }).catch(e => alert('Erro ao agendar: ' + e.message));
+    }
+
+    function verificarAgendamentoCliente() {
+        const salvo = localStorage.getItem('meu_agendamento');
+        if (salvo) {
+            const ag = JSON.parse(salvo);
+            document.getElementById('calendario-container').style.display = 'none';
+            document.getElementById('cliente-ja-agendou').style.display = 'block';
+            document.getElementById('btn-whats-cliente').href = `https://wa.me/${appState.whatsapp}?text=Olá, tenho um horário marcado dia ${ag.data} às ${ag.hora}`;
+        } else {
+            document.getElementById('calendario-container').style.display = 'block';
+            document.getElementById('cliente-ja-agendou').style.display = 'none';
+        }
+    }
+
+    // --- AQUI ESTÁ A CORREÇÃO DO "CARREGANDO..." ---
+    function carregarAgendamentosAdmin() {
+      const container = document.getElementById('lista-agendamentos-admin');
+      container.innerHTML = '<p style="font-size:12px; color:#666; text-align:center;">Carregando...</p>';
+      
+      const hojeStr = new Date().toISOString().split('T')[0];
+      
+      db.collection('agendamentos').where('data', '>=', hojeStr).get().then(snapshot => {
+        if (snapshot.empty) { 
+          container.innerHTML = '<p style="font-size:13px; color:#666; text-align:center;">Nenhum agendamento futuro.</p>'; 
+          return; 
+        }
+        
+        let ags = []; 
+        snapshot.forEach(doc => ags.push(doc.data()));
+        ags.sort((a,b) => (a.data + a.hora).localeCompare(b.data + b.hora));
+        
+        container.innerHTML = ags.map(ag => {
+            const dataFmt = ag.data.split('-').reverse().join('/');
+            return `<div class="admin-agenda-card">
+                <div class="data-hora"><span>📅 ${dataFmt}</span><span>⏰ ${ag.hora}</span></div>
+                <div class="cliente-info"><i class="fa-solid fa-user"></i> ${ag.nome}</div>
+                <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${ag.telefone}</div>
+                <a href="https://wa.me/55${ag.telefone.replace(/\D/g,'')}" target="_blank" class="btn-whats-agendamento">Chamar no WhatsApp</a>
+            </div>`;
+        }).join('');
+      }).catch(err => {
+        // Se der erro (como falta de permissão), avisa na tela e no console
+        console.error("Erro ao carregar agendamentos:", err);
+        container.innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar. Verifique as regras do Firestore.</p>';
+      });
+    }
+
+    // --- RENDERIZAÇÃO DA HOME ---
+    function gerarHTMLVideo(url) {
+      if (!url) return '';
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let vidId = '';
+        try { if (url.includes('youtu.be/')) vidId = url.split('youtu.be/')[1].split(/[?#]/)[0]; else if (url.includes('youtube.com/shorts/')) vidId = url.split('youtube.com/shorts/')[1].split(/[?#]/)[0]; else { const urlParams = new URLSearchParams(new URL(url).search); vidId = urlParams.get('v'); } } catch(e) { vidId = url.split('v=')[1] || url.split('/').pop(); if (vidId) vidId = vidId.split('&')[0]; }
+        if (!vidId) return `<div style="padding:20px; text-align:center; color:#fff; background:#000;">Link inválido.</div>`;
+        return `<iframe src="https://www.youtube.com/embed/${vidId}?playsinline=1&controls=1&rel=0" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
+      } else if (url.includes('tiktok.com')) {
+        let match = url.match(/video\/(\d+)/);
+        if (match) return `<iframe src="https://www.tiktok.com/embed/v2/${match[1]}" allowfullscreen style="width:100%; height:100%; border:none; border-radius:16px;"></iframe>`;
+        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:#000; color:#fff; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; text-decoration:none;">Abrir no TikTok</a></div>`;
+      } else if (url.includes('kwai')) {
+        return `<div style="display:flex; align-items:center; justify-content:center; height:100%; background:linear-gradient(135deg, #FF8C00, #FF4500); color:#fff; border-radius:16px;"><a href="${url}" target="_blank" style="color:#fff; text-decoration:none; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:999px;">Assistir no Kwai</a></div>`;
+      }
+      return `<video src="${url}" controls playsinline style="width:100%; height:100%; object-fit:cover; border-radius:16px;"></video>`;
+    }
+
     function renderizarHome() {
       document.documentElement.style.setProperty('--cor-principal', appState.colorPrimary || '#9D174D');
       document.documentElement.style.setProperty('--cor-dourada', appState.colorGold || '#D4AF37');
@@ -888,19 +993,18 @@
         else if (secao === 'publicidade' && appState.publicidades.length > 0) {
           let pubHtml = '';
           appState.publicidades.forEach(pub => {
-            let media = pub.video ? `<div class="pub-media"><video src="${pub.video}" muted autoplay loop playsinline></video></div>` : (pub.imagem ? `<div class="pub-media"><img src="${pub.imagem}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
-            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p>${pub.link ? `<a href="${pub.link}" target="_blank" class="pub-btn">Aproveitar</a>` : `<button class="pub-btn">Aproveitar</button>`}</div></div>`;
+            let media = pub.video ? `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>` : (pub.imagem ? `<div class="pub-media"><img src="${pub.imagem}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
+            pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${pub.titulo}</h4><p>${pub.descricao}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${pub.id})">Conhecer Parceiro</button></div></div>`;
           });
-          html = `<div class="section-title-nova">Ofertas</div><div class="pub-scroll">${pubHtml}</div>`;
+          html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
         }
         else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${appState.mensagem}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
         else if (secao === 'indique') html = `<div class="banner-indique" onclick="abrirTela('indique'); document.querySelector('[data-tab=indique]').click();"><div><h3>Indique e Ganhe!</h3><p>Convide amigas</p></div><i class="fa-solid fa-gift"></i></div>`;
-        else if (secao === 'videos' && appState.video) html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><video src="${appState.video}" controls></video></div>`;
+        else if (secao === 'videos' && appState.video) { let videoHtml = gerarHTMLVideo(appState.video); html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><div style="height:220px;">${videoHtml}</div></div>`; }
         else if (secao === 'planos') {
           let planosHtml = '';
           ['essencial', 'inteligente', 'master'].forEach(id => {
-            const data = appState.planos[id];
-            const destaque = id === 'inteligente';
+            const data = appState.planos[id]; const destaque = id === 'inteligente';
             planosHtml += `<div class="plano-card ${destaque ? 'destaque' : ''}" onclick="abrirPlano('${id}')">${destaque ? '<span class="plano-badge">Mais vendido</span>' : ''}<span class="plano-nome">${data.titulo}</span><span class="plano-preco">R$ ${appState.precos[id]}<small>/mês</small></span><ul class="plano-features">${data.features.map(f => `<li>${f}</li>`).join('')}</ul><button class="plano-btn">Ver detalhes</button></div>`;
           });
           html = `<div class="section-title-nova">Planos</div><div class="planos-scroll">${planosHtml}</div>`;
@@ -908,7 +1012,7 @@
         else if (secao === 'espacos') {
           const bgClube = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.clubeImage}');` : `background: linear-gradient(135deg, ${appState.clubeColor} 0%, #4C0519 100%);`;
           const bgRenova = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${appState.renovaseImage}');` : `background: linear-gradient(135deg, ${appState.renovaseColor} 0%, #4A2300 100%);`;
-          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="abrirLinkAmbiente('clube')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
+          html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${bgClube}" onclick="pedirCodigoClube()"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${appState.clubeImage}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${appState.clubeName}</h3><p class="espaco-sub">Experiências VIP</p></div></div><p class="espaco-desc">Descontos, brindes e eventos.</p><span class="espaco-cta">Participar <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${bgRenova}" onclick="abrirLinkAmbiente('renovase')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${appState.renovaseImage}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Novo</span><h3 class="espaco-titulo">${appState.renovaseName}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button></div>`;
         }
         else if (secao === 'boutique') {
           const prods = appState.boutiqueProdutos || [];
@@ -926,8 +1030,7 @@
     }
 
     function abrirProduto(index) {
-      const p = appState.boutiqueProdutos[index];
-      if (!p) return;
+      const p = appState.boutiqueProdutos[index]; if (!p) return;
       document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${p.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🛍️';
       document.getElementById('produto-nome').textContent = p.nome;
       document.getElementById('produto-preco').textContent = `R$ ${p.preco}`;
@@ -935,25 +1038,51 @@
       abrirTela('produto');
     }
 
-    // CONFIGURAÇÕES MASTER
+    function abrirDetalhesParceiro(id) {
+      const pub = appState.publicidades.find(p => p.id === id); if (!pub) return;
+      document.getElementById('parceiro-img-grande').innerHTML = pub.imagem ? `<img src="${pub.imagem}" style="width:100%; height:100%; object-fit:cover;">` : '🤝';
+      document.getElementById('parceiro-nome').textContent = pub.titulo;
+      document.getElementById('parceiro-desc').textContent = pub.descricao;
+      const textoFormatado = pub.sobre ? pub.sobre.replace(/\n/g, '<br>') : 'Este é um dos nossos parceiros oficiais.';
+      document.getElementById('parceiro-conteudo').innerHTML = textoFormatado;
+      abrirTela('parceiro');
+    }
+
+    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
+
+    // --- CONFIGURAÇÕES MASTER ---
     function abrirConfiguracao(id) {
       configAtualAberta = id;
       backupState = JSON.parse(JSON.stringify(appState));
+      if (!adminAutenticado) { mostrarToast('Acesso restrito à administração.'); return; }
       const content = document.getElementById('editor-content');
       const titulo = document.getElementById('editor-titulo');
       let html = '';
 
-      if (id === 'integracoes') {
+      if (id === 'agenda-config') {
+        titulo.textContent = 'Configurar Horários';
+        let horarios = appState.horariosAgenda || [];
+        let listaHTML = horarios.map((hr, i) => `<div style="display:flex; justify-content:space-between; background:#f5f5f5; padding:10px; margin-bottom:5px; border-radius:6px;"><span style="font-weight:bold;">${hr}</span><button onclick="removerHorario(${i})" style="background:#ffebee; color:red; border:none; padding:4px 8px; border-radius:4px;">X</button></div>`).join('');
+        html = `
+          <p style="font-size:11px; margin-bottom:10px;">Adicione os horários disponíveis para atendimento.</p>
+          <div style="display:flex; gap:5px; margin-bottom:15px;">
+             <input type="time" id="novo-horario" style="flex:1; margin:0;">
+             <button onclick="adicionarHorario()" style="background:var(--cor-principal); color:#fff; border:none; padding:0 15px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
+          </div>
+          <div>${listaHTML}</div>
+          <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;">
+             <button onclick="localStorage.removeItem('meu_agendamento'); alert('Agendamento local limpo.');" style="width:100%; padding:10px; background:#eee; color:#333; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Limpar Meu Agendamento Local (Teste)</button>
+          </div>
+        `;
+      }
+      else if (id === 'integracoes') {
         titulo.textContent = 'Central de Integrações';
         const conectadas = appState.integracoes.filter(i => i.conectada).length;
         let limiteTxt = appState.planoAtual === 'basico' ? '2' : (appState.planoAtual === 'intermediario' ? '5' : 'Ilimitado');
         let cardsHtml = appState.integracoes.map(integ => {
           let btnClass = 'btn-conectar off', btnTxt = 'Conectar', disabled = '';
           if (integ.conectada) { btnClass = 'btn-conectar on'; btnTxt = 'Conectado'; } 
-          else {
-            let limit = appState.planoAtual === 'basico' ? 2 : (appState.planoAtual === 'intermediario' ? 5 : 99);
-            if (conectadas >= limit) { btnClass = 'btn-conectar limit'; btnTxt = 'Limite'; disabled = 'disabled'; }
-          }
+          else { let limit = appState.planoAtual === 'basico' ? 2 : (appState.planoAtual === 'intermediario' ? 5 : 99); if (conectadas >= limit) { btnClass = 'btn-conectar limit'; btnTxt = 'Limite'; disabled = 'disabled'; } }
           return `<div class="integracoes-card"><div class="integ-left"><div class="integ-icon" style="background: ${integ.cor};"><i class="fa-solid ${integ.icone}"></i></div><div class="integ-info"><h4>${integ.nome}</h4><p>${integ.desc}</p></div></div><button class="${btnClass}" onclick="toggleIntegracao('${integ.id}')" ${disabled}>${btnTxt}</button></div>`;
         }).join('');
         html = `<div style="background:#fff; border-radius:10px; padding:12px; margin-bottom:15px; border:1px solid #ddd;"><p style="font-size:12px; font-weight:700; margin-bottom:8px;">Simular Plano:</p><div style="display:flex; gap:5px;"><button onclick="mudarPlanoSimulado('basico')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'basico' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'basico' ? '#fff' : '#333'}">Básico (2)</button><button onclick="mudarPlanoSimulado('intermediario')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'intermediario' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'intermediario' ? '#fff' : '#333'}">Inter (5)</button><button onclick="mudarPlanoSimulado('master')" style="flex:1; padding:6px; font-size:10px; font-weight:bold; border:none; border-radius:4px; cursor:pointer; background:${appState.planoAtual === 'master' ? 'var(--cor-principal)' : '#eee'}; color:${appState.planoAtual === 'master' ? '#fff' : '#333'}">Master (∞)</button></div><p style="font-size:10px; color:#666; margin-top:8px; text-align:center;">Conectadas: ${conectadas} de ${limiteTxt}</p></div>${cardsHtml}`;
@@ -964,8 +1093,8 @@
         html = `<label style="font-size:11px; font-weight:700;">Nome da Loja</label><input type="text" id="edit-boutique-name" value="${appState.boutiqueName}"><div style="margin-top:15px; margin-bottom:15px;">${listaHTML}</div><button onclick="abrirEditorProduto(-1)" style="width:100%; padding:10px; background:#9D174D; color:#fff; border:none; border-radius:6px; font-weight:700;">+ Adicionar Produto</button>`;
       }
       else if (id === 'identidade') {
-        titulo.textContent = 'Nome do App';
-        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><p style="font-size:10px; color:#666; margin-top:5px;">A senha agora é gerenciada diretamente pelo Firebase Authentication.</p>`;
+        titulo.textContent = 'Nome & Senha';
+        html = `<label style="font-size:11px; font-weight:700;">Nome do App</label><input type="text" id="edit-val" value="${appState.appName}"><p style="font-size:11px;color:#777;margin-top:10px;">A senha administrativa é gerenciada pelo Firebase Authentication.</p>`;
       }
       else if (id === 'cores') {
         titulo.textContent = 'Cores do App';
@@ -1009,7 +1138,7 @@
       }
       else if (id === 'videos') {
         titulo.textContent = 'Configuração de Vídeos';
-        html = `<label style="font-size:11px; font-weight:700;">Envie um vídeo</label><input type="file" id="edit-video-file" accept="video/*">${appState.video ? `<div style="margin-top:10px;"><video src="${appState.video}" controls style="width:100%; border-radius:8px; margin-bottom:10px;"></video></div>` : ''}`;
+        html = `<label style="font-size:11px; font-weight:700;">Cole o Link (YouTube, TikTok ou Kwai)</label><input type="url" id="edit-video-link" value="${appState.video || ''}" placeholder="https://www.youtube.com/watch?v=..."><p style="font-size:10px; color:#666; margin-top:5px;">Cole o link do vídeo. YouTube e TikTok rodam direto no app.</p>`;
       }
       else if (id === 'equipe') {
         titulo.textContent = 'Gerenciar Equipe';
@@ -1017,18 +1146,41 @@
         html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Supervisor</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
       }
       else if (id === 'clube') {
-        titulo.textContent = 'Preços dos Planos';
-        html = `<label>Essencial (R$)</label><input type="number" id="p1" value="${appState.precos.essencial}"><label>Inteligente (R$)</label><input type="number" id="p2" value="${appState.precos.inteligente}"><label>Master (R$)</label><input type="number" id="p3" value="${appState.precos.master}">`;
+        titulo.textContent = 'Planos e Preços';
+        let htmlPlanos = '';
+        ['essencial', 'inteligente', 'master'].forEach(tipo => {
+            const p = appState.planos[tipo];
+            let featuresHtml = p.features.map(f => `<div class="config-item-row feat-row" style="margin-bottom:4px;"><input type="text" class="feat-input" value="${f}" style="padding:6px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join('');
+            htmlPlanos += `<div class="config-plan-box" style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;"><h4 style="text-transform:uppercase; font-size:12px; margin-bottom:10px; color:var(--cor-principal); border-bottom:1px solid #ccc; padding-bottom:5px;">Plano ${p.titulo}</h4><label style="font-size:11px; font-weight:700;">Preço (R$)</label><input type="number" id="preco-${tipo}" value="${appState.precos[tipo]}" style="margin-bottom:5px; padding:6px;"><label style="font-size:11px; font-weight:700;">Subtítulo</label><input type="text" id="sub-${tipo}" value="${p.subtitulo}" style="margin-bottom:5px; padding:6px;"><label style="font-size:11px; font-weight:700; display:block; margin-top:10px; margin-bottom:5px;">Itens inclusos:</label><div id="features-${tipo}" style="margin-bottom:8px;">${featuresHtml}</div><button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')" style="padding:6px; font-size:11px; margin-bottom:0;">+ Adicionar Item</button></div>`;
+        });
+        html = htmlPlanos;
       }
       else if (id === 'links') {
         titulo.textContent = 'Links dos Ambientes';
         html = `<label style="font-size:11px; font-weight:700;">Link do Clube (Opcional)</label><input type="url" id="edit-link-clube" value="${appState.clubeLink || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Link do Renova-se (Opcional)</label><input type="url" id="edit-link-renovase" value="${appState.renovaseLink || ''}" placeholder="https://...">`;
       }
+      else if (id === 'vip') {
+        titulo.textContent = 'Gerenciar Clube VIP';
+        let clientesHTML = '<p style="text-align:center; font-size:12px;">Carregando clientes...</p>';
+        content.innerHTML = `<div id="lista-clientes-vip" style="max-height: 400px; overflow-y:auto;">${clientesHTML}</div>`;
+        
+        db.collection("clientes").get().then((querySnapshot) => {
+          if (querySnapshot.empty) { document.getElementById('lista-clientes-vip').innerHTML = '<p style="text-align:center; font-size:12px; color:#777;">Nenhum cliente cadastrado ainda.</p>'; return; }
+          let htmlClientes = '';
+          querySnapshot.forEach((doc) => {
+            const cliente = doc.data(); const idCliente = doc.id; const temAcesso = cliente.codigoAcesso ? true : false;
+            const btnAcao = temAcesso ? `<button disabled style="background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; padding:6px; border-radius:4px; font-size:10px; font-weight:700; width:100%;">✅ Liberado</button><p style="font-size:10px; text-align:center; margin-top:5px; color:#555;">Código: <b>${cliente.codigoAcesso}</b></p>` : `<button onclick="liberarAcessoVIP('${idCliente}', '${cliente.nome}', '${cliente.telefone}')" style="background:#9D174D; color:#fff; border:none; padding:8px; border-radius:4px; font-size:11px; font-weight:700; width:100%; cursor:pointer;">Liberar Acesso</button>`;
+            htmlClientes += `<div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd;"><div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;"><div><strong style="font-size:13px; color:var(--cor-principal);">${cliente.nome}</strong><br><span style="font-size:11px; color:#666;">${cliente.telefone}</span><br><span style="font-size:10px; color:#999;">${cliente.email}</span></div></div>${btnAcao}</div>`;
+          });
+          document.getElementById('lista-clientes-vip').innerHTML = htmlClientes;
+        }).catch((error) => { console.error("Erro ao buscar clientes: ", error); document.getElementById('lista-clientes-vip').innerHTML = '<p style="color:red; font-size:12px; text-align:center;">Erro ao carregar clientes.</p>'; });
+      }
 
-      content.innerHTML = html;
+      if(id !== 'vip') { content.innerHTML = html; }
+      
       document.getElementById('modal-editor').style.display = 'flex';
       
-      if (id === 'integracoes') {
+      if (id === 'integracoes' || id === 'vip' || id === 'agenda-config') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1041,12 +1193,32 @@
       }
     }
 
+    function adicionarHorario() {
+      const input = document.getElementById('novo-horario').value;
+      if(!input) return;
+      if(!appState.horariosAgenda) appState.horariosAgenda = [];
+      if(appState.horariosAgenda.includes(input)) return alert('Horário já existe.');
+      appState.horariosAgenda.push(input);
+      appState.horariosAgenda.sort();
+      salvarEstado();
+      abrirConfiguracao('agenda-config');
+    }
+
+    function removerHorario(index) {
+      appState.horariosAgenda.splice(index, 1);
+      salvarEstado();
+      abrirConfiguracao('agenda-config');
+    }
+
+    function addFeatureRow(tipo) {
+        document.getElementById(`features-${tipo}`).insertAdjacentHTML('beforeend', `<div class="config-item-row feat-row" style="margin-bottom:4px;"><input type="text" class="feat-input" value="" placeholder="Novo item" style="padding:6px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`);
+    }
+
     function abrirEditorPublicidade(index) {
-      indexPubEditando = index;
-      configAtualAberta = 'publicidade-edit';
-      const pub = index === -1 ? { titulo: '', descricao: '', imagem: null, video: null, link: '' } : appState.publicidades[index];
+      indexPubEditando = index; configAtualAberta = 'publicidade-edit';
+      const pub = index === -1 ? { titulo: '', descricao: '', sobre: '', imagem: null, video: null } : appState.publicidades[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Nova Publicidade' : 'Editar Publicidade';
-      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título da Oferta</label><input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Frete Grátis Hoje!"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><textarea id="pub-descricao" rows="2" placeholder="Ex: Válido para compras acima de R$100">${pub.descricao || ''}</textarea><label style="font-size:11px; font-weight:700;">Link de Destino (Opcional)</label><input type="url" id="pub-link" value="${pub.link || ''}" placeholder="https://..."><label style="font-size:11px; font-weight:700;">Imagem (Opcional)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700;">Vídeo (Opcional - substitui a imagem)</label><input type="file" id="pub-video" accept="video/*"></div>`;
+      document.getElementById('editor-content').innerHTML = `<div style="background:#FFF2F6; padding:10px; border-radius:8px; margin-bottom:15px;"><label style="font-size:11px; font-weight:700;">Título (Nome do Parceiro)</label><input type="text" id="pub-titulo" value="${pub.titulo || ''}" placeholder="Ex: Loja da Maria"><label style="font-size:11px; font-weight:700;">Descrição Curta</label><input type="text" id="pub-descricao" value="${pub.descricao || ''}" placeholder="Ex: Moda Feminina e Acessórios"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Sobre a Parceria</label><textarea id="pub-sobre" rows="4" placeholder="Escreva os detalhes...">${pub.sobre || ''}</textarea><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Imagem (Máx 10MB)</label><input type="file" id="pub-imagem" accept="image/*"><label style="font-size:11px; font-weight:700; margin-top:10px; display:block;">Link do Vídeo (YouTube, TikTok, Kwai)</label><input type="url" id="pub-video-link" value="${pub.video || ''}" placeholder="https://..."></div>`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Publicidade';
@@ -1055,31 +1227,25 @@
     }
 
     function salvarPublicidade() {
-      const tituloVal = document.getElementById('pub-titulo').value;
-      const descVal = document.getElementById('pub-descricao').value;
-      const linkVal = document.getElementById('pub-link').value;
-      const imgInput = document.getElementById('pub-imagem');
-      const vidInput = document.getElementById('pub-video');
+      const tituloVal = document.getElementById('pub-titulo').value; const descVal = document.getElementById('pub-descricao').value; const sobreVal = document.getElementById('pub-sobre').value; const videoLinkVal = document.getElementById('pub-video-link').value; const imgInput = document.getElementById('pub-imagem');
       const novaPub = indexPubEditando === -1 ? { id: Date.now() } : appState.publicidades[indexPubEditando];
-      novaPub.titulo = tituloVal; novaPub.descricao = descVal; novaPub.link = linkVal;
-      const salvarFinal = () => {
-        if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
-        salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
-      };
-      const pendentes = [];
-      if (vidInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-video', v => { if (v) { novaPub.video = v; novaPub.imagem = null; } r(); })));
-      else if (imgInput.files.length) pendentes.push(new Promise(r => lerArquivoComprimido('pub-imagem', v => { if (v) { novaPub.imagem = v; novaPub.video = null; } r(); })));
-      if (pendentes.length) Promise.all(pendentes).then(salvarFinal); else salvarFinal();
+      novaPub.titulo = tituloVal; novaPub.descricao = descVal; novaPub.sobre = sobreVal;
+      if (videoLinkVal) { novaPub.video = videoLinkVal; novaPub.imagem = null; } 
+      else if (imgInput.files.length) {
+        lerArquivoComprimido('pub-imagem', v => { if (v) { novaPub.imagem = v; novaPub.video = null; } if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub; salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); });
+        return;
+      } else { novaPub.video = null; }
+      if (indexPubEditando === -1) appState.publicidades.push(novaPub); else appState.publicidades[indexPubEditando] = novaPub;
+      salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade');
     }
 
     function removerPublicidade(index) { if (confirm('Excluir?')) { appState.publicidades.splice(index, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); } }
 
     function abrirEditorProduto(index) {
-      indexProdEditando = index;
-      configAtualAberta = 'boutique-edit';
+      indexProdEditando = index; configAtualAberta = 'boutique-edit';
       const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index];
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar Produto';
-      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto</label><input type="file" id="prod-imagem" accept="image/*">`;
+      document.getElementById('editor-content').innerHTML = `<input type="text" id="prod-nome" value="${prod.nome || ''}" placeholder="Nome do Produto"><input type="text" id="prod-preco" value="${prod.preco || ''}" placeholder="Preço (ex: 49,90)" oninput="mascaraPreco(this)"><label>Foto (Máx 10MB)</label><input type="file" id="prod-imagem" accept="image/*">`;
       document.getElementById('modal-editor').style.display = 'flex';
       document.getElementById('btn-salvar-editor').style.display = 'block';
       document.getElementById('btn-salvar-editor').textContent = 'Salvar Produto';
@@ -1088,9 +1254,7 @@
     }
 
     function salvarProdutoBoutique() {
-      const nome = document.getElementById('prod-nome').value;
-      const preco = document.getElementById('prod-preco').value;
-      const img = document.getElementById('prod-imagem');
+      const nome = document.getElementById('prod-nome').value; const preco = document.getElementById('prod-preco').value; const img = document.getElementById('prod-imagem');
       if(!nome || !preco) return alert('Preencha nome e preço.');
       const novo = indexProdEditando === -1 ? { id: Date.now() } : appState.boutiqueProdutos[indexProdEditando];
       novo.nome = nome; novo.preco = preco;
@@ -1100,10 +1264,7 @@
 
     function removerProdutoBoutique(i) { if(confirm('Excluir produto?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
 
-    function mascaraPreco(input) {
-      let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; }
-      v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v;
-    }
+    function mascaraPreco(input) { let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; } v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v; }
 
     function moverSecao(index, direcao) {
       const arr = appState.layoutOrder;
@@ -1128,6 +1289,7 @@
 
     function salvarConfigAtual() {
       const id = configAtualAberta;
+      if (!adminAutenticado) { mostrarToast('Acesso restrito à administração.'); return; }
       if (id === 'boutique') { appState.boutiqueName = document.getElementById('edit-boutique-name').value; salvarEstado(); renderizarHome(); }
       else if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; salvarEstado(); renderizarHome(); }
       else if (id === 'cores') { appState.colorPrimary = document.getElementById('edit-c1').value; appState.colorGold = document.getElementById('edit-c2').value; salvarEstado(); renderizarHome(); }
@@ -1144,7 +1306,16 @@
         if (nome && senha) { appState.equipe.push({ id: Date.now(), nome, cargo, senha, perms: ['mensagens'] }); salvarEstado(); alert('Adicionado!'); abrirConfiguracao('equipe'); }
         else alert('Preencha tudo.');
       }
-      else if (id === 'clube') { appState.precos.essencial = document.getElementById('p1').value; appState.precos.inteligente = document.getElementById('p2').value; appState.precos.master = document.getElementById('p3').value; salvarEstado(); renderizarHome(); }
+      else if (id === 'clube') { 
+        ['essencial', 'inteligente', 'master'].forEach(tipo => {
+            appState.precos[tipo] = document.getElementById(`preco-${tipo}`).value;
+            appState.planos[tipo].subtitulo = document.getElementById(`sub-${tipo}`).value;
+            const feats = [];
+            document.querySelectorAll(`#features-${tipo} .feat-input`).forEach(inp => { if(inp.value.trim() !== '') feats.push(inp.value.trim()); });
+            appState.planos[tipo].features = feats;
+        });
+        salvarEstado(); renderizarHome(); 
+      }
       else if (id === 'links') { appState.clubeLink = document.getElementById('edit-link-clube').value; appState.renovaseLink = document.getElementById('edit-link-renovase').value; salvarEstado(); renderizarHome(); }
       else if (id === 'contato') {
         appState.contato.endereco = document.getElementById('edit-endereco').value;
@@ -1167,8 +1338,8 @@
         else { appState.bgColor = c; appState.bgImage = null; appState.bgGradient = null; salvarEstado(); renderizarHome(); }
       }
       else if (id === 'videos') {
-        const f = document.getElementById('edit-video-file');
-        if(f.files.length) lerArquivoComprimido('edit-video-file', v => { appState.video = v; salvarEstado(); renderizarHome(); fecharEditor(); });
+        appState.video = document.getElementById('edit-video-link').value;
+        salvarEstado(); renderizarHome();
       }
       fecharEditor();
     }
@@ -1186,12 +1357,19 @@
       try {
         let codigo = localStorage.getItem('ab_ref_code') || 'AB' + Math.random().toString(36).substring(2, 8).toUpperCase();
         localStorage.setItem('ab_ref_code', codigo);
-        let base = location.protocol === 'file:' ? location.href.split('?')[0] : location.origin + location.pathname;
+        let base = location.protocol === 'file:' ? "https://seu-site-aqui.com" : location.origin + location.pathname;
         let link = `${base}?ref=${codigo}`;
         if (document.getElementById('link-indicacao')) document.getElementById('link-indicacao').value = link;
         if (document.getElementById('codigo-indicacao')) document.getElementById('codigo-indicacao').textContent = codigo;
-        if (document.getElementById('btn-share-indique')) document.getElementById('btn-share-indique').href = `https://wa.me/?text=${encodeURIComponent('Use meu link: ' + link)}`;
       } catch(e) {}
+    }
+
+    function compartilharIndicacao() {
+        const link = document.getElementById('link-indicacao').value;
+        const texto = encodeURIComponent('Use meu link e ganhe descontos exclusivos: ' + link);
+        mostrarToast('Abrindo WhatsApp...');
+        const url = `https://api.whatsapp.com/send?text=${texto}`;
+        window.open(url, '_blank');
     }
 
     function copiarLink() {
@@ -1200,28 +1378,21 @@
       try { document.execCommand('copy'); mostrarToast('✅ Link copiado!'); } catch (e) { alert('Copie manualmente.'); }
     }
 
-    function aplicarRestricoes() {
-      const role = document.getElementById('role-select').value;
-      let perms = role === 'dona' ? todasPermissoes.map(p => p.id) : (appState.equipe.find(e => e.cargo === role)?.perms || []);
-      document.getElementById('perfil-cargo').textContent = role === 'dona' ? 'Proprietária' : 'Equipe';
-      document.getElementById('perfil-nome').textContent = role === 'dona' ? appState.appName : 'Usuário';
-      const grid = document.getElementById('master-grid-botoes');
-      grid.innerHTML = perms.map(id => { const p = todasPermissoes.find(x => x.id === id); return p ? `<button class="master-card" onclick="abrirConfiguracao('${p.id}')"><h4>${p.nome}</h4><span class="plus">+</span></button>` : ''; }).join('');
-    }
-
     function lerArquivoComprimido(inputId, cb) {
       const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null);
       const file = i.files[0];
+      const limiteImagem = 10 * 1024 * 1024;
+      if (file.type.startsWith('image/') && file.size > limiteImagem) { alert('⚠️ Imagem muito pesada! Escolha uma menor que 10MB.'); i.value = ''; return cb(null); }
       if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; }
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas'); let width = img.width, height = img.height;
-          if (width > 600) { height = Math.round((height * 600) / width); width = 600; }
+          const MAX_WIDTH = 600; if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
           canvas.width = width; canvas.height = height;
           const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-          cb(canvas.toDataURL('image/jpeg', 0.6));
+          cb(canvas.toDataURL('image/jpeg', 0.5));
         };
         img.src = e.target.result;
       };
@@ -1234,19 +1405,11 @@
       document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
     }
 
-    function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
-    function enviarCadastro(e) { e.preventDefault(); alert('Conta criada!'); document.getElementById('modal-cadastro').style.display = 'none'; }
-
-    function abrirChat() { document.getElementById('tela-chat').style.display = 'block'; }
-    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
-    function iniciarAula() { document.getElementById('chat-body').innerHTML = `<div class="msg msg-bot">Aula: Vá no Perfil > Integrações para conectar seus apps! 🌸</div>`; }
-    function enviarMsgIA() { 
-      const inp = document.getElementById('chat-input'); const txt = inp.value; if(!txt) return;
-      const body = document.getElementById('chat-body');
-      body.insertAdjacentHTML('beforeend', `<div class="msg msg-user">${txt}</div>`); inp.value = '';
-      setTimeout(() => { body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot">Entendi! Para configurar, vá no Perfil. 😊</div>`); body.scrollTop = body.scrollHeight; }, 800);
-    }
-
+    document.addEventListener('DOMContentLoaded', () => { 
+      aplicarRestricoes(); 
+      gerarCalendarioReal();
+      carregarEstado();
+    });
   </script>
 
 </body>
