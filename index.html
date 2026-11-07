@@ -126,15 +126,17 @@
     .horario-btn.selecionado { background: var(--cor-dourada); color: #fff; }
     
     /* ESTILOS PARA O ADMIN VER OS HORÁRIOS */
-    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 65px; font-weight: 400; font-size: 11px; cursor: default; }
+    .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 75px; font-weight: 400; font-size: 11px; cursor: default; border-radius: 8px; }
     .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; }
     .horario-btn.admin-slot.ocupado { background: #fff0f0; border-color: #ffcdd2; color: #b71c1c; }
-    .horario-btn.admin-slot.livre { background: #f1f8e9; border-color: #c5e1a5; color: #33691e; }
+    .horario-btn.admin-slot.livre { background: #f1f8e9; border-color: #c5e1a5; color: #33691e; cursor: pointer; }
+    .horario-btn.admin-slot.livre:hover { background: #dcedc8; }
 
     .admin-agenda-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 4px solid var(--cor-principal); display: flex; flex-direction: column; gap: 5px; }
     .admin-agenda-card .data-hora { font-size: 14px; font-weight: 700; color: var(--cor-principal); display: flex; justify-content: space-between; }
     .admin-agenda-card .cliente-info { font-size: 12px; color: var(--cor-texto-escuro); font-weight: 600; margin-top: 5px; }
     .admin-agenda-card .cliente-tel { font-size: 11px; color: var(--cor-texto-mutado); }
+    .admin-agenda-card .cliente-servico { font-size: 11px; color: var(--cor-principal); font-weight: 600; margin-top: 4px; }
     .btn-whats-agendamento { background: #00BB2D; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; }
 
     .indique-box { background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
@@ -220,7 +222,7 @@
         <select id="role-select" onchange="aplicarRestricoes()">
           <option value="dona" selected>Dona (Comando Geral)</option>
           <option value="gerente">Gerente (Maria)</option>
-          <option value="supervisor">Supervisor (João)</option>
+          <option value="supervisor">Recepcionista (João)</option>
           <option value="cliente">Cliente (Sem acesso)</option>
         </select>
       </div>
@@ -275,7 +277,7 @@
 
         <!-- VISÃO DA EQUIPE: LISTA EXTRA -->
         <div id="agenda-admin" style="display:none; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
-          <div class="section-title-nova" style="margin-top:0;">Próximos Agendamentos</div>
+          <div class="section-title-nova" style="margin-top:0;">Próximos Agendamentos (Lista)</div>
           <div id="lista-agendamentos-admin"></div>
         </div>
 
@@ -412,13 +414,14 @@
       </div>
     </div>
 
-    <!-- MODAL AGENDAMENTO CLIENTE -->
+    <!-- MODAL AGENDAMENTO -->
     <div id="modal-agendar" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
         <h3>Confirmar Agendamento</h3>
         <p style="font-size:12px; text-align:center; margin-bottom:15px; color:#666;">Horário: <b id="resumo-horario" style="color:var(--cor-principal);"></b></p>
-        <input type="text" id="agenda-nome" placeholder="Seu Nome Completo" required>
-        <input type="tel" id="agenda-tel" placeholder="Seu WhatsApp (com DDD)" required>
+        <input type="text" id="agenda-nome" placeholder="Nome do Cliente" required>
+        <input type="tel" id="agenda-tel" placeholder="WhatsApp do Cliente (com DDD)" required>
+        <input type="text" id="agenda-servico" placeholder="O que será feito? (Ex: Unha, Cílios)" required>
         <button class="btn-enviar-cadastro" onclick="salvarAgendamento()">Confirmar Reserva</button>
         <button class="btn-undo" onclick="document.getElementById('modal-agendar').style.display='none'">Cancelar</button>
       </div>
@@ -602,6 +605,7 @@
         mostrarToast('✅ Cadastro realizado com sucesso!');
         voltarInicio();
         verificarClienteLogado();
+        renderizarHome(); // Recarrega a tela inicial para esconder o botão de cadastro
 
         document.getElementById('cad-nome').value = ''; document.getElementById('cad-email').value = ''; document.getElementById('cad-tel').value = '';
       } catch (error) { console.error("Erro ao cadastrar:", error); alert("Erro ao cadastrar."); }
@@ -665,7 +669,6 @@
       const role = document.getElementById('role-select').value;
       const isAdmin = (role === 'dona' || role === 'gerente' || role === 'supervisor');
 
-      // Sempre mostra o calendário
       const calendarContainer = document.getElementById('calendario-container');
       if (calendarContainer) calendarContainer.style.display = 'block';
 
@@ -727,11 +730,13 @@
         horarioSelecionado = null;
         const hrContainer = document.getElementById('horarios-container');
         if (hrContainer) hrContainer.style.display = 'none';
+        currentDate = new Date();
 
         const telaAgenda = document.getElementById('tela-agenda');
         if (telaAgenda && telaAgenda.classList.contains('ativa')) {
           atualizarViewAgenda();
         }
+        renderizarHome(); // Recarrega a home para mostrar ou esconder o botão de cadastro
       }
     }
 
@@ -868,10 +873,7 @@
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
         const dataBtn = new Date(year, month, i);
         
-        // Admin pode ver dias passados. Cliente não.
         const isPast = dataBtn < hoje && !isAdmin;
-        
-        // Verifica se o dia da semana está marcado como disponível
         const isDiaIndisponivel = !diasDisponiveis.includes(dataBtn.getDay());
 
         if (isPast || isDiaIndisponivel) {
@@ -886,7 +888,21 @@
     }
 
     function mudarMes(dir) {
-      currentDate.setMonth(currentDate.getMonth() + dir);
+      let novoMes = new Date(currentDate.getFullYear(), currentDate.getMonth() + dir, 1);
+      let hoje = new Date();
+      
+      let limiteMaximo = new Date(hoje.getFullYear(), hoje.getMonth() + 4, 1);
+      if (novoMes > limiteMaximo) {
+        mostrarToast('⚠️ Agendamentos liberados apenas para os próximos 4 meses.');
+        return;
+      }
+
+      let limiteMinimo = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+      if (novoMes < limiteMinimo && !['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value)) {
+        return;
+      }
+
+      currentDate = novoMes;
       gerarCalendarioReal();
     }
 
@@ -901,7 +917,7 @@
       if(hrContainer) hrContainer.style.display = 'block';
       
       const tituloHorarios = document.getElementById('titulo-horarios');
-      if (tituloHorarios) tituloHorarios.textContent = isAdmin ? 'Horários (Clique para ver a cliente)' : 'Horários disponíveis';
+      if (tituloHorarios) tituloHorarios.textContent = isAdmin ? 'Horários (Clique no verde para agendar)' : 'Horários disponíveis';
 
       const gridHorarios = document.getElementById('horarios-grid');
       const horarios = appState.horariosAgenda || estadoPadrao.horariosAgenda;
@@ -923,17 +939,18 @@
           const isOcupado = !!agendamento;
 
           if (isAdmin) {
-              // VISÃO DO ADMIN: Mostra Nome e Telefone
+              // VISÃO DO ADMIN: Mostra Nome, Telefone e Serviço
               if (isOcupado) {
                   return `<div class="horario-btn admin-slot ocupado">
                       <b>${esc(hr)}</b>
                       <span>👤 ${esc(agendamento.nome)}</span>
                       <span>📞 ${esc(agendamento.telefone)}</span>
+                      <span>✨ ${esc(agendamento.servico || 'Não especificado')}</span>
                   </div>`;
               } else {
-                  return `<div class="horario-btn admin-slot livre">
+                  return `<div class="horario-btn admin-slot livre" onclick="abrirModalAgendamentoAdmin('${esc(hr)}')">
                       <b>${esc(hr)}</b>
-                      <span style="opacity:0.7;">Livre</span>
+                      <span style="opacity:0.7;">Livre (Clique p/ Agendar)</span>
                   </div>`;
               }
           } else {
@@ -953,13 +970,31 @@
       horarioSelecionado = hr;
       const dataFmt = diaSelecionado.split('-').reverse().join('/');
       document.getElementById('resumo-horario').textContent = `${dataFmt} às ${hr}`;
+      
+      const nomeLogado = localStorage.getItem('clienteNome');
+      if (nomeLogado) document.getElementById('agenda-nome').value = nomeLogado;
+      
+      document.getElementById('modal-agendar').style.display = 'flex';
+    }
+
+    function abrirModalAgendamentoAdmin(hr) {
+      horarioSelecionado = hr;
+      const dataFmt = diaSelecionado.split('-').reverse().join('/');
+      document.getElementById('resumo-horario').textContent = `${dataFmt} às ${hr}`;
+      
+      document.getElementById('agenda-nome').value = '';
+      document.getElementById('agenda-tel').value = '';
+      document.getElementById('agenda-servico').value = '';
+      
       document.getElementById('modal-agendar').style.display = 'flex';
     }
 
     function salvarAgendamento() {
       const nome = document.getElementById('agenda-nome').value.trim();
       const tel = document.getElementById('agenda-tel').value.trim();
-      if(!nome || !tel) return alert('Preencha seu nome e WhatsApp.');
+      const servico = document.getElementById('agenda-servico').value.trim();
+      
+      if(!nome || !tel || !servico) return alert('Preencha nome, WhatsApp e o serviço.');
       if(!diaSelecionado || !horarioSelecionado) return alert('Escolha um horário.');
 
       db.collection('agendamentos')
@@ -972,18 +1007,26 @@
             alert('Este horário acabou de ser reservado. Por favor, escolha outro.');
             return;
           }
-          const agendamento = { data: diaSelecionado, hora: horarioSelecionado, nome: nome, telefone: tel, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
+          const agendamento = { data: diaSelecionado, hora: horarioSelecionado, nome: nome, telefone: tel, servico: servico, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
           return db.collection('agendamentos').add(agendamento).then(() => {
             alert('Agendamento realizado com sucesso!');
-            localStorage.setItem('meu_agendamento', JSON.stringify({ data: diaSelecionado, hora: horarioSelecionado }));
+            
+            // Salva no localStorage apenas se for um cliente
+            const isAdmin = ['dona', 'gerente', 'supervisor'].includes(document.getElementById('role-select').value);
+            if (!isAdmin) {
+                localStorage.setItem('meu_agendamento', JSON.stringify({ data: diaSelecionado, hora: horarioSelecionado }));
+            }
+            
             document.getElementById('modal-agendar').style.display = 'none';
-            verificarAgendamentoCliente();
+            if (!isAdmin) verificarAgendamentoCliente();
+            
             mostrarToast('Horário reservado!');
-            // Recarrega os horários se a tela estiver aberta
+            
             if (diaSelecionado) {
                 const btnDia = document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`);
                 if (btnDia) selecionarDiaReal(diaSelecionado, btnDia);
             }
+            if (isAdmin) carregarAgendamentosAdmin();
           });
         })
         .catch(e => alert('Erro ao agendar: ' + e.message));
@@ -1035,6 +1078,7 @@
                 <div class="data-hora"><span>📅 ${esc(dataFmt)}</span><span>⏰ ${esc(ag.hora)}</span></div>
                 <div class="cliente-info"><i class="fa-solid fa-user"></i> ${esc(ag.nome)}</div>
                 <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${esc(ag.telefone)}</div>
+                <div class="cliente-servico"><i class="fa-solid fa-wand-magic-sparkles"></i> Serviço: ${esc(ag.servico || 'Não especificado')}</div>
                 <a href="https://wa.me/55${telClean}" target="_blank" rel="noopener" class="btn-whats-agendamento">Chamar no WhatsApp</a>
             </div>`;
         }).join('');
@@ -1096,7 +1140,12 @@
           });
           html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
         }
-        else if (secao === 'cta') html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${esc(appState.mensagem)}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
+        // Lógica para esconder o botão de cadastro se a pessoa já preencheu o nome
+        else if (secao === 'cta') {
+            if (!localStorage.getItem('clienteNome')) {
+                html = `<div class="cta-cadastro"><div class="cta-cadastro-icon"><i class="fa-solid fa-user-plus"></i></div><div class="cta-cadastro-texto"><h3>Cadastre-se</h3><p>${esc(appState.mensagem)}</p></div><button class="btn-cadastrar-agora" onclick="abrirModalCadastro()">Cadastrar</button></div>`;
+            }
+        }
         else if (secao === 'indique') html = `<div class="banner-indique" onclick="abrirTela('indique'); document.querySelector('[data-tab=indique]').click();"><div><h3>Indique e Ganhe!</h3><p>Convide amigas</p></div><i class="fa-solid fa-gift"></i></div>`;
         else if (secao === 'videos' && appState.video) { let videoHtml = gerarHTMLVideo(appState.video); html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><div style="height:220px;">${videoHtml}</div></div>`; }
         else if (secao === 'planos') {
@@ -1265,7 +1314,7 @@
       else if (id === 'equipe') {
         titulo.textContent = 'Gerenciar Equipe';
         let listaHTML = (appState.equipe || []).map((emp) => `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><strong>${esc(emp.nome)} (${esc(emp.cargo)})</strong><button onclick="removerMembro(${Number(emp.id)})" style="background:#ffebee; color:#c62828; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Cessar</button></div><div style="font-size:11px; color:#666; margin-bottom:8px;">Senha: <b>${esc(emp.senha)}</b></div><button onclick="editarPermissoesMembro(${Number(emp.id)})" style="background:#9D174D; color:#fff; border:none; padding:6px; border-radius:4px; font-size:11px; width:100%; cursor:pointer;">Configurar Acessos</button></div>`).join('');
-        html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Supervisor</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
+        html = `<div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">${listaHTML}</div><p style="font-size:11px; font-weight:700; border-top:1px solid #ccc; padding-top:10px;">Adicionar Novo Membro:</p><input type="text" id="add-nome" placeholder="Nome do funcionário"><select id="add-cargo"><option value="gerente">Gerente</option><option value="supervisor">Recepcionista</option></select><input type="text" id="add-senha" placeholder="Crie uma senha">`;
       }
       else if (id === 'clube') {
         titulo.textContent = 'Planos e Preços';
@@ -1545,7 +1594,7 @@
       aplicarRestricoes(); 
       gerarCalendarioReal();
       carregarEstado();
-      inicializacaoIndicacao();
+      inicializarIndicacao();
     });
   </script>
 
