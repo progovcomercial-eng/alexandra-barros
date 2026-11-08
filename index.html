@@ -1534,7 +1534,23 @@
       }
       else if (id === 'fundo') {
         titulo.textContent = 'Plano de Fundo';
-        html = `<label>Cor Sólida</label><input type="color" id="edit-bg-color" value="${esc(appState.bgColor)}"><input type="file" id="edit-bg-file" accept="image/*">`;
+        html = `
+          <div style="background:#FFF8FA; padding:10px; border-radius:8px; margin-bottom:12px; border-left:4px solid var(--cor-principal);">
+            <p style="font-size:11px; color:#666; margin:0;">Escolha uma cor sólida ou envie uma imagem de fundo. A imagem substitui a cor.</p>
+          </div>
+
+          <label style="font-size:11px; font-weight:700;">🎨 Cor Sólida</label>
+          <input type="color" id="edit-bg-color" value="${esc(appState.bgColor || '#FFF2F6')}" style="height:42px; margin-bottom:10px; padding:3px;">
+
+          <label style="font-size:11px; font-weight:700;">🖼️ Imagem de Fundo (opcional)</label>
+          <input type="file" id="edit-bg-file" accept="image/*">
+
+          ${appState.bgImage ? `<p style="font-size:10px; color:#9D174D; margin-top:6px; font-weight:700;">✓ Existe uma imagem de fundo aplicada</p>` : ''}
+
+          <button type="button" onclick="restaurarFundoOriginal()" style="width:100%; padding:12px; background:#f5f5f5; color:#555; border:1px solid #ddd; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; margin-top:16px;">
+            ↺ Restaurar Fundo Original (#FFF2F6)
+          </button>
+        `;
       }
       else if (id === 'tela-inicial') {
         titulo.textContent = 'Clube e Renova-se';
@@ -1886,7 +1902,7 @@
       reader.readAsDataURL(file);
     }
 
-    // --- FUNÇÕES DE CORES E GRADIENTES ---
+    // --- FUNÇÕES DE CORES, GRADIENTES E FUNDO ---
     function updateGradPreview(prefix) {
       const start = document.getElementById('grad-' + prefix + '-start').value;
       const end = document.getElementById('grad-' + prefix + '-end').value;
@@ -1924,6 +1940,25 @@
       document.getElementById('grad-indique-end').value = '#FFA500';
       ['vitrine', 'planos', 'cta', 'indique'].forEach(updateGradPreview);
       mostrarToast('Gradientes restaurados. Clique em Salvar.');
+    }
+
+    function restaurarFundoOriginal() {
+      if (!adminAutenticado) { mostrarToast('Acesso restrito.'); return; }
+      if (!confirm('Restaurar o fundo original do app?\n\nA cor volta para #FFF2F6 e qualquer imagem será removida.')) return;
+
+      appState.bgColor = '#FFF2F6';
+      appState.bgImage = null;
+      appState.bgGradient = null;
+
+      const corInput = document.getElementById('edit-bg-color');
+      const fileInput = document.getElementById('edit-bg-file');
+      if (corInput) corInput.value = '#FFF2F6';
+      if (fileInput) fileInput.value = '';
+
+      salvarEstado();
+      renderizarHome();
+      mostrarToast('✅ Fundo restaurado para o original!');
+      fecharEditor();
     }
 
     function mostrarToast(msg) {
