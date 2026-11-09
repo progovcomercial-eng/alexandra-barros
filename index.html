@@ -470,6 +470,40 @@
       </div>
     </div>
 
+    <!-- MODAL PRONTUÁRIO -->
+    <div id="modal-prontuario" class="modal-cadastro-fixo" style="align-items: flex-start; padding-top: 20px;">
+      <div class="cartao-cadastro" style="max-width: 450px; background: #fff;">
+        <h3 id="prontuario-titulo" style="font-size: 16px;">Prontuário</h3>
+        
+        <div style="background: #FFF2F6; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--cor-dourada);">
+          <h4 style="font-size: 12px; color: var(--cor-principal); margin-bottom: 8px;">Adicionar Nova Sessão</h4>
+          
+          <label style="font-size: 11px; font-weight: bold;">Data da Sessão:</label>
+          <input type="date" id="pront-data" style="margin-bottom: 8px;">
+          
+          <label style="font-size: 11px; font-weight: bold;">Procedimento / Evolução:</label>
+          <input type="text" id="pront-procedimento" placeholder="Ex: Microagulhamento" style="margin-bottom: 8px;">
+          
+          <label style="font-size: 11px; font-weight: bold;">Anotações / Observações:</label>
+          <textarea id="pront-anotacoes" rows="2" placeholder="Ex: Pele apresentou leve vermelhidão..." style="margin-bottom: 8px;"></textarea>
+          
+          <label style="font-size: 11px; font-weight: bold;">Foto da Sessão (Máx 10MB):</label>
+          <input type="file" id="pront-foto" accept="image/*" style="margin-bottom: 10px;">
+          
+          <button onclick="salvarProntuario()" style="width: 100%; padding: 10px; background: var(--cor-principal); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Salvar na Nuvem
+          </button>
+          <p id="pront-status" style="font-size: 10px; text-align: center; color: #666; margin-top: 5px;"></p>
+        </div>
+
+        <div id="prontuario-historico" style="max-height: 300px; overflow-y: auto;">
+          <!-- O histórico vai aparecer aqui -->
+        </div>
+
+        <button class="btn-undo" onclick="document.getElementById('modal-prontuario').style.display='none'">Fechar Prontuário</button>
+      </div>
+    </div>
+
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
       <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
@@ -529,6 +563,7 @@
       ]},
       { nome: 'Gestão VIP & Clube', icone: 'fa-gem', itens: [
         { id: 'vip', nome: 'Gerenciar Clube VIP' },
+        { id: 'lista-clientes', nome: 'Lista de Clientes 👥' },
         { id: 'loja-clube', nome: 'Loja do Clube' },
         { id: 'clube', nome: 'Planos e Preços' },
         { id: 'tela-inicial', nome: 'Nomes (Clube/Vitrine)' }
@@ -640,6 +675,7 @@
 
     window._agsCache = {};
     window._produtosCache = {};
+    window._prontuarioClienteAtual = null;
 
     let pilhaTelas = ['inicio'];
 
@@ -1651,6 +1687,17 @@
           <p id="migracao-status" style="font-size:12px; text-align:center; margin-top:15px; font-weight:bold; color:#333;"></p>
         `;
       }
+      else if (id === 'lista-clientes') {
+        titulo.textContent = 'Lista de Clientes';
+        html = `
+          <div style="margin-bottom: 15px; position: sticky; top: 0; background: #fff; padding-bottom: 10px; z-index: 10;">
+            <input type="text" id="busca-cliente" placeholder="🔍 Buscar por nome, email ou telefone..." oninput="filtrarClientes(this.value)" style="width:100%; padding:12px; border:1px solid var(--cor-principal); border-radius:8px; font-size:14px; box-sizing: border-box;">
+          </div>
+          <div id="lista-clientes-container" style="max-height: 450px; overflow-y:auto;">
+            <p style="text-align:center; font-size:12px; color:#777;">Carregando clientes...</p>
+          </div>
+        `;
+      }
       else if (id === 'mural') {
         titulo.textContent = 'Mural da Agenda';
         html = `<p style="font-size:11px; color:#666; margin-bottom:10px;">Texto que os clientes verão na aba Agenda.</p><textarea id="edit-mural" rows="6" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-family:inherit; font-size:13px;">${esc(appState.muralAgenda || '')}</textarea>`;
@@ -1844,7 +1891,7 @@
 
       document.getElementById('modal-editor').style.display = 'flex';
 
-      if (id === 'integracoes' || id === 'vip' || id === 'migracao') {
+      if (id === 'integracoes' || id === 'vip' || id === 'migracao' || id === 'lista-clientes') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1854,6 +1901,29 @@
          document.getElementById('btn-salvar-editor').onclick = salvarConfigAtual;
          document.getElementById('btn-voltar-editor').textContent = '↩ Desfazer';
          document.getElementById('btn-voltar-editor').onclick = desfazerConfig;
+      }
+
+      if (id === 'lista-clientes') {
+        Promise.all([
+          db.collection("clientes").get(),
+          db.collection("agendamentos").get()
+        ]).then(([snapClientes, snapAgendamentos]) => {
+          window._listaClientesCache = [];
+          window._listaAgendamentosCache = [];
+          
+          snapClientes.forEach(doc => {
+            window._listaClientesCache.push({ id: doc.id, ...doc.data() });
+          });
+          
+          snapAgendamentos.forEach(doc => {
+            window._listaAgendamentosCache.push({ id: doc.id, ...doc.data() });
+          });
+          
+          renderizarListaClientes(); 
+        }).catch(err => {
+          console.error(err);
+          document.getElementById('lista-clientes-container').innerHTML = '<p style="color:red; text-align:center;">Erro ao carregar dados.</p>';
+        });
       }
     }
 
@@ -2227,6 +2297,209 @@
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
+    }
+
+    async function abrirProntuario(idCliente, nomeCliente) {
+      window._prontuarioClienteAtual = idCliente;
+      document.getElementById('prontuario-titulo').innerHTML = `Prontuário: <span style="color:var(--cor-dourada);">${esc(nomeCliente)}</span>`;
+      document.getElementById('pront-data').value = new Date().toISOString().split('T')[0];
+      document.getElementById('pront-procedimento').value = '';
+      document.getElementById('pront-anotacoes').value = '';
+      document.getElementById('pront-foto').value = '';
+      document.getElementById('pront-status').textContent = '';
+      
+      document.getElementById('modal-prontuario').style.display = 'flex';
+      
+      await carregarHistoricoProntuario();
+    }
+
+    async function carregarHistoricoProntuario() {
+      const container = document.getElementById('prontuario-historico');
+      container.innerHTML = '<p style="text-align:center; font-size:11px;">Buscando histórico...</p>';
+      
+      try {
+        const snap = await db.collection("prontuarios").where("clienteId", "==", window._prontuarioClienteAtual).get();
+        
+        if (snap.empty) {
+          container.innerHTML = '<p style="text-align:center; font-size:11px; color:#777; padding: 10px;">Nenhuma sessão registrada ainda.</p>';
+          return;
+        }
+
+        let registros = [];
+        snap.forEach(doc => {
+          registros.push({ id: doc.id, ...doc.data() });
+        });
+
+        registros.sort((a, b) => b.data.localeCompare(a.data));
+
+        container.innerHTML = registros.map(r => {
+          const dataFmt = String(r.data).split('-').reverse().join('/');
+          let fotoHtml = r.foto ? `<div style="margin-top:8px;"><img src="${esc(r.foto)}" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; border:1px solid #ddd;"></div>` : '';
+          
+          return `
+            <div style="background:#fff; border:1px solid #ddd; border-left:4px solid var(--cor-dourada); padding:10px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <span style="font-size:12px; font-weight:bold; color:var(--cor-principal);">📅 ${dataFmt}</span>
+                <button onclick="deletarProntuario('${esc(r.id)}')" style="background:none; border:none; color:#c62828; font-size:10px; cursor:pointer;"><i class="fa-solid fa-trash"></i> Excluir</button>
+              </div>
+              <p style="font-size:12px; font-weight:bold; margin-bottom:3px;">${esc(r.procedimento)}</p>
+              <p style="font-size:11px; color:#555; line-height:1.4;">${esc(r.anotacoes).replace(/\n/g, '<br>')}</p>
+              ${fotoHtml}
+            </div>
+          `;
+        }).join('');
+        
+      } catch(e) {
+        console.error(e);
+        container.innerHTML = '<p style="text-align:center; font-size:11px; color:red;">Erro ao carregar histórico.</p>';
+      }
+    }
+
+    async function salvarProntuario() {
+      const data = document.getElementById('pront-data').value;
+      const proc = document.getElementById('pront-procedimento').value.trim();
+      const anot = document.getElementById('pront-anotacoes').value.trim();
+      const fotoInput = document.getElementById('pront-foto');
+      const statusEl = document.getElementById('pront-status');
+
+      if (!data || !proc) {
+        alert('Por favor, preencha a data e o procedimento.');
+        return;
+      }
+
+      statusEl.textContent = 'Salvando na nuvem...';
+      statusEl.style.color = '#10A37F';
+
+      const finalizar = async (fotoBase64 = null) => {
+        try {
+          await db.collection("prontuarios").add({
+            clienteId: window._prontuarioClienteAtual,
+            data: data,
+            procedimento: proc,
+            anotacoes: anot,
+            foto: fotoBase64,
+            criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          
+          statusEl.textContent = '✅ Salvo com sucesso!';
+          statusEl.style.color = '#2e7d32';
+          
+          document.getElementById('pront-procedimento').value = '';
+          document.getElementById('pront-anotacoes').value = '';
+          document.getElementById('pront-foto').value = '';
+          
+          await carregarHistoricoProntuario();
+          
+          setTimeout(() => { statusEl.textContent = ''; }, 3000);
+        } catch(e) {
+          console.error(e);
+          statusEl.textContent = '❌ Erro ao salvar.';
+          statusEl.style.color = '#c62828';
+        }
+      };
+
+      if (fotoInput.files.length) {
+        lerArquivoComprimido('pront-foto', (base64) => {
+          finalizar(base64);
+        });
+      } else {
+        finalizar(null);
+      }
+    }
+
+    async function deletarProntuario(idProntuario) {
+      if (!confirm('Atenção: Deseja apagar este registro do prontuário permanentemente?')) return;
+      try {
+        await db.collection("prontuarios").doc(idProntuario).delete();
+        await carregarHistoricoProntuario();
+        mostrarToast('Registro apagado.');
+      } catch(e) {
+        console.error(e);
+        alert('Erro ao apagar.');
+      }
+    }
+
+    function renderizarListaClientes(filtro = '') {
+      const container = document.getElementById('lista-clientes-container');
+      if (!container) return;
+      
+      const clientes = window._listaClientesCache || [];
+      const agendamentos = window._listaAgendamentosCache || [];
+      const filtroLower = filtro.toLowerCase();
+      
+      const filtrados = clientes.filter(c => 
+        (c.nome && c.nome.toLowerCase().includes(filtroLower)) || 
+        (c.telefone && c.telefone.includes(filtroLower)) ||
+        (c.email && c.email.toLowerCase().includes(filtroLower))
+      );
+
+      if (filtrados.length === 0) {
+        container.innerHTML = '<p style="text-align:center; font-size:12px; color:#777; padding: 20px;">Nenhum cliente encontrado com essa busca.</p>';
+        return;
+      }
+
+      container.innerHTML = filtrados.map(c => {
+        let wa = (c.telefone || '').replace(/\D/g, '');
+        if (wa.length > 0 && !wa.startsWith('55')) wa = '55' + wa;
+        const btnWhats = wa ? `<a href="https://wa.me/${wa}" target="_blank" style="background:#25D366; color:#fff; padding:6px 10px; border-radius:6px; text-decoration:none; font-size:11px; font-weight:bold; display:inline-flex; align-items:center; gap:5px; margin-top:8px;"><i class="fa-brands fa-whatsapp"></i> Zap</a>` : '';
+        
+        const btnProntuario = `<button onclick="abrirProntuario('${esc(c.id)}', '${esc(c.nome)}')" style="background:#9D174D; color:#fff; padding:6px 10px; border-radius:6px; border:none; font-size:11px; font-weight:bold; display:inline-flex; align-items:center; gap:5px; margin-top:8px; cursor:pointer;"><i class="fa-solid fa-file-medical"></i> Prontuário</button>`;
+
+        const telLimpo = (c.telefone || '').replace(/\D/g, '');
+        const historico = agendamentos.filter(ag => {
+          const agTelLimpo = (ag.telefone || '').replace(/\D/g, '');
+          const isMesmoTel = telLimpo && agTelLimpo && (agTelLimpo.includes(telLimpo) || telLimpo.includes(agTelLimpo));
+          const isMesmoNome = ag.nome && c.nome && (ag.nome.toLowerCase().trim() === c.nome.toLowerCase().trim());
+          return isMesmoTel || isMesmoNome;
+        }).sort((a,b) => b.data.localeCompare(a.data));
+
+        let historicoHtml = '';
+        if (historico.length > 0) {
+          historicoHtml = `<div style="margin-top:12px; border-top:1px solid #ccc; padding-top:8px;">
+            <span style="font-size:10px; font-weight:bold; color:#9D174D; text-transform:uppercase;">Histórico de Atendimentos:</span>
+            <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">
+              ${historico.map(ag => {
+                const dataFmt = String(ag.data || '').split('-').reverse().join('/');
+                return `<div style="font-size:11px; color:#333; background:#FFF2F6; padding:6px; border-radius:4px; border-left:3px solid var(--cor-dourada);">
+                  📅 <b>${dataFmt}</b> às ⏰ <b>${ag.horaInicio || ''}</b> - ${esc(ag.servico || '')}
+                </div>`;
+              }).join('')}
+            </div>
+          </div>`;
+        } else {
+          historicoHtml = `<div style="margin-top:12px; border-top:1px solid #eee; padding-top:8px; font-size:10px; color:#999;">Nenhum atendimento registrado ainda.</div>`;
+        }
+        
+        let dataCadFmt = 'Não informada';
+        try {
+          if (c.dataCadastro) {
+             const d = c.dataCadastro.seconds ? new Date(c.dataCadastro.seconds * 1000) : new Date(c.dataCadastro);
+             dataCadFmt = d.toLocaleDateString('pt-BR');
+          }
+        } catch(e) {}
+
+        return `
+          <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd; border-left: 4px solid var(--cor-principal); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <strong style="font-size:14px; color:var(--cor-principal);">${esc(c.nome)}</strong><br>
+                <span style="font-size:12px; color:#555;">📞 ${esc(c.telefone || 'Sem telefone')}</span><br>
+                <span style="font-size:11px; color:#777;">✉️ ${esc(c.email || 'Sem email')}</span><br>
+                <span style="font-size:10px; color:#999;">Cliente desde: ${dataCadFmt}</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
+                ${btnWhats}
+                ${btnProntuario}
+              </div>
+            </div>
+            ${historicoHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filtrarClientes(valor) {
+      renderizarListaClientes(valor);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
