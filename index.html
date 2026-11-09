@@ -42,7 +42,6 @@
     .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
     .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
 
-    /* ===== QUICK APPS ===== */
     .quick-apps-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
     .quick-app { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--cor-texto-escuro); font-size: 10px; font-weight: 600; padding: 10px 4px; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform .2s; border: 1px solid rgba(0,0,0,0.04); }
     .quick-app:active { transform: scale(0.94); }
@@ -235,7 +234,6 @@
         <div id="home-sections"></div>
       </div>
 
-      <!-- TELA CLÍNICA -->
       <div id="tela-clinica" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" style="background: linear-gradient(135deg, #9D174D, #560021);">
@@ -250,7 +248,6 @@
         </button>
       </div>
 
-      <!-- TELA CLUBE -->
       <div id="tela-clube" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" style="background: linear-gradient(135deg, #C2185B, #4C0519);">
@@ -273,7 +270,6 @@
         <div id="vitrine-produtos-grid-clube" class="boutique-grid-nova"></div>
       </div>
 
-      <!-- TELA PONTOS -->
       <div id="tela-pontos" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" style="background: linear-gradient(135deg, #D4AF37, #9D174D);">
@@ -287,7 +283,6 @@
         </div>
       </div>
 
-      <!-- TELA PRODUTO -->
       <div id="tela-produto" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div id="produto-img-grande">🛍️</div>
@@ -301,7 +296,6 @@
         </button>
       </div>
 
-      <!-- TELA CANAIS -->
       <div id="tela-canais" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" style="background: linear-gradient(135deg, #128C7E, #075E54);">
@@ -312,7 +306,6 @@
         <div id="canais-lista-container"></div>
       </div>
 
-      <!-- TELA PARCEIRO -->
       <div id="tela-parceiro" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 200px;">🤝</div>
@@ -371,7 +364,6 @@
         </div>
       </div>
 
-      <!-- TELA DE PERFIL (ADMIN) -->
       <div id="tela-perfil" class="tela">
         <div class="perfil-hero">
           <div class="perfil-avatar" id="perfil-avatar">AB</div>
@@ -482,13 +474,11 @@
   </div>
 
   <script>
-    // --- HELPERS DE SEGURANÇA ---
     function esc(s) { if (s === null || s === undefined) return ''; return String(s).replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
     function safeImgSrc(url) { if (!url) return ''; var s = String(url).trim(); if (/^(javascript|vbscript):/i.test(s)) return ''; return s; }
     function safeHref(url) { if (!url) return '#'; var s = String(url).trim(); if (/^(javascript|data|vbscript|file):/i.test(s)) return '#'; return s; }
     function cssUrl(url) { return JSON.stringify(String(url || '')); }
 
-    // --- CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
       authDomain: "aleclube.firebaseapp.com",
@@ -519,11 +509,9 @@
       } catch (e) { console.warn('Verificação admin Firestore:', e); return false; }
     }
 
-    // --- CONFIGURAÇÃO DA IA GEMINI (PROXY) ---
     const GEMINI_PROXY_URL = 'https://ale-gemini-proxy.progovcomercial.workers.dev';
     let historicoChatIA = [];
 
-    // --- PAINEL MASTER ---
     const categoriasConfig = [
       { nome: 'Aparência & Design', icone: 'fa-palette', itens: [
         { id: 'cores', nome: 'Cores Base' }, { id: 'cores-extra', nome: 'Cores Redes' },
@@ -571,7 +559,7 @@
       ],
       iaName: 'Assistente Alexandra',
       iaWelcome: 'Olá, seja bem-vinda! 🌸 Sou a assistente virtual da Alexandra Barros. Posso tirar dúvidas sobre nossos protocolos para mulheres 40+ ou ajudar você a agendar um horário. Como posso cuidar de você hoje?',
-      iaSystemPrompt: 'Você é a Assistente Ale, assistente virtual da clínica de estética Alexandra Barros. Seu tom é acolhedor. Foco em mulheres 40+. Tire dúvidas sobre tratamentos e pós-procedimentos. Quando a cliente quiser agendar, use a função "criarAgendamento". Nunca invente preços.',
+      iaSystemPrompt: 'Você é a Assistente Ale, assistente virtual da clínica de estética Alexandra Barros. Seu tom é acolhedor. Foco em mulheres 40+. Tire dúvidas sobre tratamentos e pós-procedimentos. Nunca invente preços.',
       iaEnabled: true,
       iaProxyUrl: null,
       planoAtual: 'diamond',
@@ -636,7 +624,6 @@
     window._agsCache = {};
     window._produtosCache = {};
 
-    // --- NAVEGAÇÃO ---
     let pilhaTelas = ['inicio'];
 
     function empilharTela(id) {
@@ -691,7 +678,6 @@
       return limite ? limite[recurso] : false;
     }
 
-    // --- AUTH ---
     auth.onAuthStateChanged(async (user) => {
         usuarioAutenticado = user;
         adminAutenticado = user ? await verificarAdmin(user) : false;
@@ -925,7 +911,6 @@
       }
     }
 
-    // --- CHAT IA GEMINI ---
     function abrirChat() {
         if (!modoAdminAtivo && appState.iaEnabled === false) {
             mostrarToast('Assistente temporariamente indisponível. Fale com a Alexandra no WhatsApp. 🌸');
@@ -950,7 +935,7 @@
       body.scrollTop = body.scrollHeight;
     }
 
-    // ✅ FUNÇÃO ENVIAR MENSAGEM ATUALIZADA COM DEBUG E GEMINI 2.0
+    // ✅ FUNÇÃO CORRIGIDA SEM A FERRAMENTA PESADA
     async function enviarMsgIA() {
       const inp = document.getElementById('chat-input');
       const txt = inp.value.trim();
@@ -970,21 +955,7 @@
 
         const payload = {
           contents: historicoChatIA,
-          systemInstruction: { parts: [{ text: systemPrompt + " Quando a cliente quiser agendar, use a função 'criarAgendamento'. Nunca invente preços." }] },
-          tools: [{
-            functionDeclarations: [{
-              name: 'criarAgendamento',
-              description: 'Cria um agendamento real no sistema.',
-              parameters: {
-                type: 'OBJECT',
-                properties: {
-                  data: { type: 'STRING' }, horaInicio: { type: 'STRING' },
-                  nome: { type: 'STRING' }, telefone: { type: 'STRING' }, servico: { type: 'STRING' }
-                },
-                required: ['data', 'horaInicio', 'nome', 'telefone', 'servico']
-              }
-            }]
-          }]
+          systemInstruction: { parts: [{ text: systemPrompt }] }
         };
 
         const resposta = await fetch(proxyUrl, {
@@ -994,42 +965,16 @@
         });
 
         const raw = await resposta.text();
-        console.log('[IA] Status:', resposta.status, 'Body:', raw);
-
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status} — ${raw.slice(0, 150)}`);
 
-        let dados;
-        try { dados = JSON.parse(raw); }
-        catch (e) { throw new Error('Resposta não é JSON: ' + raw.slice(0, 150)); }
-
-        if (dados.error) throw new Error('Gemini: ' + (dados.error.message || JSON.stringify(dados.error)));
+        const dados = JSON.parse(raw);
+        if (dados.error) throw new Error('Gemini: ' + dados.error.message);
 
         const partes = dados.candidates?.[0]?.content?.parts || [];
-        if (!partes.length) throw new Error('Resposta vazia: ' + JSON.stringify(dados).slice(0, 150));
-
-        const chamadaFuncao = partes.find(p => p.functionCall);
-
-        if (chamadaFuncao && chamadaFuncao.functionCall.name === 'criarAgendamento') {
-          document.getElementById(idDigitando)?.remove();
-          const resultado = await executarCriacaoAgendamentoIA(chamadaFuncao.functionCall.args);
-
-          historicoChatIA.push({ role: 'model', parts: [{ functionCall: chamadaFuncao.functionCall }] });
-          historicoChatIA.push({ role: 'user', parts: [{ functionResponse: { name: 'criarAgendamento', response: resultado } }] });
-
-          const r2 = await fetch(proxyUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: historicoChatIA, tools: payload.tools, systemInstruction: payload.systemInstruction })
-          });
-          const d2 = await r2.json();
-          const textoFinal = d2.candidates?.[0]?.content?.parts?.[0]?.text || 'Agendamento processado.';
-          adicionarMsgAoChat('bot', textoFinal);
-          historicoChatIA.push({ role: 'model', parts: [{ text: textoFinal }] });
-          return;
-        }
+        if (!partes.length) throw new Error('Resposta vazia');
 
         document.getElementById(idDigitando)?.remove();
-        const textoResposta = partes[0]?.text || 'Desculpe, não consegui responder agora.';
+        const textoResposta = partes[0]?.text || 'Desculpe, não entendi.';
         adicionarMsgAoChat('bot', textoResposta);
         historicoChatIA.push({ role: 'model', parts: [{ text: textoResposta }] });
 
@@ -1054,7 +999,6 @@
       } catch (e) { return { sucesso: false, mensagem: 'Erro interno.' }; }
     }
 
-    // --- AGENDA ---
     function atualizarViewAgenda() {
       const elMuralCliente = document.getElementById('agenda-cliente-mural');
       const elCalendario = document.getElementById('calendario-container');
@@ -1568,7 +1512,6 @@
       window.open(`https://wa.me/${appState.whatsapp || '5511997450293'}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    // ============ PAINEL MASTER ============
     function abrirConfiguracao(id) {
       configAtualAberta = id;
       backupState = JSON.parse(JSON.stringify(appState));
