@@ -504,6 +504,25 @@
       </div>
     </div>
 
+    <!-- MODAL DE CONFIRMAÇÃO PARA O CLIENTE -->
+    <div id="modal-confirmacao-cliente" class="modal-cadastro-fixo" style="align-items: center;">
+      <div class="cartao-cadastro" style="text-align: center; background: #fff;">
+        <i class="fa-solid fa-calendar-check" style="font-size: 40px; color: var(--cor-principal); margin-bottom: 10px;"></i>
+        <h3 id="confirm-titulo">Confirmar Presença</h3>
+        <p id="confirm-desc" style="font-size: 13px; color: #555; margin: 10px 0 20px;">Você tem um horário agendado. Por favor, confirme abaixo:</p>
+        
+        <button onclick="responderConfirmacao('confirmado')" style="width: 100%; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; margin-bottom: 10px;">
+          <i class="fa-solid fa-check"></i> Sim, vou comparecer
+        </button>
+        
+        <button onclick="responderConfirmacao('cancelado')" style="width: 100%; padding: 14px; background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;">
+          <i class="fa-solid fa-xmark"></i> Não poderei ir
+        </button>
+        
+        <p id="confirm-status" style="font-size: 12px; margin-top: 15px; font-weight: bold;"></p>
+      </div>
+    </div>
+
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
       <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
@@ -563,7 +582,6 @@
       ]},
       { nome: 'Gestão VIP & Clube', icone: 'fa-gem', itens: [
         { id: 'vip', nome: 'Gerenciar Clube VIP' },
-        { id: 'lista-clientes', nome: 'Lista de Clientes 👥' },
         { id: 'loja-clube', nome: 'Loja do Clube' },
         { id: 'clube', nome: 'Planos e Preços' },
         { id: 'tela-inicial', nome: 'Nomes (Clube/Vitrine)' }
@@ -571,7 +589,11 @@
       { nome: 'Agenda & Contato', icone: 'fa-calendar', itens: [
         { id: 'agenda-config', nome: 'Configurar Agenda' }, { id: 'mural', nome: 'Mural da Agenda' },
         { id: 'equipe', nome: 'Gerenciar Equipe 👥' },
+        { id: 'lista-clientes', nome: 'Lista de Clientes 👥' },
         { id: 'contato', nome: 'Redes & Contato' }, { id: 'links', nome: 'Links Ambientes' }
+      ]},
+      { nome: 'Financeiro & Gestão', icone: 'fa-chart-line', itens: [
+        { id: 'financeiro', nome: 'Fluxo de Caixa 💰' }
       ]},
       { nome: 'Sistema & Integrações', icone: 'fa-gear', itens: [
         { id: 'ia', nome: 'Assistente Gemini IA' },
@@ -635,7 +657,7 @@
       horariosAgenda: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'],
       diasDisponiveis: [1, 2, 3, 4, 5, 6],
       muralAgenda: 'Bem-vinda! Aqui cada protocolo é pensado para respeitar sua história e realçar sua beleza natural.\n\nPara agendar seu horário, por favor, chame nossa equipe no WhatsApp. Atendemos de segunda a sábado, das 09h às 18h.\n\nAgradecemos a preferência! 🌸',
-      
+      senhaFinanceiro: '1234',
       funcionarios: [
         { id: 'f1', nome: 'Alexandra', cor: '#9D174D' },
         { id: 'f2', nome: 'Maria', cor: '#128C7E' },
@@ -676,6 +698,8 @@
     window._agsCache = {};
     window._produtosCache = {};
     window._prontuarioClienteAtual = null;
+    window._acessoFinanceiroLiberado = false;
+    window._agendamentoParaConfirmar = null;
 
     let pilhaTelas = ['inicio'];
 
@@ -702,7 +726,10 @@
 
       if (empilhar) empilharTela(id);
 
-      if (id === 'agenda') atualizarViewAgenda();
+      if (id === 'agenda') {
+        atualizarViewAgenda();
+        if (modoAdminAtivo) verificarConfirmacoesAmanha();
+      }
       if (id === 'clinica') renderizarTratamentosClinica();
       if (id === 'clube') renderizarClubeEVitrine();
       if (id === 'indique') document.getElementById('link-indicacao').value = getLinkIndicacao();
@@ -819,6 +846,7 @@
           const novasSecoes = estadoPadrao.layoutOrder.filter(s => !dbOrder.includes(s));
           appState.layoutOrder = [...dbOrder, ...novasSecoes];
           if (!appState.funcionarios) appState.funcionarios = estadoPadrao.funcionarios;
+          if (!appState.senhaFinanceiro) appState.senhaFinanceiro = '1234';
           atualizarInterfaceEstado();
         } else if (adminAutenticado) {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
@@ -1144,8 +1172,13 @@
 
             if (agendamento) {
               if (hr === (agendamento.horaInicio || agendamento.hora)) {
+                let statusIcon = '';
+                if (agendamento.statusConfirmacao === 'confirmado') statusIcon = '🟢';
+                else if (agendamento.statusConfirmacao === 'cancelado') statusIcon = '🔴';
+                else statusIcon = '🟡';
+
                 html += `<div style="background:${func.cor}20; border-left: 4px solid ${func.cor}; padding: 6px; border-radius: 4px; font-size:10px; color:#333; overflow:hidden;">
-                  <b>${esc(agendamento.nome)}</b><br>
+                  <b>${statusIcon} ${esc(agendamento.nome)}</b><br>
                   <span style="font-size:9px;">${esc(agendamento.servico)}</span>
                   <button onclick="abrirRemarcarAdmin('${esc(agendamento.idFirestore)}')" style="background:${func.cor}; color:#fff; border:none; border-radius:4px; padding:4px; font-size:8px; margin-top:4px; width:100%; cursor:pointer;">Ver/Editar</button>
                 </div>`;
@@ -1217,6 +1250,7 @@
         servico, 
         funcionarioId: funcId,
         funcionarioNome: funcNome,
+        statusConfirmacao: 'pendente', // Adiciona o status inicial
         criadoEm: firebase.firestore.FieldValue.serverTimestamp() 
       };
       
@@ -1260,9 +1294,10 @@
         ags.sort((a,b) => (a.data + a.horaInicio).localeCompare(b.data + b.horaInicio));
         container.innerHTML = ags.map(ag => {
             const dataFmt = String(ag.data || '').split('-').reverse().join('/');
+            let statusIcon = ag.statusConfirmacao === 'confirmado' ? '🟢' : (ag.statusConfirmacao === 'cancelado' ? '🔴' : '🟡');
             return `<div class="admin-agenda-card">
                 <div class="data-hora"><span>📅 ${esc(dataFmt)}</span><span>⏰ ${esc(ag.horaInicio)} - ${esc(ag.horaFim)}</span></div>
-                <div class="cliente-info"><i class="fa-solid fa-user"></i> ${esc(ag.nome)}</div>
+                <div class="cliente-info"><i class="fa-solid fa-user"></i> ${statusIcon} ${esc(ag.nome)}</div>
                 <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${esc(ag.telefone)}</div>
                 <div class="cliente-servico"><i class="fa-solid fa-wand-magic-sparkles"></i> ${esc(ag.servico)}</div>
                 <div class="cliente-profissional" style="font-size:11px; color:#666; margin-top:3px;"><i class="fa-solid fa-user-tie"></i> Profissional: ${esc(ag.funcionarioNome || 'Geral')}</div>
@@ -1687,6 +1722,62 @@
           <p id="migracao-status" style="font-size:12px; text-align:center; margin-top:15px; font-weight:bold; color:#333;"></p>
         `;
       }
+      else if (id === 'financeiro') {
+        titulo.textContent = 'Fluxo de Caixa';
+        
+        if (!window._acessoFinanceiroLiberado) {
+          html = `
+            <div style="text-align: center; padding: 20px;">
+              <i class="fa-solid fa-lock" style="font-size: 40px; color: var(--cor-principal); margin-bottom: 15px;"></i>
+              <h4 style="font-size: 14px; color: #333; margin-bottom: 10px;">Acesso Restrito</h4>
+              <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Digite o PIN do financeiro para visualizar o caixa e as vendas.</p>
+              
+              <input type="password" id="fin-senha-acesso" inputmode="numeric" placeholder="****" style="text-align:center; font-size:20px; letter-spacing:5px; max-width:150px; margin: 0 auto;">
+              <button onclick="verificarSenhaFinanceiro()" style="width: 100%; padding: 12px; background: var(--cor-principal); color: #fff; border: none; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer;">Desbloquear</button>
+              <p id="fin-senha-status" style="font-size: 11px; color: red; margin-top: 10px; font-weight:bold;"></p>
+            </div>
+          `;
+        } else {
+          html = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background:#e8f5e9; padding: 8px 12px; border-radius: 8px;">
+              <span style="font-size: 11px; font-weight: bold; color: #2e7d32;"><i class="fa-solid fa-lock-open"></i> Acesso Liberado</span>
+              <div>
+                <button onclick="alterarSenhaFinanceiro()" style="background: #fff; border: 1px solid #ccc; padding: 5px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight:bold; color:#333;"><i class="fa-solid fa-key"></i> Trocar PIN</button>
+                <button onclick="bloquearFinanceiro()" style="background: #ffebee; color: #c62828; border: none; padding: 5px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight:bold; margin-left:5px;"><i class="fa-solid fa-lock"></i> Bloquear</button>
+              </div>
+            </div>
+
+            <div id="dashboard-financeiro">
+              <p style="text-align:center; color:#666; font-size:12px;">Carregando dados financeiros...</p>
+            </div>
+            
+            <div style="background:#FFF2F6; padding:15px; border-radius:8px; margin-top:15px; border:1px solid var(--cor-dourada);">
+              <h4 style="font-size:12px; color:var(--cor-principal); margin-bottom:10px;">Novo Lançamento</h4>
+              
+              <div style="display:flex; gap:5px; margin-bottom:5px;">
+                <select id="fin-tipo" style="width:45%; padding:8px; margin:0; font-size:12px;">
+                  <option value="entrada">Entrada (+)</option>
+                  <option value="saida">Saída (-)</option>
+                </select>
+                <input type="date" id="fin-data" style="width:55%; padding:8px; margin:0; font-size:12px;">
+              </div>
+              
+              <input type="text" id="fin-desc" placeholder="Descrição (Ex: Limpeza de pele)" style="margin-bottom:5px; padding:8px; font-size:12px;">
+              <input type="number" id="fin-valor" placeholder="Valor (R$)" step="0.01" min="0" style="margin-bottom:10px; padding:8px; font-size:12px;">
+              
+              <button onclick="salvarLancamentoFinanceiro()" style="width:100%; padding:10px; background:var(--cor-principal); color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px;">
+                <i class="fa-solid fa-plus"></i> Adicionar Lançamento
+              </button>
+              <p id="fin-status" style="font-size:11px; text-align:center; margin-top:5px; font-weight:bold;"></p>
+            </div>
+
+            <div style="margin-top:15px;">
+              <h4 style="font-size:12px; color:#333; margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:5px;">Histórico Recente</h4>
+              <div id="lista-financeiro" style="max-height:250px; overflow-y:auto;"></div>
+            </div>
+          `;
+        }
+      }
       else if (id === 'lista-clientes') {
         titulo.textContent = 'Lista de Clientes';
         html = `
@@ -1891,7 +1982,7 @@
 
       document.getElementById('modal-editor').style.display = 'flex';
 
-      if (id === 'integracoes' || id === 'vip' || id === 'migracao' || id === 'lista-clientes') {
+      if (id === 'integracoes' || id === 'vip' || id === 'migracao' || id === 'lista-clientes' || id === 'financeiro') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1904,26 +1995,37 @@
       }
 
       if (id === 'lista-clientes') {
-        Promise.all([
-          db.collection("clientes").get(),
-          db.collection("agendamentos").get()
-        ]).then(([snapClientes, snapAgendamentos]) => {
-          window._listaClientesCache = [];
-          window._listaAgendamentosCache = [];
-          
+        window._listaClientesCache = [];
+        window._listaAgendamentosCache = [];
+
+        // Busca clientes primeiro
+        db.collection("clientes").get().then(snapClientes => {
           snapClientes.forEach(doc => {
             window._listaClientesCache.push({ id: doc.id, ...doc.data() });
           });
           
+          // Tenta buscar agendamentos, mas se falhar, não trava a lista de clientes
+          return db.collection("agendamentos").get().catch(e => {
+            console.warn("Aviso: Não foi possível carregar agendamentos agora.", e);
+            return { forEach: () => {} }; // Retorna vazio para não quebrar o código
+          });
+        }).then(snapAgendamentos => {
           snapAgendamentos.forEach(doc => {
             window._listaAgendamentosCache.push({ id: doc.id, ...doc.data() });
           });
           
-          renderizarListaClientes(); 
+          // Renderiza a lista (agora com clientes e histórico)
+          renderizarListaClientes();
+          
         }).catch(err => {
-          console.error(err);
-          document.getElementById('lista-clientes-container').innerHTML = '<p style="color:red; text-align:center;">Erro ao carregar dados.</p>';
+          console.error("Erro ao carregar dados:", err);
+          document.getElementById('lista-clientes-container').innerHTML = '<p style="color:red; text-align:center;">Erro ao carregar lista de clientes.</p>';
         });
+      }
+
+      if (id === 'financeiro' && window._acessoFinanceiroLiberado) {
+        document.getElementById('fin-data').value = new Date().toLocaleDateString('en-CA');
+        carregarDadosFinanceiros();
       }
     }
 
@@ -1965,18 +2067,32 @@
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
+        delimiter: "", // Auto-detecta vírgula ou ponto e vírgula
         complete: async function(results) {
           const clientes = results.data;
           let importados = 0;
+          let ignorados = 0;
           
+          if (clientes.length === 0) {
+            statusEl.textContent = 'O arquivo parece estar vazio.';
+            statusEl.style.color = '#c62828';
+            return;
+          }
+
           statusEl.textContent = `Importando ${clientes.length} clientes... Aguarde.`;
 
           for (let i = 0; i < clientes.length; i++) {
             const linha = clientes[i];
             
-            const nome = linha['Nome'] || linha['nome'] || linha['Name'] || linha['NAME'];
-            const email = linha['Email'] || linha['email'] || linha['E-mail'] || linha['EMAIL'];
-            const tel = linha['Telefone'] || linha['telefone'] || linha['WhatsApp'] || linha['whatsapp'] || linha['Telephone'];
+            // Função para achar a coluna, ignorando maiúsculas/minúsculas e espaços
+            const getVal = (keys) => {
+              const foundKey = Object.keys(linha).find(k => keys.includes(k.toLowerCase().trim()));
+              return foundKey ? linha[foundKey] : '';
+            };
+
+            const nome = getVal(['nome', 'name', 'nome completo', 'cliente']);
+            const email = getVal(['email', 'e-mail', 'email address']);
+            const tel = getVal(['telefone', 'whatsapp', 'celular', 'phone', 'tel', 'contato']);
 
             if (nome) {
               try {
@@ -1991,12 +2107,23 @@
                 statusEl.textContent = `Importando: ${importados} de ${clientes.length}...`;
               } catch (e) {
                 console.error("Erro ao importar cliente:", e);
+                ignorados++;
               }
+            } else {
+              ignorados++;
             }
           }
           
-          statusEl.textContent = `✅ Sucesso! ${importados} clientes foram importados.`;
-          statusEl.style.color = '#2e7d32';
+          if (importados > 0) {
+            statusEl.textContent = `✅ Sucesso! ${importados} clientes importados.`;
+            statusEl.style.color = '#2e7d32';
+            alert(`✅ Sucesso! ${importados} clientes foram importados.`);
+            fileInput.value = '';
+          } else {
+            statusEl.textContent = `⚠️ Nenhum cliente foi importado. Verifique se a planilha tem uma coluna "Nome".`;
+            statusEl.style.color = '#c62828';
+            alert('Nenhum cliente importado. Verifique se a primeira linha do arquivo tem os títulos: Nome, Email, Telefone.');
+          }
         }
       });
     }
@@ -2460,8 +2587,11 @@
             <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">
               ${historico.map(ag => {
                 const dataFmt = String(ag.data || '').split('-').reverse().join('/');
-                return `<div style="font-size:11px; color:#333; background:#FFF2F6; padding:6px; border-radius:4px; border-left:3px solid var(--cor-dourada);">
+                return `<div style="font-size:11px; color:#333; background:#FFF2F6; padding:6px; border-radius:4px; border-left:3px solid var(--cor-dourada); margin-bottom: 4px;">
                   📅 <b>${dataFmt}</b> às ⏰ <b>${ag.horaInicio || ''}</b> - ${esc(ag.servico || '')}
+                  <br><span style="font-size:9px; font-weight:bold; color: ${ag.statusConfirmacao === 'confirmado' ? 'green' : (ag.statusConfirmacao === 'cancelado' ? 'red' : '#d97706')};">
+                    ${ag.statusConfirmacao === 'confirmado' ? '✅ Confirmado' : (ag.statusConfirmacao === 'cancelado' ? '❌ Cancelado' : '⏳ Aguardando Confirmação')}
+                  </span>
                 </div>`;
               }).join('')}
             </div>
@@ -2502,7 +2632,269 @@
       renderizarListaClientes(valor);
     }
 
+    async function verificarConfirmacoesAmanha() {
+      const amanha = new Date();
+      amanha.setDate(amanha.getDate() + 1);
+      const amanhaStr = amanha.toLocaleDateString('en-CA'); // YYYY-MM-DD
+
+      try {
+        const snap = await db.collection('agendamentos').where('data', '==', amanhaStr).get();
+        let pendentes = [];
+        snap.forEach(doc => {
+          const ag = doc.data();
+          if (!ag.statusConfirmacao || ag.statusConfirmacao === 'pendente') {
+            pendentes.push({ id: doc.id, ...ag });
+          }
+        });
+
+        if (pendentes.length > 0) {
+          const confirmar = confirm(`Atenção: Você tem ${pendentes.length} agendamento(s) para AMANHÃ que ainda não foram confirmados.\n\nDeseja enviar as mensagens de confirmação agora?`);
+          if (confirmar) {
+            dispararConfirmacoes(pendentes);
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao verificar confirmações:", e);
+      }
+    }
+
+    async function dispararConfirmacoes(pendentes) {
+      for (let i = 0; i < pendentes.length; i++) {
+        const ag = pendentes[i];
+        let tel = (ag.telefone || '').replace(/\D/g, '');
+        if (tel && !tel.startsWith('55')) tel = '55' + tel;
+
+        if (tel) {
+          const linkConfirmar = window.location.origin + window.location.pathname + '?confirmar=' + ag.id;
+          const msg = `Olá, ${ag.nome}! Passando para confirmar seu horário amanhã (${ag.data.split('-').reverse().join('/')}) às ${ag.horaInicio} para ${ag.servico}.\n\nPor favor, confirme clicando no link:\n${linkConfirmar}`;
+          
+          window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+          
+          // Pequena pausa para não bloquear o navegador
+          await new Promise(r => setTimeout(r, 1500));
+        }
+      }
+    }
+
+    async function responderConfirmacao(status) {
+      if (!window._agendamentoParaConfirmar) return;
+      const statusEl = document.getElementById('confirm-status');
+      statusEl.textContent = 'Enviando resposta...';
+      
+      try {
+        await db.collection('agendamentos').doc(window._agendamentoParaConfirmar).update({ 
+          statusConfirmacao: status 
+        });
+        statusEl.innerHTML = status === 'confirmado' 
+          ? '✅ Presença Confirmada! Até lá.' 
+          : '❌ Cancelamento avisado. Obrigado.';
+        statusEl.style.color = status === 'confirmado' ? '#2e7d32' : '#c62828';
+        
+        setTimeout(() => {
+          document.getElementById('modal-confirmacao-cliente').style.display = 'none';
+          window.history.replaceState({}, document.title, window.location.pathname); // Limpa o link
+        }, 2500);
+        
+      } catch (e) {
+        statusEl.textContent = 'Erro ao enviar. Tente novamente.';
+        statusEl.style.color = 'red';
+      }
+    }
+
+    async function carregarDadosFinanceiros() {
+      const dash = document.getElementById('dashboard-financeiro');
+      const lista = document.getElementById('lista-financeiro');
+      
+      try {
+        const snapshot = await db.collection("financeiro").orderBy("data", "desc").get();
+        
+        if (snapshot.empty) {
+          dash.innerHTML = '<p style="text-align:center; font-size:12px; color:#777;">Nenhum lançamento financeiro ainda.</p>';
+          lista.innerHTML = '';
+          return;
+        }
+
+        let entradas = 0;
+        let saidas = 0;
+        let vendasPorDia = {};
+        let transacoes = [];
+
+        snapshot.forEach(doc => {
+          const t = { id: doc.id, ...doc.data() };
+          transacoes.push(t);
+          
+          const valor = Number(t.valor) || 0;
+          
+          if (t.tipo === 'entrada') {
+            entradas += valor;
+            // Agrupa as vendas por dia para achar o recorde
+            vendasPorDia[t.data] = (vendasPorDia[t.data] || 0) + valor;
+          } else {
+            saidas += valor;
+          }
+        });
+
+        // Achar o dia de maior faturamento
+        let melhorDia = 'Nenhum';
+        let maiorVenda = 0;
+        for (const [dia, total] of Object.entries(vendasPorDia)) {
+          if (total > maiorVenda) {
+            maiorVenda = total;
+            melhorDia = dia.split('-').reverse().join('/');
+          }
+        }
+
+        const saldo = entradas - saidas;
+
+        // Montar os cards de resumo
+        dash.innerHTML = `
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;">
+            <div style="background:#e8f5e9; padding:10px; border-radius:8px; text-align:center; border:1px solid #a5d6a7;">
+              <span style="font-size:10px; color:#2e7d32; font-weight:bold; text-transform:uppercase;">Entradas</span><br>
+              <strong style="font-size:14px; color:#1b5e20;">R$ ${entradas.toFixed(2).replace('.', ',')}</strong>
+            </div>
+            <div style="background:#ffebee; padding:10px; border-radius:8px; text-align:center; border:1px solid #ffcdd2;">
+              <span style="font-size:10px; color:#c62828; font-weight:bold; text-transform:uppercase;">Saídas</span><br>
+              <strong style="font-size:14px; color:#b71c1c;">R$ ${saidas.toFixed(2).replace('.', ',')}</strong>
+            </div>
+          </div>
+          <div style="background:var(--cor-principal); padding:12px; border-radius:8px; text-align:center; color:#fff; margin-bottom:10px;">
+            <span style="font-size:10px; opacity:0.9; font-weight:bold; text-transform:uppercase;">Saldo em Caixa</span><br>
+            <strong style="font-size:20px; color:var(--cor-dourada);">R$ ${saldo.toFixed(2).replace('.', ',')}</strong>
+          </div>
+          <div style="background:#FFF8E1; padding:10px; border-radius:8px; text-align:center; border:1px solid #FFD54F;">
+            <span style="font-size:10px; color:#F57F17; font-weight:bold; text-transform:uppercase;">🏆 Melhor Dia de Vendas</span><br>
+            <strong style="font-size:13px; color:#E65100;">${melhorDia} - R$ ${maiorVenda.toFixed(2).replace('.', ',')}</strong>
+          </div>
+        `;
+
+        // Renderizar a lista de transações
+        lista.innerHTML = transacoes.map(t => {
+          const isEntrada = t.tipo === 'entrada';
+          const cor = isEntrada ? '#2e7d32' : '#c62828';
+          const sinal = isEntrada ? '+' : '-';
+          const dataFmt = t.data.split('-').reverse().join('/');
+          
+          return `
+            <div style="background:#fff; border:1px solid #eee; border-left:4px solid ${cor}; padding:8px 10px; border-radius:6px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="font-size:12px; color:#333; display:block;">${esc(t.descricao)}</strong>
+                <span style="font-size:10px; color:#777;">${dataFmt}</span>
+              </div>
+              <div style="text-align:right;">
+                <strong style="font-size:13px; color:${cor};">${sinal} R$ ${Number(t.valor).toFixed(2).replace('.', ',')}</strong><br>
+                <button onclick="deletarLancamentoFinanceiro('${esc(t.id)}')" style="background:none; border:none; color:#999; font-size:10px; cursor:pointer; text-decoration:underline;">Excluir</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (e) {
+        console.error("Erro ao carregar financeiro:", e);
+        dash.innerHTML = '<p style="text-align:center; color:red; font-size:12px;">Erro ao carregar dados.</p>';
+      }
+    }
+
+    async function salvarLancamentoFinanceiro() {
+      const tipo = document.getElementById('fin-tipo').value;
+      const data = document.getElementById('fin-data').value;
+      const descricao = document.getElementById('fin-desc').value.trim();
+      const valor = parseFloat(document.getElementById('fin-valor').value);
+      const statusEl = document.getElementById('fin-status');
+
+      if (!data || !descricao || isNaN(valor) || valor <= 0) {
+        alert('Preencha todos os campos corretamente.');
+        return;
+      }
+
+      statusEl.textContent = 'Salvando...';
+      statusEl.style.color = '#10A37F';
+
+      try {
+        await db.collection("financeiro").add({
+          tipo, data, descricao, valor,
+          criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        statusEl.textContent = '✅ Lançamento salvo!';
+        statusEl.style.color = '#2e7d32';
+        
+        document.getElementById('fin-desc').value = '';
+        document.getElementById('fin-valor').value = '';
+        
+        carregarDadosFinanceiros();
+        
+        setTimeout(() => { statusEl.textContent = ''; }, 3000);
+      } catch (e) {
+        console.error(e);
+        statusEl.textContent = '❌ Erro ao salvar.';
+        statusEl.style.color = '#c62828';
+      }
+    }
+
+    async function deletarLancamentoFinanceiro(id) {
+      if (!confirm('Deseja apagar este lançamento financeiro?')) return;
+      try {
+        await db.collection("financeiro").doc(id).delete();
+        carregarDadosFinanceiros();
+        mostrarToast('Lançamento apagado.');
+      } catch (e) {
+        console.error(e);
+        alert('Erro ao apagar lançamento.');
+      }
+    }
+
+    function verificarSenhaFinanceiro() {
+      const senha = document.getElementById('fin-senha-acesso').value;
+      const senhaCorreta = appState.senhaFinanceiro || '1234';
+      
+      if (senha === senhaCorreta) {
+        window._acessoFinanceiroLiberado = true;
+        abrirConfiguracao('financeiro'); // Recarrega a tela liberada
+      } else {
+        document.getElementById('fin-senha-status').textContent = '❌ PIN incorreto. Tente novamente.';
+      }
+    }
+
+    function bloquearFinanceiro() {
+      window._acessoFinanceiroLiberado = false;
+      abrirConfiguracao('financeiro'); // Recarrega a tela bloqueada
+    }
+
+    async function alterarSenhaFinanceiro() {
+      const atual = prompt("Digite o PIN atual para confirmar:");
+      if (atual !== (appState.senhaFinanceiro || '1234')) {
+        alert("PIN atual incorreto.");
+        return;
+      }
+      
+      const novo = prompt("Digite o NOVO PIN (mínimo 4 números):");
+      if (novo && novo.length >= 4) {
+        appState.senhaFinanceiro = novo;
+        await salvarEstado();
+        mostrarToast('✅ PIN do financeiro alterado!');
+      } else if (novo) {
+        alert('O PIN deve ter pelo menos 4 caracteres.');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      // VERIFICA SE O LINK É DE CONFIRMAÇÃO (QUANDO O CLIENTE CLICA NO WHATSAPP)
+      const urlParams = new URLSearchParams(window.location.search);
+      const idConfirmar = urlParams.get('confirmar');
+      
+      if (idConfirmar) {
+        db.collection('agendamentos').doc(idConfirmar).get().then(doc => {
+          if (doc.exists) {
+            const ag = doc.data();
+            document.getElementById('confirm-titulo').textContent = `Olá, ${ag.nome}!`;
+            document.getElementById('confirm-desc').innerHTML = `Seu atendimento de <b>${ag.servico}</b> está marcado para:<br><b>📅 ${ag.data.split('-').reverse().join('/')} às ${ag.horaInicio}</b>.<br><br>Você poderá comparecer?`;
+            document.getElementById('modal-confirmacao-cliente').style.display = 'flex';
+            window._agendamentoParaConfirmar = idConfirmar;
+          }
+        });
+      }
+
       aplicarRestricoes();
       gerarCalendarioReal();
       carregarEstado();
