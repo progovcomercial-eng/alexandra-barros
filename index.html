@@ -19,6 +19,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
   <style>
     :root {
@@ -165,7 +166,8 @@
     .dia-btn.selecionado { background: var(--cor-principal); color: #fff; border-color: var(--cor-principal); }
     .dia-btn.indisponivel { background: #f5f5f5; color: #ccc; cursor: not-allowed; text-decoration: line-through; }
     .dia-btn.vazio { background: transparent; border: none; cursor: default; }
-    .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+    
+    .horarios-grid { display: block; overflow-x: auto; margin-bottom: 24px; padding-bottom: 10px; }
     .horario-btn.admin-slot { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 10px; text-align: left; height: 100%; min-height: 85px; font-weight: 400; font-size: 11px; border-radius: 8px; }
     .horario-btn.admin-slot b { font-size: 13px; margin-bottom: 4px; font-weight: 700; }
     .horario-btn.admin-slot.livre { background: #E0F7FA; border: 1px solid #00BCD4; color: #006064; cursor: pointer; }
@@ -450,6 +452,10 @@
         <input type="text" id="agenda-nome" placeholder="Nome do Cliente" required>
         <input type="tel" id="agenda-tel" placeholder="WhatsApp do Cliente (com DDD)" required>
         <input type="text" id="agenda-servico" placeholder="O que será feito? (Ex: Unha, Cílios)" required>
+        
+        <label style="font-size:11px; font-weight:700; display:block; margin-top:10px; margin-bottom:3px;">Profissional:</label>
+        <select id="agenda-funcionario"></select>
+
         <button class="btn-enviar-cadastro" onclick="salvarAgendamento()" id="btn-salvar-agendamento">Agendar</button>
         <button class="btn-undo" onclick="fecharModalAgendar()">Cancelar</button>
       </div>
@@ -529,11 +535,13 @@
       ]},
       { nome: 'Agenda & Contato', icone: 'fa-calendar', itens: [
         { id: 'agenda-config', nome: 'Configurar Agenda' }, { id: 'mural', nome: 'Mural da Agenda' },
+        { id: 'equipe', nome: 'Gerenciar Equipe 👥' },
         { id: 'contato', nome: 'Redes & Contato' }, { id: 'links', nome: 'Links Ambientes' }
       ]},
       { nome: 'Sistema & Integrações', icone: 'fa-gear', itens: [
         { id: 'ia', nome: 'Assistente Gemini IA' },
         { id: 'identidade', nome: 'Nome & Senha' },
+        { id: 'migracao', nome: 'Importar Clientes 📥' },
         { id: 'integracoes', nome: 'Integrações' }, { id: 'link-envio', nome: 'Enviar Link' }
       ]}
     ];
@@ -591,7 +599,16 @@
       agendaInicio: '09:00', agendaFim: '18:00', agendaIntervalo: '30',
       horariosAgenda: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'],
       diasDisponiveis: [1, 2, 3, 4, 5, 6],
-      muralAgenda: 'Bem-vinda! Aqui cada protocolo é pensado para respeitar sua história e realçar sua beleza natural.\n\nPara agendar seu horário, por favor, chame nossa equipe no WhatsApp. Atendemos de segunda a sábado, das 09h às 18h.\n\nAgradecemos a preferência! 🌸'
+      muralAgenda: 'Bem-vinda! Aqui cada protocolo é pensado para respeitar sua história e realçar sua beleza natural.\n\nPara agendar seu horário, por favor, chame nossa equipe no WhatsApp. Atendemos de segunda a sábado, das 09h às 18h.\n\nAgradecemos a preferência! 🌸',
+      
+      funcionarios: [
+        { id: 'f1', nome: 'Alexandra', cor: '#9D174D' },
+        { id: 'f2', nome: 'Maria', cor: '#128C7E' },
+        { id: 'f3', nome: 'Juliana', cor: '#D4AF37' },
+        { id: 'f4', nome: 'Camila', cor: '#E4405F' },
+        { id: 'f5', nome: 'Beatriz', cor: '#3B82F6' }
+      ],
+      modoAgenda: 'geral'
     };
 
     const LIMITES_PLANO = {
@@ -765,6 +782,7 @@
           const dbOrder = Array.isArray(appState.layoutOrder) ? appState.layoutOrder : [];
           const novasSecoes = estadoPadrao.layoutOrder.filter(s => !dbOrder.includes(s));
           appState.layoutOrder = [...dbOrder, ...novasSecoes];
+          if (!appState.funcionarios) appState.funcionarios = estadoPadrao.funcionarios;
           atualizarInterfaceEstado();
         } else if (adminAutenticado) {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
@@ -800,6 +818,8 @@
       try {
         await db.collection("clientes").add({ nome, email, telefone, dataCadastro: new Date().toISOString(), status: 'pendente' });
         localStorage.setItem('clienteNome', nome);
+        localStorage.setItem('clienteTelefone', telefone);
+        localStorage.setItem('clienteEmail', email);
         document.getElementById('modal-cadastro').style.display = 'none';
         mostrarToast('✅ Cadastro realizado com sucesso!');
         voltarInicio();
@@ -935,7 +955,6 @@
       body.scrollTop = body.scrollHeight;
     }
 
-    // ✅ FUNÇÃO CORRIGIDA SEM A FERRAMENTA PESADA
     async function enviarMsgIA() {
       const inp = document.getElementById('chat-input');
       const txt = inp.value.trim();
@@ -994,7 +1013,7 @@
           if (args.horaInicio < (ag.horaFim || ag.hora) && fimNovo > (ag.horaInicio || ag.hora)) conflito = true;
         });
         if (conflito) return { sucesso: false, mensagem: 'Horário ocupado.' };
-        await db.collection('agendamentos').add({ data: args.data, horaInicio: args.horaInicio, horaFim: calcHoraFim(args.horaInicio, 60), nome: args.nome, telefone: args.telefone, servico: args.servico, origem: 'IA', criadoEm: firebase.firestore.FieldValue.serverTimestamp() });
+        await db.collection('agendamentos').add({ data: args.data, horaInicio: args.horaInicio, horaFim: calcHoraFim(args.horaInicio, 60), nome: args.nome, telefone: args.telefone, servico: args.servico, funcionarioId: 'f1', funcionarioNome: 'Geral', origem: 'IA', criadoEm: firebase.firestore.FieldValue.serverTimestamp() });
         return { sucesso: true, mensagem: 'Agendamento criado com sucesso.' };
       } catch (e) { return { sucesso: false, mensagem: 'Erro interno.' }; }
     }
@@ -1014,6 +1033,12 @@
           elCalendario.style.display = 'none';
           elAdminLista.style.display = 'none';
           document.getElementById('texto-mural-cliente').textContent = appState.muralAgenda || "Nenhum aviso no momento.";
+          
+          const nomeSalvo = localStorage.getItem('clienteNome');
+          const btnWhats = document.querySelector('#agenda-cliente-mural .btn-cta-grande');
+          if (nomeSalvo && btnWhats) {
+              btnWhats.onclick = () => window.open(`https://wa.me/5511997450293?text=Olá, meu nome é ${encodeURIComponent(nomeSalvo)} e gostaria de agendar um horário.`, '_blank');
+          }
       }
     }
 
@@ -1045,9 +1070,14 @@
       if (btn) btn.classList.add('selecionado');
       diaSelecionado = dataStr;
       document.getElementById('horarios-container').style.display = 'block';
-      document.getElementById('titulo-horarios').textContent = 'Horários (Clique no verde para agendar)';
+      document.getElementById('titulo-horarios').innerHTML = 'Agenda do Dia <br><span style="font-size:10px; font-weight:normal; color:#666;">Deslize para o lado para ver toda a equipe 👉</span>';
+      
       const gridHorarios = document.getElementById('horarios-grid');
       const horarios = gerarArrayHorarios(appState.agendaInicio || '09:00', appState.agendaFim || '18:00', appState.agendaIntervalo || '30');
+      const funcionarios = appState.funcionarios || [{ id: 'f1', nome: 'Geral', cor: '#9D174D' }];
+
+      gridHorarios.style.display = 'block';
+      gridHorarios.style.overflowX = 'auto';
 
       db.collection('agendamentos').where('data', '==', dataStr).get().then(snapshot => {
         const agendamentosDoDia = [];
@@ -1057,45 +1087,71 @@
           window._agsCache[doc.id] = ag;
         });
 
-        gridHorarios.innerHTML = horarios.map(hr => {
-          let agendamentoConflitante = null;
-          for (let ag of agendamentosDoDia) {
-              if (hr >= (ag.horaInicio || ag.hora) && hr < (ag.horaFim || ag.hora)) { agendamentoConflitante = ag; break; }
-          }
-          if (agendamentoConflitante) {
-              return `<div class="horario-btn admin-slot ocupado">
-                  <b>${esc(agendamentoConflitante.horaInicio)} - ${esc(agendamentoConflitante.horaFim)}</b>
-                  <span>👤 ${esc(agendamentoConflitante.nome)}</span>
-                  <span>📞 ${esc(agendamentoConflitante.telefone)}</span>
-                  <span>✨ ${esc(agendamentoConflitante.servico)}</span>
-                  <div style="display:flex; gap:5px; margin-top:5px;">
-                    <button onclick="abrirRemarcarAdmin('${esc(agendamentoConflitante.idFirestore)}')" class="btn-mini-remarcar">Remarcar</button>
-                    <button onclick="cancelarAgendamentoAdmin('${esc(agendamentoConflitante.idFirestore)}')" class="btn-mini-cancelar">Cancelar</button>
-                  </div>
+        let html = `<div style="display: grid; grid-template-columns: 50px repeat(${funcionarios.length}, 120px); gap: 5px; min-width: max-content; padding-bottom: 10px;">`;
+        html += `<div style="font-size:10px; font-weight:bold; color:#666; text-align:center; padding-top:20px;">Hora</div>`;
+        
+        funcionarios.forEach(func => {
+          html += `<div style="background:${func.cor}; color:#fff; padding:8px 4px; border-radius:6px; text-align:center; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">${esc(func.nome)}</div>`;
+        });
+
+        horarios.forEach(hr => {
+          html += `<div style="font-size:11px; font-weight:bold; color:#555; display:flex; align-items:center; justify-content:center; border-top:1px solid #eee;">${hr}</div>`;
+          
+          funcionarios.forEach(func => {
+            let agendamento = null;
+            for (let ag of agendamentosDoDia) {
+              const agFunc = ag.funcionarioId || 'f1';
+              if (agFunc === func.id && hr >= (ag.horaInicio || ag.hora) && hr < (ag.horaFim || ag.hora)) {
+                agendamento = ag; break;
+              }
+            }
+
+            if (agendamento) {
+              if (hr === (agendamento.horaInicio || agendamento.hora)) {
+                html += `<div style="background:${func.cor}20; border-left: 4px solid ${func.cor}; padding: 6px; border-radius: 4px; font-size:10px; color:#333; overflow:hidden;">
+                  <b>${esc(agendamento.nome)}</b><br>
+                  <span style="font-size:9px;">${esc(agendamento.servico)}</span>
+                  <button onclick="abrirRemarcarAdmin('${esc(agendamento.idFirestore)}')" style="background:${func.cor}; color:#fff; border:none; border-radius:4px; padding:4px; font-size:8px; margin-top:4px; width:100%; cursor:pointer;">Ver/Editar</button>
+                </div>`;
+              } else {
+                html += `<div style="background:${func.cor}20; border-left: 4px solid ${func.cor}; border-radius: 4px; opacity:0.5;"></div>`;
+              }
+            } else {
+              html += `<div onclick="abrirModalAgendamentoAdmin('${esc(hr)}', '${esc(func.id)}')" style="background:#E0F7FA; border:1px dashed #00BCD4; border-radius: 4px; display:flex; align-items:center; justify-content:center; color:#006064; font-size:9px; font-weight:bold; cursor:pointer; min-height: 40px;">
+                + Livre
               </div>`;
-          } else {
-              return `<div class="horario-btn admin-slot livre" onclick="abrirModalAgendamentoAdmin('${esc(hr)}')">
-                  <b>${esc(hr)}</b><span style="opacity:0.7;">Livre (Agendar)</span>
-              </div>`;
-          }
-        }).join('');
+            }
+          });
+        });
+        
+        html += `</div>`;
+        gridHorarios.innerHTML = html;
       });
     }
 
-    function abrirModalAgendamentoAdmin(hr) {
+    function abrirModalAgendamentoAdmin(hr, funcId = null) {
       const dataFmt = diaSelecionado.split('-').reverse().join('/');
       document.getElementById('resumo-dia').textContent = dataFmt;
       document.getElementById('div-horario-admin').style.display = 'block';
-      document.getElementById('modal-agendar-titulo').textContent = idAgendamentoRemarcando ? 'Remarcar Agendamento' : 'Novo Agendamento (Admin)';
+      document.getElementById('modal-agendar-titulo').textContent = idAgendamentoRemarcando ? 'Remarcar Agendamento' : 'Novo Agendamento';
       document.getElementById('btn-salvar-agendamento').textContent = idAgendamentoRemarcando ? 'Salvar Nova Data' : 'Agendar Cliente';
       document.getElementById('agenda-hora-inicio').value = hr;
       document.getElementById('agenda-hora-fim').value = calcHoraFim(hr, 60);
+      
+      const selectFunc = document.getElementById('agenda-funcionario');
+      const funcionarios = appState.funcionarios || [{ id: 'f1', nome: 'Geral', cor: '#9D174D' }];
+      selectFunc.innerHTML = funcionarios.map(f => `<option value="${f.id}">${f.nome}</option>`).join('');
+
       if (idAgendamentoRemarcando && dadosRemarcando) {
           document.getElementById('agenda-nome').value = dadosRemarcando.nome;
           document.getElementById('agenda-tel').value = dadosRemarcando.telefone;
           document.getElementById('agenda-servico').value = dadosRemarcando.servico;
+          selectFunc.value = dadosRemarcando.funcionarioId || 'f1';
       } else {
-          document.getElementById('agenda-nome').value = ''; document.getElementById('agenda-tel').value = ''; document.getElementById('agenda-servico').value = '';
+          document.getElementById('agenda-nome').value = localStorage.getItem('clienteNome') || ''; 
+          document.getElementById('agenda-tel').value = localStorage.getItem('clienteTelefone') || ''; 
+          document.getElementById('agenda-servico').value = '';
+          if (funcId) selectFunc.value = funcId; 
       }
       document.getElementById('modal-agendar').style.display = 'flex';
     }
@@ -1103,22 +1159,53 @@
     function fecharModalAgendar() { document.getElementById('modal-agendar').style.display = 'none'; idAgendamentoRemarcando = null; dadosRemarcando = null; }
 
     async function salvarAgendamento() {
-      const nome = document.getElementById('agenda-nome').value.trim(); const tel = document.getElementById('agenda-tel').value.trim(); const servico = document.getElementById('agenda-servico').value.trim();
+      const nome = document.getElementById('agenda-nome').value.trim(); 
+      const tel = document.getElementById('agenda-tel').value.trim(); 
+      const servico = document.getElementById('agenda-servico').value.trim();
+      
+      const selectFunc = document.getElementById('agenda-funcionario');
+      const funcId = selectFunc.value;
+      const funcNome = selectFunc.options[selectFunc.selectedIndex].text;
+
       if(!nome || !tel || !servico) return alert('Preencha todos os campos.');
-      const hInicio = document.getElementById('agenda-hora-inicio').value; const hFim = document.getElementById('agenda-hora-fim').value;
-      const agendamento = { data: diaSelecionado, horaInicio: hInicio, horaFim: hFim, nome, telefone: tel, servico, criadoEm: firebase.firestore.FieldValue.serverTimestamp() };
+      
+      const hInicio = document.getElementById('agenda-hora-inicio').value; 
+      const hFim = document.getElementById('agenda-hora-fim').value;
+      
+      const agendamento = { 
+        data: diaSelecionado, 
+        horaInicio: hInicio, 
+        horaFim: hFim, 
+        nome, 
+        telefone: tel, 
+        servico, 
+        funcionarioId: funcId,
+        funcionarioNome: funcNome,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp() 
+      };
+      
       try {
-        if (idAgendamentoRemarcando) { await db.collection('agendamentos').doc(idAgendamentoRemarcando).update(agendamento); alert('Remarcado!'); }
-        else { await db.collection('agendamentos').add(agendamento); alert('Agendado!'); }
-        fecharModalAgendar(); selecionarDiaReal(diaSelecionado, document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`)); carregarAgendamentosAdmin();
-      } catch (e) { alert('Erro ao agendar.'); }
+        if (idAgendamentoRemarcando) { 
+          await db.collection('agendamentos').doc(idAgendamentoRemarcando).update(agendamento); 
+          alert('Remarcado!'); 
+        } else { 
+          await db.collection('agendamentos').add(agendamento); 
+          alert('Agendado!'); 
+        }
+        fecharModalAgendar(); 
+        selecionarDiaReal(diaSelecionado, document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`)); 
+        carregarAgendamentosAdmin();
+      } catch (e) { 
+        alert('Erro ao agendar.'); 
+        console.error(e);
+      }
     }
 
     function abrirRemarcarAdmin(id) {
         const ag = window._agsCache[id];
         if (!ag) { mostrarToast('Recarregue a agenda.'); return; }
         idAgendamentoRemarcando = id;
-        dadosRemarcando = { nome: ag.nome, telefone: ag.telefone, servico: ag.servico };
+        dadosRemarcando = { nome: ag.nome, telefone: ag.telefone, servico: ag.servico, funcionarioId: ag.funcionarioId || 'f1' };
         mostrarToast('Escolha o novo dia e horário no calendário.');
         document.getElementById('calendario-container').scrollIntoView({behavior: 'smooth'});
     }
@@ -1142,6 +1229,7 @@
                 <div class="cliente-info"><i class="fa-solid fa-user"></i> ${esc(ag.nome)}</div>
                 <div class="cliente-tel"><i class="fa-brands fa-whatsapp"></i> ${esc(ag.telefone)}</div>
                 <div class="cliente-servico"><i class="fa-solid fa-wand-magic-sparkles"></i> ${esc(ag.servico)}</div>
+                <div class="cliente-profissional" style="font-size:11px; color:#666; margin-top:3px;"><i class="fa-solid fa-user-tie"></i> Profissional: ${esc(ag.funcionarioNome || 'Geral')}</div>
                 <div style="display:flex; gap:5px; margin-top:10px; flex-wrap:wrap;">
                     <button onclick="cancelarAgendamentoAdmin('${esc(ag.id)}')" class="btn-mini-cancelar" style="margin-top:0; padding: 6px 12px;">Cancelar</button>
                 </div>
@@ -1532,6 +1620,37 @@
         let diasHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map((dia, i) => `<label style="font-size:12px; display:flex; align-items:center; gap:4px; background:#f5f5f5; padding:8px; border-radius:6px; cursor:pointer;"><input type="checkbox" id="dia-${i}" ${diasDisponiveis.includes(i) ? 'checked' : ''}> ${dia}</label>`).join('');
         html = `<p style="font-size:11px; margin-bottom:10px; font-weight:700;">Dias de Atendimento:</p><div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-bottom:20px;">${diasHTML}</div><p style="font-size:11px; margin-bottom:10px; font-weight:700;">Horário de Funcionamento:</p><div style="display:flex; gap:10px; margin-bottom:15px;"><div style="flex:1;"><label style="font-size:10px; color:#666; display:block; margin-bottom:3px;">Abertura</label><input type="time" id="agenda-inicio" value="${esc(inicio)}" style="margin:0;"></div><div style="flex:1;"><label style="font-size:10px; color:#666; display:block; margin-bottom:3px;">Fechamento</label><input type="time" id="agenda-fim" value="${esc(fim)}" style="margin:0;"></div></div><label style="font-size:11px; margin-bottom:5px; font-weight:700; display:block;">Intervalo entre clientes:</label><select id="agenda-intervalo" style="margin-bottom:20px;"><option value="15" ${intervalo === '15' ? 'selected' : ''}>A cada 15 minutos</option><option value="30" ${intervalo === '30' ? 'selected' : ''}>A cada 30 minutos</option><option value="45" ${intervalo === '45' ? 'selected' : ''}>A cada 45 minutos</option><option value="60" ${intervalo === '60' ? 'selected' : ''}>A cada 1 hora</option></select>`;
       }
+      else if (id === 'equipe') {
+        titulo.textContent = 'Gerenciar Equipe';
+        const funcs = appState.funcionarios || [];
+        let funcsForm = funcs.map((f, i) => `
+          <div class="config-item-row" style="margin-bottom:8px; background:#f9f9f9; padding:8px; border-radius:8px;">
+            <input type="color" class="func-cor" value="${esc(f.cor)}" style="width: 40px; padding:0; flex:0; height:36px;">
+            <input type="text" class="func-nome" value="${esc(f.nome)}" placeholder="Nome" style="flex:1;">
+            <button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button>
+          </div>`).join('');
+        
+        html = `
+          <p style="font-size:11px; color:#666; margin-bottom:10px;">Cadastre sua equipe e escolha uma cor para cada. A agenda vai separar por colunas coloridas.</p>
+          <div id="funcionarios-container">${funcsForm}</div>
+          <button type="button" class="btn-add-item" onclick="addFuncionarioConfig()">+ Adicionar Profissional</button>
+        `;
+      }
+      else if (id === 'migracao') {
+        titulo.textContent = 'Migrar Clientes';
+        html = `
+          <div style="background:#E0F7FA; border:1px solid #00BCD4; border-radius:8px; padding:12px; margin-bottom:15px;">
+            <p style="font-size:12px; color:#006064; line-height:1.4;">
+              <b>Como importar:</b> Salve sua planilha do Excel como <b>.csv</b>. A primeira linha deve ter os títulos: <b>Nome, Email, Telefone</b>. Depois, é só selecionar o arquivo aqui embaixo.
+            </p>
+          </div>
+          <input type="file" id="csv-file" accept=".csv" style="padding:10px; border:1px solid #ccc; border-radius:8px; width:100%; margin-bottom:15px;">
+          <button type="button" onclick="processarMigracaoCSV()" style="width:100%; padding:12px; background:#10A37F; color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">
+            <i class="fa-solid fa-file-import"></i> Iniciar Importação
+          </button>
+          <p id="migracao-status" style="font-size:12px; text-align:center; margin-top:15px; font-weight:bold; color:#333;"></p>
+        `;
+      }
       else if (id === 'mural') {
         titulo.textContent = 'Mural da Agenda';
         html = `<p style="font-size:11px; color:#666; margin-bottom:10px;">Texto que os clientes verão na aba Agenda.</p><textarea id="edit-mural" rows="6" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-family:inherit; font-size:13px;">${esc(appState.muralAgenda || '')}</textarea>`;
@@ -1725,7 +1844,7 @@
 
       document.getElementById('modal-editor').style.display = 'flex';
 
-      if (id === 'integracoes' || id === 'vip') {
+      if (id === 'integracoes' || id === 'vip' || id === 'migracao') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -1758,6 +1877,58 @@
         resultEl.textContent = '❌ Falha: ' + e.message;
         resultEl.style.color = '#c62828';
       }
+    }
+
+    function processarMigracaoCSV() {
+      const fileInput = document.getElementById('csv-file');
+      const statusEl = document.getElementById('migracao-status');
+      
+      if (!fileInput.files.length) {
+        alert('Por favor, selecione um arquivo CSV primeiro.');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      statusEl.textContent = 'Lendo arquivo...';
+      statusEl.style.color = '#10A37F';
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: async function(results) {
+          const clientes = results.data;
+          let importados = 0;
+          
+          statusEl.textContent = `Importando ${clientes.length} clientes... Aguarde.`;
+
+          for (let i = 0; i < clientes.length; i++) {
+            const linha = clientes[i];
+            
+            const nome = linha['Nome'] || linha['nome'] || linha['Name'] || linha['NAME'];
+            const email = linha['Email'] || linha['email'] || linha['E-mail'] || linha['EMAIL'];
+            const tel = linha['Telefone'] || linha['telefone'] || linha['WhatsApp'] || linha['whatsapp'] || linha['Telephone'];
+
+            if (nome) {
+              try {
+                await db.collection("clientes").add({ 
+                  nome: nome, 
+                  email: email || '', 
+                  telefone: tel || '', 
+                  dataCadastro: new Date().toISOString(), 
+                  status: 'migrado' 
+                });
+                importados++;
+                statusEl.textContent = `Importando: ${importados} de ${clientes.length}...`;
+              } catch (e) {
+                console.error("Erro ao importar cliente:", e);
+              }
+            }
+          }
+          
+          statusEl.textContent = `✅ Sucesso! ${importados} clientes foram importados.`;
+          statusEl.style.color = '#2e7d32';
+        }
+      });
     }
 
     function liberarAcessoVIP(idCliente) {
@@ -1829,6 +2000,15 @@
     function addRedeConfig() { document.getElementById('redes-container').insertAdjacentHTML('beforeend', `<div class="config-item-row"><input type="text" class="rede-nome" placeholder="Nome"><input type="url" class="rede-link" placeholder="Link"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`); }
     function addCanalConfig() { document.getElementById('canais-config-container').insertAdjacentHTML('beforeend', `<div class="config-item-row" style="flex-direction:column; background:#f9f9f9; padding:8px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><span style="font-size:11px; font-weight:700;">Canal</span><button type="button" class="btn-del" onclick="this.closest('.config-item-row').remove()">X</button></div><input type="text" class="canal-nome" placeholder="Nome"><input type="url" class="canal-link" placeholder="Link"><input type="text" class="canal-desc" placeholder="Descrição"></div>`); }
     function addFeatureRow(tipo) { document.getElementById(`features-${tipo}`).insertAdjacentHTML('beforeend', `<div class="config-item-row feat-row" style="margin-bottom:4px;"><input type="text" class="feat-input" value="" placeholder="Novo item" style="padding:6px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`); }
+    
+    function addFuncionarioConfig() { 
+      document.getElementById('funcionarios-container').insertAdjacentHTML('beforeend', `
+        <div class="config-item-row" style="margin-bottom:8px; background:#f9f9f9; padding:8px; border-radius:8px;">
+          <input type="color" class="func-cor" value="#9D174D" style="width: 40px; padding:0; flex:0; height:36px;">
+          <input type="text" class="func-nome" value="" placeholder="Nome" style="flex:1;">
+          <button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button>
+        </div>`); 
+    }
 
     function abrirEditorPublicidade(index) {
       indexPubEditando = index; configAtualAberta = 'publicidade-edit';
@@ -1927,6 +2107,18 @@
         appState.iaSystemPrompt = document.getElementById('edit-ia-prompt').value;
         appState.iaProxyUrl = document.getElementById('edit-ia-proxy').value.trim() || null;
         appState.iaEnabled = document.getElementById('edit-ia-enabled').checked;
+      }
+      else if (id === 'equipe') {
+        const novosFuncs = [];
+        document.querySelectorAll('#funcionarios-container .config-item-row').forEach((row, index) => {
+          const nome = (row.querySelector('.func-nome').value || '').trim();
+          const cor = row.querySelector('.func-cor').value;
+          if (nome) {
+            const idAntigo = appState.funcionarios[index]?.id || 'f' + Date.now() + index;
+            novosFuncs.push({ id: idAntigo, nome: nome, cor: cor });
+          }
+        });
+        appState.funcionarios = novosFuncs;
       }
       else if (id === 'mural') { appState.muralAgenda = document.getElementById('edit-mural').value; if(!modoAdminAtivo) atualizarViewAgenda(); }
       else if (id === 'agenda-config') {
