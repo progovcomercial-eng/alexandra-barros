@@ -68,7 +68,6 @@
     .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
     .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
 
-    /* PLANOS - MOBILE */
     .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .planos-scroll::-webkit-scrollbar { display: none; }
     .plano-card { flex-shrink: 0; width: 200px; scroll-snap-align: start; background: #fff; border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 20px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; display: flex; flex-direction: column; }
@@ -81,7 +80,6 @@
     .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
     .plano-btn { width: 100%; padding: 10px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
 
-    /* PARCEIROS - MOBILE */
     .pub-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
     .pub-scroll::-webkit-scrollbar { display: none; }
     .pub-card { flex-shrink: 0; width: 260px; scroll-snap-align: start; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid rgba(157, 23, 77, 0.1); }
@@ -92,7 +90,6 @@
     .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
     .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
 
-    /* ESPAÇOS (Clínica, Clube) - MOBILE */
     .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
     .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; display: flex; flex-direction: column; }
     .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)); }
@@ -106,7 +103,6 @@
     .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
     .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; width: fit-content; }
 
-    /* VITRINE / PRODUTOS - MOBILE */
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
     .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
     .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
@@ -114,7 +110,6 @@
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
     .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
 
-    /* CONTATO - MOBILE */
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 12px; color: var(--cor-texto-mutado); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 14px; }
@@ -141,7 +136,6 @@
     .mural-texto { font-size: 14px; line-height: 1.6; color: var(--cor-texto-escuro); margin-bottom: 20px; white-space: pre-wrap; }
     .btn-cta-grande { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--grad-cta-start, #9D174D), var(--grad-cta-end, #560021)); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
 
-    /* AGENDA MOBILE */
     .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
     .calendario-header h3 { font-size: 16px; color: var(--cor-principal); }
     .calendario-header button { background: none; border: none; color: var(--cor-principal); font-size: 18px; cursor: pointer; padding: 0 10px; }
@@ -162,7 +156,6 @@
     .admin-agenda-card .data-hora { font-size: 14px; font-weight: 700; color: var(--cor-principal); display: flex; justify-content: space-between; }
     .admin-agenda-card .cliente-info { font-size: 12px; color: var(--cor-texto-escuro); font-weight: 600; margin-top: 5px; }
 
-    /* PERFIL / PAINEL MASTER MOBILE */
     .perfil-hero { background: linear-gradient(135deg, var(--grad-cta-start, #9D174D), var(--grad-cta-end, #560021)); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
     .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
     .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
@@ -179,7 +172,6 @@
     .master-card h4 { font-size: 11px; color: var(--cor-texto-escuro); font-weight: 600; margin: 0; line-height: 1.2; }
     .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
 
-    /* MODAIS MOBILE */
     .modal-cadastro-fixo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .cartao-cadastro { background: #FFF2F6; width: 100%; max-width: 400px; padding: 24px; border-radius: 20px; border: 2px solid #9D174D; max-height: 90vh; overflow-y: auto; }
     .cartao-cadastro h3 { color: #9D174D; margin-bottom: 8px; text-align: center; }
@@ -187,7 +179,6 @@
     .btn-enviar-cadastro { background: #9D174D; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 12px; font-size: 14px;}
     .btn-undo { background: #f5f5f5; color: #555; border: 1px solid #ccc; padding: 14px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; font-size: 14px;}
 
-    /* CHAT IA */
     .assistente-ia-flutuante { position: fixed; bottom: 90px; right: 16px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
     @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     #tela-chat { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999; background: #fff; display: none; }
@@ -201,7 +192,7 @@
     .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-family: inherit; font-size: 14px; }
     .chat-input-area button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--cor-principal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
 
-    /* FINANCEIRO MOBILE (Ajustado para leitura) */
+    /* FINANCEIRO MOBILE */
     .fin-dashboard-cards { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
     .fin-card { background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid #ccc; }
     .fin-card.entrada { border-color: #2e7d32; }
@@ -221,13 +212,12 @@
     .fin-tag.saida { background: #ffebee; color: #c62828; }
 
     /* =========================================
-       DESKTOP (COMPUTADOR) - LAYOUT GRANDE E PROFISSIONAL
+       DESKTOP (COMPUTADOR)
        ========================================= */
     @media (min-width: 768px) {
       body { background-color: #eef2f5; display: flex; align-items: stretch; }
       .app-container { flex-direction: row; max-width: 100vw; background-color: transparent; }
       
-      /* Sidebar */
       .nav-bottom { display: none; }
       .app-header { display: none; }
       .nav-side { display: flex; flex-direction: column; width: 260px; background-color: var(--cor-sidebar); color: #fff; height: 100vh; position: sticky; top: 0; box-shadow: 4px 0 20px rgba(0,0,0,0.08); z-index: 100; }
@@ -238,21 +228,17 @@
       .nav-side-item:hover, .nav-side-item.active { background-color: rgba(255,255,255,0.05); color: #fff; border-left: 5px solid var(--cor-dourada); }
       .nav-side-item i { width: 24px; text-align: center; font-size: 20px; }
 
-      /* Área Principal */
       .app-content { padding: 50px 60px; padding-bottom: 80px; max-width: 1300px; margin: 0 auto; width: calc(100% - 260px); }
       .tela.ativa { background: #fff; border-radius: 20px; padding: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); min-height: 85vh; display: block; }
       
-      /* Tipografia PC */
       .section-title-nova { font-size: 18px; margin: 40px 0 25px 0; }
       .vitrine-banner-nova h2 { font-size: 36px; }
       .vitrine-banner-nova p { font-size: 16px; }
       
-      /* Grid Topo PC */
       .quick-apps-bar { grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 800px; margin-bottom: 40px; }
       .quick-app-icon { width: 65px; height: 65px; font-size: 28px; }
       .quick-app span { font-size: 14px; margin-top: 5px; font-weight: 600;}
       
-      /* Parceiros PC */
       .pub-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; margin: 0; padding: 0; overflow: visible; }
       .pub-card { width: 100%; }
       .pub-media { height: 220px; }
@@ -261,7 +247,6 @@
       .pub-info p { font-size: 15px; }
       .pub-btn { font-size: 15px; padding: 12px; margin-top: 15px;}
 
-      /* Planos PC */
       .planos-scroll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin: 0; padding: 0; overflow: visible; }
       .plano-card { width: 100%; padding: 35px 30px; }
       .plano-nome { font-size: 24px; margin-bottom: 8px;}
@@ -269,7 +254,6 @@
       .plano-features { font-size: 16px; margin-bottom: 25px; line-height: 1.8;}
       .plano-btn { padding: 15px; font-size: 16px; }
 
-      /* Espaços PC */
       .espacos-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; }
       .espaco-card { padding: 45px 40px; min-height: 280px; justify-content: center;}
       .espaco-icon { width: 80px; height: 80px; font-size: 40px; border-radius: 24px;}
@@ -278,17 +262,14 @@
       .espaco-desc { font-size: 16px; max-width: 85%; margin-bottom: 25px; margin-top: 10px;}
       .espaco-cta { padding: 15px 30px; font-size: 16px; }
 
-      /* Produtos/Vitrine PC */
       .boutique-grid-nova { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
       .product-img-box-nova { height: 250px; }
       .product-card-nova h4 { font-size: 18px; margin-top: 15px; }
       .product-card-nova .price { font-size: 22px; margin-top: 10px; }
       .product-card-nova { padding: 15px; }
 
-      /* Vídeo PC */
       .video-container { max-width: 1000px; margin: 0 auto 50px auto; }
       
-      /* Contato PC */
       .contato-compacto { padding: 40px; max-width: 1000px; margin: 0 auto; border-radius: 20px;}
       .contato-info-mini { font-size: 16px; margin-bottom: 15px; }
       .contato-info-mini i { font-size: 20px; width: 30px; }
@@ -297,19 +278,22 @@
       .rede-btn i { font-size: 24px; }
       .rede-btn.canal { flex: 1 1 100%; }
 
-      /* Agenda PC */
+      /* AGENDA PC MAIOR */
       .calendario-header { padding: 20px 30px; }
       .calendario-header h3 { font-size: 22px; }
       .calendario-grid { gap: 10px; }
       .dia-btn { padding: 18px 0; font-size: 18px; }
       .dia-semana { font-size: 14px; margin-bottom: 10px; }
-      .horario-btn.admin-slot { padding: 15px; font-size: 14px; min-height: 100px; }
-      .horario-btn.admin-slot b { font-size: 16px; }
+      
+      .horarios-grid { width: 100%; overflow-x: auto; }
+      .horario-btn.admin-slot { padding: 15px; font-size: 15px; min-height: 120px; width: 180px !important; }
+      .horario-btn.admin-slot b { font-size: 18px; margin-bottom: 8px; }
+      .horario-btn.admin-slot span { font-size: 13px; }
+      
       .admin-agenda-card { padding: 25px; }
       .admin-agenda-card .data-hora { font-size: 18px; }
       .admin-agenda-card .cliente-info { font-size: 16px; }
 
-      /* Painel Master PC */
       .perfil-hero { padding: 40px; max-width: 800px; margin: 0 auto 40px auto; border-radius: 24px;}
       .perfil-avatar { width: 100px; height: 100px; font-size: 36px; }
       .perfil-nome { font-size: 28px; }
@@ -319,14 +303,12 @@
       .master-card h4 { font-size: 15px; }
       .master-card .plus { font-size: 24px; }
 
-      /* Modais PC */
       .cartao-cadastro { max-width: 600px; padding: 50px; }
       .cartao-cadastro h3 { font-size: 26px; margin-bottom: 25px;}
       .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { font-size: 16px; padding: 15px; margin-bottom: 12px; }
       .btn-enviar-cadastro { font-size: 18px; padding: 18px; margin-top: 20px;}
       .btn-undo { font-size: 18px; padding: 18px;}
 
-      /* Chat IA PC */
       #tela-chat { background: rgba(0,0,0,0.5); align-items: center; justify-content: center; display: none; }
       #tela-chat[style*="display: block"] { display: flex !important; }
       .chat-container { max-width: 700px; height: 80vh; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: auto;}
@@ -370,7 +352,6 @@
   </nav>
 
   <div class="app-container" id="app-container">
-    <!-- HEADER (Apenas Celular) -->
     <div class="app-header">
       <div class="avatar-ab" id="app-logo">AB</div>
       <div class="header-title" id="app-name">Alexandra Barros</div>
@@ -405,7 +386,7 @@
         </div>
         <div class="mural-box" style="margin-bottom: 15px;">
           <h3>Benefícios VIP</h3>
-          <p class="mural-texto">Como membro do Clube, você garante <b>até 50% de desconto</b> em todos os protocolos e produtos da Vitrine.</p>
+          <p class="mural-texto" id="texto-clube-beneficios"></p>
         </div>
         <button class="btn-cta-grande" onclick="pedirCodigoClube()" style="margin-bottom: 20px;">
           <i class="fa-solid fa-gem"></i> Já sou membro - Inserir código
@@ -557,6 +538,19 @@
           <input type="text" id="chat-input" placeholder="Digite sua dúvida aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
           <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
+      </div>
+    </div>
+
+    <!-- MODAL PLANO DETALHES (NOVO) -->
+    <div id="modal-plano-detalhes" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro" style="text-align:center;">
+        <h3 id="plano-modal-titulo" style="font-size:24px;">Plano</h3>
+        <p id="plano-modal-preco" style="font-size: 28px; font-weight: bold; color: var(--cor-principal); margin: 10px 0;">R$ 0,00/mês</p>
+        <p id="plano-modal-sub" style="font-size: 15px; color: #666; margin-bottom: 20px;">Subtítulo</p>
+        <ul id="plano-modal-features" style="text-align: left; list-style: none; margin-bottom: 25px; font-size: 16px; line-height: 1.8;">
+        </ul>
+        <button onclick="assinarPlanoWhatsApp()" class="btn-enviar-cadastro" style="background: #25D366;"><i class="fa-brands fa-whatsapp"></i> Assinar pelo WhatsApp</button>
+        <button class="btn-undo" onclick="document.getElementById('modal-plano-detalhes').style.display='none'">Fechar</button>
       </div>
     </div>
 
@@ -730,12 +724,16 @@
         { id: 'vip', nome: 'Gerenciar Clube VIP' },
         { id: 'loja-clube', nome: 'Loja do Clube' },
         { id: 'clube', nome: 'Planos e Preços' },
+        { id: 'clube-beneficios', nome: 'Textos do Clube 📝' },
         { id: 'tela-inicial', nome: 'Nomes (Clube/Vitrine)' }
       ]},
       { nome: 'Agenda & Contato', icone: 'fa-calendar', itens: [
-        { id: 'agenda-config', nome: 'Configurar Agenda' }, { id: 'mural', nome: 'Mural da Agenda' },
+        { id: 'agenda-config', nome: 'Configurar Agenda' },
+        { id: 'msg-confirmacao', nome: 'Msg Confirmação 💬' }, // NOVO
+        { id: 'mural', nome: 'Mural da Agenda' },
         { id: 'equipe', nome: 'Gerenciar Equipe 👥' },
         { id: 'lista-clientes', nome: 'Lista de Clientes 👥' },
+        { id: 'migracao', nome: 'Importar Clientes 📥' }, // MOVIDO PARA CÁ
         { id: 'contato', nome: 'Redes & Contato' }, { id: 'links', nome: 'Links Ambientes' }
       ]},
       { nome: 'Financeiro & Gestão', icone: 'fa-chart-line', itens: [
@@ -744,7 +742,6 @@
       { nome: 'Sistema & Integrações', icone: 'fa-gear', itens: [
         { id: 'ia', nome: 'Assistente Gemini IA' },
         { id: 'identidade', nome: 'Nome & Senha' },
-        { id: 'migracao', nome: 'Importar Clientes 📥' },
         { id: 'integracoes', nome: 'Integrações' }, { id: 'link-envio', nome: 'Enviar Link' }
       ]}
     ];
@@ -752,6 +749,7 @@
     const estadoPadrao = {
       appName: 'Alexandra Barros', logo: 'AB', logoImage: null, colorPrimary: '#9D174D', colorGold: '#D4AF37', colorText: '#333333', bgColor: '#FFF2F6', bgGradient: null, bgImage: null, video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', whatsapp: '5511997450293', mensagem: 'Cuidado especializado para a mulher que chegou aos 40',
       vitrineTitle: 'Vitrine da Alê', clubeName: 'Clube da Ale', clubeColor: '#C2185B', clubeImage: null, clubeLink: null,
+      clubeBeneficios: 'Como membro do Clube, você garante até 50% de desconto em todos os protocolos e produtos da Vitrine.', // NOVO
       renovaseName: 'Renova-se', renovaseColor: '#B8852E', renovaseImage: null, renovaseLink: null, boutiqueName: 'Boutique do Alê',
       colorMuted: '#777777', colorCardBg: '#FFFFFF', colorHeader: '#9D174D',
       colorWhatsapp: '#25D366', colorInstagram: '#E4405F', colorCanal: '#128C7E', colorEmail: '#333333',
@@ -803,6 +801,7 @@
       horariosAgenda: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'],
       diasDisponiveis: [1, 2, 3, 4, 5, 6],
       muralAgenda: 'Bem-vinda! Aqui cada protocolo é pensado para respeitar sua história e realçar sua beleza natural.\n\nPara agendar seu horário, por favor, chame nossa equipe no WhatsApp. Atendemos de segunda a sábado, das 09h às 18h.\n\nAgradecemos a preferência! 🌸',
+      mensagemConfirmacao: 'Olá, {nome}! Passando para confirmar seu horário amanhã ({data}) às {hora} para {servico}.\n\nPor favor, confirme clicando no link:\n{link}', // NOVO
       senhaFinanceiro: '1234',
       funcionarios: [
         { id: 'f1', nome: 'Alexandra', cor: '#9D174D' },
@@ -842,6 +841,7 @@
     let dadosRemarcando = null;
     
     let filtroFinanceiroAtual = 'todas';
+    let planoSelecionadoId = null; // NOVO
 
     window._agsCache = {};
     window._produtosCache = {};
@@ -1313,15 +1313,15 @@
           window._agsCache[doc.id] = ag;
         });
 
-        let html = `<div style="display: grid; grid-template-columns: 60px repeat(${funcionarios.length}, 140px); gap: 5px; min-width: max-content; padding-bottom: 10px;">`;
-        html += `<div style="font-size:12px; font-weight:bold; color:#666; text-align:center; padding-top:20px;">Hora</div>`;
+        let html = `<div style="display: grid; grid-template-columns: 70px repeat(${funcionarios.length}, 1fr); gap: 8px; min-width: max-content; padding-bottom: 10px;">`;
+        html += `<div style="font-size:13px; font-weight:bold; color:#666; text-align:center; padding-top:20px;">Hora</div>`;
         
         funcionarios.forEach(func => {
-          html += `<div style="background:${func.cor}; color:#fff; padding:10px 4px; border-radius:6px; text-align:center; font-size:13px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">${esc(func.nome)}</div>`;
+          html += `<div style="background:${func.cor}; color:#fff; padding:12px 4px; border-radius:6px; text-align:center; font-size:14px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">${esc(func.nome)}</div>`;
         });
 
         horarios.forEach(hr => {
-          html += `<div style="font-size:12px; font-weight:bold; color:#555; display:flex; align-items:center; justify-content:center; border-top:1px solid #eee;">${hr}</div>`;
+          html += `<div style="font-size:13px; font-weight:bold; color:#555; display:flex; align-items:center; justify-content:center; border-top:1px solid #eee;">${hr}</div>`;
           
           funcionarios.forEach(func => {
             let agendamento = null;
@@ -1339,16 +1339,16 @@
                 else if (agendamento.statusConfirmacao === 'cancelado') statusIcon = '🔴';
                 else statusIcon = '🟡';
 
-                html += `<div style="background:${func.cor}20; border-left: 4px solid ${func.cor}; padding: 8px; border-radius: 4px; font-size:12px; color:#333; overflow:hidden;">
+                html += `<div style="background:${func.cor}20; border-left: 4px solid ${func.cor}; padding: 10px; border-radius: 4px; font-size:13px; color:#333; overflow:hidden;">
                   <b>${statusIcon} ${esc(agendamento.nome)}</b><br>
-                  <span style="font-size:10px;">${esc(agendamento.servico)}</span>
-                  <button onclick="abrirRemarcarAdmin('${esc(agendamento.idFirestore)}')" style="background:${func.cor}; color:#fff; border:none; border-radius:4px; padding:6px; font-size:10px; margin-top:6px; width:100%; cursor:pointer;">Ver/Editar</button>
+                  <span style="font-size:11px;">${esc(agendamento.servico)}</span>
+                  <button onclick="abrirRemarcarAdmin('${esc(agendamento.idFirestore)}')" style="background:${func.cor}; color:#fff; border:none; border-radius:4px; padding:6px; font-size:10px; margin-top:8px; width:100%; cursor:pointer;">Ver/Editar</button>
                 </div>`;
               } else {
                 html += `<div style="background:${func.cor}20; border-left: 4px solid ${func.cor}; border-radius: 4px; opacity:0.5;"></div>`;
               }
             } else {
-              html += `<div onclick="abrirModalAgendamentoAdmin('${esc(hr)}', '${esc(func.id)}')" style="background:#E0F7FA; border:1px dashed #00BCD4; border-radius: 4px; display:flex; align-items:center; justify-content:center; color:#006064; font-size:11px; font-weight:bold; cursor:pointer; min-height: 40px;">
+              html += `<div onclick="abrirModalAgendamentoAdmin('${esc(hr)}', '${esc(func.id)}')" style="background:#E0F7FA; border:1px dashed #00BCD4; border-radius: 4px; display:flex; align-items:center; justify-content:center; color:#006064; font-size:12px; font-weight:bold; cursor:pointer; min-height: 60px;">
                 + Livre
               </div>`;
             }
@@ -1413,6 +1413,7 @@
         funcionarioId: funcId,
         funcionarioNome: funcNome,
         statusConfirmacao: 'pendente',
+        avisoEnviado: false, // RESET DO AVISO
         criadoEm: firebase.firestore.FieldValue.serverTimestamp() 
       };
       
@@ -1464,11 +1465,26 @@
                 <div class="cliente-servico"><i class="fa-solid fa-wand-magic-sparkles"></i> ${esc(ag.servico)}</div>
                 <div class="cliente-profissional" style="font-size:12px; color:#666; margin-top:5px;"><i class="fa-solid fa-user-tie"></i> Profissional: ${esc(ag.funcionarioNome || 'Geral')}</div>
                 <div style="display:flex; gap:8px; margin-top:15px; flex-wrap:wrap;">
+                    <button onclick="editarAgendamentoLista('${esc(ag.id)}', '${esc(ag.data)}')" class="btn-mini-remarcar" style="padding: 8px 15px; font-size:11px; background: var(--cor-principal); color: white; border: none; border-radius: 4px;"><i class="fa-solid fa-pen"></i> Editar</button>
                     <button onclick="cancelarAgendamentoAdmin('${esc(ag.id)}')" class="btn-mini-cancelar" style="margin-top:0; padding: 8px 15px; font-size:11px;">Cancelar</button>
                 </div>
             </div>`;
         }).join('');
       });
+    }
+
+    function editarAgendamentoLista(id, dataStr) {
+       const [year, month, day] = dataStr.split('-');
+       currentDate = new Date(parseInt(year), parseInt(month)-1, parseInt(day));
+       gerarCalendarioReal();
+       setTimeout(() => {
+          const btnDia = document.querySelector(`.dia-btn[onclick*="${dataStr}"]`);
+          if (btnDia) {
+             selecionarDiaReal(dataStr, btnDia);
+             document.getElementById('horarios-container').scrollIntoView({behavior: 'smooth'});
+             setTimeout(() => { abrirRemarcarAdmin(id); }, 500);
+          }
+       }, 100);
     }
 
     function gerarHTMLVideo(url) {
@@ -1709,6 +1725,8 @@
     function renderizarClubeEVitrine() {
       document.getElementById('titulo-clube-tela').textContent = appState.clubeName;
       document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle;
+      document.getElementById('texto-clube-beneficios').textContent = appState.clubeBeneficios || 'Como membro do Clube, você garante até 50% de desconto em todos os protocolos e produtos da Vitrine.';
+      
       const adminBar = document.getElementById('vitrine-admin-bar');
       if (adminBar) adminBar.style.display = modoAdminAtivo ? 'block' : 'none';
 
@@ -1828,9 +1846,23 @@
     function abrirPlano(id) {
       const plano = appState.planos[id];
       if (!plano) return;
-      const preco = appState.precos[id] || '';
+      
+      planoSelecionadoId = id;
+      document.getElementById('plano-modal-titulo').textContent = plano.titulo;
+      document.getElementById('plano-modal-preco').textContent = `R$ ${appState.precos[id]}/mês`;
+      document.getElementById('plano-modal-sub').textContent = plano.subtitulo || '';
+      document.getElementById('plano-modal-features').innerHTML = (plano.features || []).map(f => `<li><i class="fa-solid fa-check" style="color: var(--cor-dourada); margin-right: 10px;"></i> ${esc(f)}</li>`).join('');
+      
+      document.getElementById('modal-plano-detalhes').style.display = 'flex';
+    }
+
+    function assinarPlanoWhatsApp() {
+      if(!planoSelecionadoId) return;
+      const plano = appState.planos[planoSelecionadoId];
+      const preco = appState.precos[planoSelecionadoId];
       const msg = `Olá! Tenho interesse no plano ${plano.titulo} (R$ ${preco}/mês). Pode me dar mais informações?`;
       window.open(`https://wa.me/${appState.whatsapp || '5511997450293'}?text=${encodeURIComponent(msg)}`, '_blank');
+      document.getElementById('modal-plano-detalhes').style.display = 'none';
     }
 
     function abrirConfiguracao(id) {
@@ -1852,6 +1884,17 @@
         let inicio = appState.agendaInicio || '09:00'; let fim = appState.agendaFim || '18:00'; let intervalo = appState.agendaIntervalo || '30'; let diasDisponiveis = appState.diasDisponiveis || [1,2,3,4,5,6];
         let diasHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map((dia, i) => `<label style="font-size:14px; display:flex; align-items:center; gap:8px; background:#f5f5f5; padding:12px; border-radius:8px; cursor:pointer;"><input type="checkbox" id="dia-${i}" ${diasDisponiveis.includes(i) ? 'checked' : ''} style="width:auto; margin:0;"> ${dia}</label>`).join('');
         html = `<p style="font-size:14px; margin-bottom:15px; font-weight:700;">Dias de Atendimento:</p><div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom:30px;">${diasHTML}</div><p style="font-size:14px; margin-bottom:15px; font-weight:700;">Horário de Funcionamento:</p><div style="display:flex; gap:15px; margin-bottom:20px;"><div style="flex:1;"><label style="font-size:12px; color:#666; display:block; margin-bottom:5px;">Abertura</label><input type="time" id="agenda-inicio" value="${esc(inicio)}" style="margin:0; padding:12px; font-size:16px;"></div><div style="flex:1;"><label style="font-size:12px; color:#666; display:block; margin-bottom:5px;">Fechamento</label><input type="time" id="agenda-fim" value="${esc(fim)}" style="margin:0; padding:12px; font-size:16px;"></div></div><label style="font-size:14px; margin-bottom:8px; font-weight:700; display:block;">Intervalo entre clientes:</label><select id="agenda-intervalo" style="margin-bottom:25px; padding:12px; font-size:16px;"><option value="15" ${intervalo === '15' ? 'selected' : ''}>A cada 15 minutos</option><option value="30" ${intervalo === '30' ? 'selected' : ''}>A cada 30 minutos</option><option value="45" ${intervalo === '45' ? 'selected' : ''}>A cada 45 minutos</option><option value="60" ${intervalo === '60' ? 'selected' : ''}>A cada 1 hora</option></select>`;
+      }
+      else if (id === 'msg-confirmacao') {
+        titulo.textContent = 'Msg de Confirmação';
+        html = `<div style="background:#E0F7FA; border:1px solid #00BCD4; border-radius:8px; padding:15px; margin-bottom:20px;"><p style="font-size:13px; color:#006064; line-height:1.5;">Use as variáveis <b>{nome}</b>, <b>{data}</b>, <b>{hora}</b>, <b>{servico}</b> e <b>{link}</b> para personalizar a mensagem enviada via WhatsApp.</p></div>
+        <label style="font-size:13px; font-weight:700;">Mensagem Padrão:</label>
+        <textarea id="edit-msg-confirmacao" rows="8" style="width:100%; padding:15px; border:1px solid #ccc; border-radius:8px; font-family:inherit; font-size:14px;">${esc(appState.mensagemConfirmacao || '')}</textarea>`;
+      }
+      else if (id === 'clube-beneficios') {
+        titulo.textContent = 'Textos do Clube';
+        html = `<label style="font-size:13px; font-weight:700;">Benefícios VIP (Aparece no topo do Clube):</label>
+        <textarea id="edit-clube-beneficios" rows="6" style="width:100%; padding:15px; border:1px solid #ccc; border-radius:8px; font-family:inherit; font-size:14px;">${esc(appState.clubeBeneficios || '')}</textarea>`;
       }
       else if (id === 'equipe') {
         titulo.textContent = 'Gerenciar Equipe';
@@ -1901,6 +1944,7 @@
           `;
         } else {
           html = `
+            <h2 style="font-size: 28px; font-weight: 700; color: var(--cor-principal); margin-bottom: 20px; text-align:center; border-bottom: 2px solid var(--cor-principal); padding-bottom: 15px; width: 100%;">💰 FLUXO DE CAIXA</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background:#e8f5e9; padding: 15px 20px; border-radius: 12px; flex-wrap: wrap; gap:15px;">
               <span style="font-size: 14px; font-weight: bold; color: #2e7d32;"><i class="fa-solid fa-lock-open"></i> Acesso Liberado</span>
               <div style="display:flex; gap:10px;">
@@ -2521,6 +2565,8 @@
         });
         appState.funcionarios = novosFuncs;
       }
+      else if (id === 'msg-confirmacao') { appState.mensagemConfirmacao = document.getElementById('edit-msg-confirmacao').value; }
+      else if (id === 'clube-beneficios') { appState.clubeBeneficios = document.getElementById('edit-clube-beneficios').value; }
       else if (id === 'mural') { appState.muralAgenda = document.getElementById('edit-mural').value; if(!modoAdminAtivo) atualizarViewAgenda(); }
       else if (id === 'agenda-config') {
         appState.diasDisponiveis = [];
@@ -2846,7 +2892,8 @@
         let pendentes = [];
         snap.forEach(doc => {
           const ag = doc.data();
-          if (!ag.statusConfirmacao || ag.statusConfirmacao === 'pendente') {
+          // Só adiciona se estiver pendente E o aviso ainda não foi enviado
+          if ((!ag.statusConfirmacao || ag.statusConfirmacao === 'pendente') && !ag.avisoEnviado) {
             pendentes.push({ id: doc.id, ...ag });
           }
         });
@@ -2863,6 +2910,8 @@
     }
 
     async function dispararConfirmacoes(pendentes) {
+      const msgBase = appState.mensagemConfirmacao || 'Olá, {nome}! Passando para confirmar seu horário amanhã ({data}) às {hora} para {servico}.\n\nPor favor, confirme clicando no link:\n{link}';
+      
       for (let i = 0; i < pendentes.length; i++) {
         const ag = pendentes[i];
         let tel = (ag.telefone || '').replace(/\D/g, '');
@@ -2870,10 +2919,22 @@
 
         if (tel) {
           const linkConfirmar = window.location.origin + window.location.pathname + '?confirmar=' + ag.id;
-          const msg = `Olá, ${ag.nome}! Passando para confirmar seu horário amanhã (${ag.data.split('-').reverse().join('/')}) às ${ag.horaInicio} para ${ag.servico}.\n\nPor favor, confirme clicando no link:\n${linkConfirmar}`;
+          const dataFmt = ag.data.split('-').reverse().join('/');
+          
+          const msg = msgBase
+            .replace(/{nome}/g, ag.nome)
+            .replace(/{data}/g, dataFmt)
+            .replace(/{hora}/g, ag.horaInicio)
+            .replace(/{servico}/g, ag.servico)
+            .replace(/{link}/g, linkConfirmar);
           
           window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
           
+          // MARCA COMO ENVIADO NO FIREBASE
+          try {
+            await db.collection('agendamentos').doc(ag.id).update({ avisoEnviado: true });
+          } catch (e) { console.error("Erro ao marcar aviso:", e); }
+
           // Pequena pausa para não bloquear o navegador
           await new Promise(r => setTimeout(r, 1500));
         }
