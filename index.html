@@ -27,13 +27,19 @@
       --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
       --cor-whatsapp: #25D366; --cor-instagram: #E4405F; --cor-canal: #128C7E; --cor-email: #333333;
       --cor-header: #9D174D; --cor-nav: #9D174D; --cor-chat: #9D174D;
-      --cor-sidebar: #2C3E50; /* Cor do menu lateral PC */
+      --cor-sidebar: #222f3e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
     
     .app-container { width: 100%; max-width: 450px; background-color: var(--cor-fundo); min-height: 100vh; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); transition: background 0.3s; background-size: cover; background-position: center; }
-    
+    .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+
+    .app-header { background-color: var(--cor-header); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
+    .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
+    .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; font-weight: 700; text-align: left; }
+
     /* NAVEGAÇÃO MOBILE */
     .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
@@ -42,12 +48,8 @@
 
     /* NAVEGAÇÃO DESKTOP (Sidebar) */
     .nav-side { display: none; }
-    .app-header { background-color: var(--cor-header); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
-    
-    /* ÁREA DE CONTEÚDO */
-    .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
 
-    /* ------------------- DESKTOP LAYOUT ------------------- */
+    /* ------------------- DESKTOP LAYOUT OTIMIZADO ------------------- */
     @media (min-width: 768px) {
       body { background-color: #f4f6f8; display: flex; align-items: stretch; }
       .app-container { max-width: 100%; flex-direction: row; box-shadow: none; background-color: transparent; }
@@ -58,34 +60,93 @@
       .nav-side { 
         display: flex; flex-direction: column; width: 260px; 
         background-color: var(--cor-sidebar); color: #fff; height: 100vh; position: sticky; top: 0;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.05); z-index: 100;
       }
       .nav-side-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-      .nav-side-header h2 { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; }
+      .nav-side-header h2 { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 22px; }
       .nav-side-header p { font-size: 11px; color: #aaa; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
       
-      .nav-side-item { display: flex; align-items: center; gap: 15px; padding: 15px 25px; color: #b0bec5; font-size: 14px; font-weight: 500; background: none; border: none; cursor: pointer; text-align: left; transition: 0.2s; }
-      .nav-side-item:hover, .nav-side-item.active { background-color: rgba(255,255,255,0.1); color: #fff; border-left: 4px solid var(--cor-dourada); }
-      .nav-side-item i { width: 20px; text-align: center; }
+      .nav-side-item { display: flex; align-items: center; gap: 15px; padding: 18px 25px; color: #b0bec5; font-size: 15px; font-weight: 500; background: none; border: none; cursor: pointer; text-align: left; transition: 0.2s; }
+      .nav-side-item:hover, .nav-side-item.active { background-color: rgba(255,255,255,0.05); color: #fff; border-left: 4px solid var(--cor-dourada); }
+      .nav-side-item i { width: 22px; text-align: center; font-size: 18px; }
 
-      .app-content { padding: 40px; padding-bottom: 40px; max-width: 1200px; margin: 0 auto; width: calc(100% - 260px); }
+      .app-content { padding: 40px; padding-bottom: 60px; max-width: 1300px; margin: 0 auto; width: calc(100% - 260px); }
       
-      .tela.ativa { display: block; background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); min-height: 80vh; }
+      .tela.ativa { display: block; background: #fff; border-radius: 16px; padding: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.04); min-height: 85vh; }
       
-      /* Ajustes finos de grid para telas grandes */
-      .boutique-grid-nova { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-      .quick-apps-bar { grid-template-columns: repeat(4, 1fr); max-width: 600px; }
-      .horarios-grid { overflow-x: auto; }
+      /* Ajustes de tipografia e grids para o PC */
+      .section-title-nova { font-size: 16px; margin: 35px 0 20px 0; }
+      .vitrine-banner-nova h2 { font-size: 32px; }
+      .vitrine-banner-nova p { font-size: 14px; }
+      
+      .quick-apps-bar { grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 700px; margin-bottom: 40px; }
+      .quick-app-icon { width: 55px; height: 55px; font-size: 24px; }
+      .quick-app span { font-size: 13px; }
+      
+      .pub-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin: 0; padding: 0; overflow: visible; }
+      .pub-card { width: 100%; }
+      .pub-media { height: 180px; }
+      .pub-info h4 { font-size: 18px; }
+      .pub-info p { font-size: 14px; }
+      .pub-btn { font-size: 14px; padding: 10px; }
+
+      .planos-scroll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 0; padding: 0; overflow: visible; }
+      .plano-card { width: 100%; padding: 25px; }
+      .plano-nome { font-size: 20px; }
+      .plano-preco { font-size: 28px; }
+      .plano-features { font-size: 14px; margin-bottom: 20px; }
+      .plano-btn { padding: 12px; font-size: 14px; }
+
+      .espacos-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+      .espaco-card { padding: 30px; }
+      .espaco-titulo { font-size: 28px; }
+      .espaco-desc { font-size: 15px; max-width: 80%; }
+      .espaco-cta { padding: 12px 24px; font-size: 14px; }
+
+      .boutique-grid-nova { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+      .product-img-box-nova { height: 180px; }
+      .product-card-nova h4 { font-size: 16px; margin-top: 10px; }
+      .product-card-nova .price { font-size: 18px; }
+
+      /* Vídeo no PC */
+      .video-container { max-width: 800px; margin: 0 auto 40px auto; }
+      
+      /* Botões de Contato */
+      .contato-compacto { padding: 30px; max-width: 900px; margin: 0 auto; }
+      .contato-info-mini { font-size: 15px; margin-bottom: 12px; }
+      .contato-info-mini i { font-size: 18px; width: 24px; }
+      .contato-redes { gap: 15px; margin-top: 25px; flex-direction: row; }
+      .rede-btn { flex-direction: row; gap: 10px; padding: 15px; font-size: 14px; }
+      .rede-btn i { font-size: 20px; }
+      .rede-btn.canal { flex: 1 1 auto; margin-top: 0; }
+
+      /* Painel Master Grid */
+      .config-category .config-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+      .master-card { padding: 15px; }
+      .master-card h4 { font-size: 14px; }
+
+      /* Assitente Flutuante */
+      .assistente-ia-flutuante { bottom: 40px; right: 40px; width: 65px; height: 65px; font-size: 26px; }
+
+      /* Modal no PC */
+      .cartao-cadastro { max-width: 600px; padding: 40px; }
+      .cartao-cadastro h3 { font-size: 24px; }
+      .cartao-cadastro input, .cartao-cadastro textarea, .cartao-cadastro select { font-size: 15px; padding: 12px; margin-bottom: 10px; }
+      .btn-enviar-cadastro { font-size: 16px; padding: 15px; }
+      
+      /* Financeiro PC */
+      .fin-dashboard-cards { grid-template-columns: repeat(4, 1fr); }
+      .fin-card h5 { font-size: 13px; }
+      .fin-card .valor { font-size: 28px; }
+      .fin-table th { font-size: 13px; padding: 15px; }
+      .fin-table td { font-size: 14px; padding: 15px; }
     }
 
-    /* ------------------- ELEMENTOS VISUAIS ------------------- */
-    .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
-    .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
-    .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; font-weight: 700; text-align: left; }
-
+    /* ------------------- ELEMENTOS VISUAIS GERAIS ------------------- */
     .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
     .vitrine-banner-nova { background: linear-gradient(135deg, var(--grad-vitrine-start, #B91C1C), var(--grad-vitrine-end, #4C0519)); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); position: relative; overflow: hidden; }
-    .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
-    .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
+    .vitrine-banner-nova h2 { color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
+    .vitrine-banner-nova p { opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
 
     .quick-apps-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
     .quick-app { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--cor-texto-escuro); font-size: 10px; font-weight: 600; padding: 10px 4px; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform .2s; border: 1px solid rgba(0,0,0,0.04); }
@@ -98,85 +159,72 @@
     .pub-media { width: 100%; height: 130px; background: #eee; position: relative; }
     .pub-media img, .pub-media video, .pub-media iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
     .pub-info { padding: 16px; flex: 1; display: flex; flex-direction: column; }
-    .pub-info h4 { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
-    .pub-info p { font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
-    .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
+    .pub-info h4 { color: var(--cor-principal); font-weight: 700; margin-bottom: 4px; }
+    .pub-info p { color: var(--cor-texto-mutado); line-height: 1.4; margin-bottom: 12px; flex: 1; }
+    .pub-btn { background: var(--cor-principal); color: #fff; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-weight: 700; border: none; cursor: pointer; display: block; width: 100%; }
 
-    .banner-indique { background: linear-gradient(135deg, var(--grad-indique-start, #FFD700), var(--grad-indique-end, #FFA500)); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3); color: #4A2300; }
-    .banner-indique h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-    .banner-indique p { font-size: 11px; opacity: 0.8; }
-    .banner-indique i { font-size: 24px; color: #fff; }
-
-    .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
+    .section-title-nova { color: var(--cor-principal); text-transform: uppercase; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
 
-    .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
-    .planos-scroll::-webkit-scrollbar { display: none; }
-    .plano-card { flex-shrink: 0; width: 172px; scroll-snap-align: start; background: var(--cor-card-fundo); border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 18px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; }
-    .plano-card.destaque { border-color: var(--cor-dourada); background: linear-gradient(160deg, var(--grad-planos-start, #FFFCF2), var(--grad-planos-end, #FFF2F6)); }
-    .plano-badge { position: absolute; top: -10px; left: 12px; background: var(--cor-dourada); color: #fff; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; }
-    .plano-nome { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--cor-principal); font-weight: 700; display: block; margin-bottom: 2px; }
-    .plano-preco { font-size: 20px; font-weight: 700; color: var(--cor-texto-escuro); display: block; margin-bottom: 12px; }
-    .plano-preco small { font-size: 10px; color: var(--cor-texto-mutado); font-weight: 600; }
-    .plano-features { list-style: none; font-size: 10.5px; color: var(--cor-texto-mutado); line-height: 1.5; margin-bottom: 14px; }
-    .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
-    .plano-btn { width: 100%; padding: 9px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
-
     .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
-    .espaco-card { position: relative; border-radius: 22px; padding: 22px 20px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
+    .espaco-card { position: relative; border-radius: 22px; text-align: left; color: #fff; overflow: hidden; border: none; cursor: pointer; width: 100%; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); background-size: cover; background-position: center; }
     .espaco-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); }
     .espaco-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; position: relative; z-index: 1; }
     .espaco-icon { width: 56px; height: 56px; flex-shrink: 0; border-radius: 18px; background: rgba(255, 255, 255, 0.20); display: flex; align-items: center; justify-content: center; font-size: 28px; overflow: hidden; }
     .espaco-icon img { width: 100%; height: 100%; object-fit: cover; }
     .espaco-titulo-wrap { flex: 1; }
     .espaco-selo { display: inline-block; font-size: 8.5px; font-weight: 700; background: rgba(255, 255, 255, 0.22); padding: 3px 9px; border-radius: 999px; margin-bottom: 5px; text-transform: uppercase; }
-    .espaco-titulo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #FFE4A8; margin-bottom: 3px; }
-    .espaco-sub { font-size: 11px; opacity: 0.88; }
-    .espaco-desc { font-size: 12.5px; line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
-    .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
+    .espaco-titulo { font-family: 'Playfair Display', serif; font-weight: 700; color: #FFE4A8; margin-bottom: 3px; }
+    .espaco-sub { opacity: 0.88; }
+    .espaco-desc { line-height: 1.55; opacity: 0.92; margin-bottom: 16px; position: relative; z-index: 1; }
+    .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; border-radius: 999px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; }
 
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
     .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; }
-    .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
+    .product-img-box-nova { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
     .product-img-box-nova img { width: 100%; height: 100%; object-fit: cover; }
-    .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
-    .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
+    .product-card-nova h4 { color: var(--cor-texto-escuro); font-weight: 600; }
+    .product-card-nova .price { color: var(--cor-principal); font-weight: 700; margin-top: auto; }
 
     .video-container { display: none; margin-bottom: 24px; }
     .video-container video, .video-container iframe { width: 100%; height: 220px; border-radius: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; }
 
-    .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-    .contato-info-mini { font-size: 11px; color: var(--cor-texto-mutado); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-    .contato-info-mini i { color: var(--cor-principal); width: 14px; text-align: center; font-size: 13px; }
+    .contato-compacto { background: #fff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .contato-info-mini { color: var(--cor-texto-mutado); display: flex; align-items: center; gap: 8px; }
+    .contato-info-mini i { color: var(--cor-principal); text-align: center; }
 
-    .contato-redes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-    .rede-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px 0; border-radius: 12px; font-size: 10px; font-weight: 700; text-decoration: none; color: #fff; transition: transform 0.2s; cursor: pointer; border:none; }
+    .contato-redes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .rede-btn { flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 700; text-decoration: none; color: #fff; transition: transform 0.2s; cursor: pointer; border:none; }
     .rede-btn:active { transform: scale(0.95); }
     .rede-btn.wa { background: var(--cor-whatsapp); }
     .rede-btn.ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
     .rede-btn.em { background: var(--cor-email); }
     .rede-btn.custom { background: var(--cor-principal); }
-    .rede-btn.canal { background: var(--cor-canal); flex: 1 1 100%; flex-direction: row; gap: 10px; padding: 14px 0; font-size: 13px; margin-top: 5px; border-radius: 12px;}
+    .rede-btn.canal { background: var(--cor-canal); }
 
-    .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); padding: 8px 14px; border-radius: 999px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-bottom: 18px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: 1.5px solid rgba(157,23,77,0.2); border-radius: 999px; font-family: inherit; font-weight: 700; cursor: pointer; margin-bottom: 18px; padding: 8px 14px; font-size: 12px; }
+    @media (min-width: 768px) { .back-btn { padding: 10px 20px; font-size: 14px; } }
 
-    .pagina-hero { border-radius: 22px; padding: 26px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); }
-    .pagina-emoji { font-size: 42px; display: block; margin-bottom: 8px; line-height: 1; }
-    .pagina-titulo { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--cor-dourada); margin-bottom: 6px; }
-    .pagina-subtitulo { font-size: 12px; opacity: 0.88; }
+    .pagina-hero { border-radius: 22px; text-align: center; color: #fff; box-shadow: 0 10px 26px rgba(157, 23, 77, 0.22); padding: 26px 20px; margin-bottom: 20px;}
+    @media (min-width: 768px) { .pagina-hero { padding: 40px; margin-bottom: 40px; } }
+    .pagina-emoji { display: block; line-height: 1; font-size: 42px; margin-bottom: 8px;}
+    @media (min-width: 768px) { .pagina-emoji { font-size: 64px; margin-bottom: 15px; } }
+    .pagina-titulo { font-family: 'Playfair Display', serif; color: var(--cor-dourada); margin-bottom: 6px; font-size: 24px;}
+    @media (min-width: 768px) { .pagina-titulo { font-size: 36px; } }
+    .pagina-subtitulo { opacity: 0.88; font-size: 12px;}
+    @media (min-width: 768px) { .pagina-subtitulo { font-size: 16px; } }
 
     .mural-box { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; border-left: 5px solid var(--cor-principal); text-align: center; }
     .mural-box h3 { font-family: 'Playfair Display', serif; color: var(--cor-principal); font-size: 20px; margin-bottom: 12px; }
-    .mural-texto { font-size: 14px; line-height: 1.6; color: var(--cor-texto-escuro); margin-bottom: 20px; white-space: pre-wrap; }
-    .btn-cta-grande { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--grad-cta-start, #9D174D), var(--grad-cta-end, #560021)); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); }
+    .mural-texto { line-height: 1.6; color: var(--cor-texto-escuro); margin-bottom: 20px; white-space: pre-wrap; }
+    .btn-cta-grande { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--grad-cta-start, #9D174D), var(--grad-cta-end, #560021)); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(157,23,77,0.25); font-size: 14px;}
 
     .tela { display: none; }
     .tela.ativa { display: block; animation: fadeIn .25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-    .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); width: 55px; height: 55px; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; }
+    .assistente-ia-flutuante { position: fixed; bottom: 140px; right: calc(50% - 210px); background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 15px rgba(157, 23, 77, 0.4); cursor: pointer; z-index: 999; border: none; animation: flutuar 3s infinite; width: 55px; height: 55px; font-size: 22px;}
     @media (max-width: 450px) { .assistente-ia-flutuante { right: 16px; } }
-    @media (min-width: 768px) { .assistente-ia-flutuante { bottom: 30px; right: 30px; } }
     @keyframes flutuar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
     #tela-chat { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999; background: #fff; display: none; }
@@ -219,21 +267,23 @@
     .admin-agenda-card .cliente-info { font-size: 12px; color: var(--cor-texto-escuro); font-weight: 600; margin-top: 5px; }
     .btn-whats-agendamento { background: #00BB2D; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; width: fit-content; }
 
-    .perfil-hero { background: linear-gradient(135deg, var(--grad-cta-start, #9D174D), var(--grad-cta-end, #560021)); border-radius: 20px; padding: 24px 18px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; }
+    .perfil-hero { background: linear-gradient(135deg, var(--grad-cta-start, #9D174D), var(--grad-cta-end, #560021)); border-radius: 20px; text-align: center; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; padding: 24px 18px;}
+    @media (min-width: 768px) { .perfil-hero { padding: 40px; max-width: 600px; margin: 0 auto 40px auto; } }
     .perfil-avatar { width: 76px; height: 76px; border-radius: 50%; background: #FFF2F6; color: var(--cor-principal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin: 0 auto 10px; border: 3px solid var(--cor-dourada); }
     .perfil-nome { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; margin-bottom: 2px; }
     .perfil-cargo { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.85; }
 
     .painel-master-box { background: #FFF8FA; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 16px; margin-top: 10px; }
+    @media (min-width: 768px) { .painel-master-box { max-width: 900px; margin: 20px auto; padding: 30px; } }
     .config-category { margin-bottom: 10px; background: #fff; border: 1px solid rgba(157, 23, 77, 0.15); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
     .config-category summary { padding: 14px 16px; font-weight: 700; color: var(--cor-principal); cursor: pointer; display: flex; align-items: center; gap: 10px; list-style: none; background: #FFFcf5; }
     .config-category summary::-webkit-details-marker { display: none; }
     .config-category summary::after { content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; font-size: 12px; transition: transform 0.3s; }
     .config-category[open] summary::after { transform: rotate(180deg); }
-    .config-category .config-grid { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fff; }
+    .config-category .config-grid { padding: 12px; display: grid; gap: 10px; background: #fff; grid-template-columns: 1fr 1fr; }
     .master-card { background: #fdfdfd; border: 1px solid rgba(157, 23, 77, 0.2); border-radius: 10px; padding: 12px 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: left; transition: 0.2s; }
     .master-card:hover { border-color: var(--cor-principal); background: #FFF8FA; }
-    .master-card h4 { font-size: 11px; color: var(--cor-texto-escuro); font-weight: 600; margin: 0; line-height: 1.2; }
+    .master-card h4 { color: var(--cor-texto-escuro); font-weight: 600; margin: 0; line-height: 1.2; }
     .master-card .plus { color: var(--cor-dourada); font-size: 16px; font-weight: 700; }
 
     .config-item-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
@@ -545,7 +595,7 @@
 
     <!-- MODAL PRONTUÁRIO -->
     <div id="modal-prontuario" class="modal-cadastro-fixo" style="align-items: flex-start; padding-top: 20px;">
-      <div class="cartao-cadastro" style="max-width: 450px; background: #fff;">
+      <div class="cartao-cadastro" style="max-width: 600px; background: #fff;">
         <h3 id="prontuario-titulo" style="font-size: 16px;">Prontuário</h3>
         
         <div style="background: #FFF2F6; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--cor-dourada);">
@@ -596,7 +646,6 @@
       </div>
     </div>
 
-    <!-- NAVEGAÇÃO MOBILE -->
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
       <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
@@ -813,15 +862,12 @@
     }
 
     function trocarTela(btn, tab) {
-      // Atualiza menu mobile
       document.querySelectorAll('.nav-item').forEach((b) => b.classList.remove('active'));
       if (btn && btn.classList.contains('nav-item')) btn.classList.add('active');
       
-      // Atualiza menu desktop
       document.querySelectorAll('.nav-side-item').forEach((b) => b.classList.remove('active'));
       if (btn && btn.classList.contains('nav-side-item')) btn.classList.add('active');
       else {
-          // Se clicou em um item interno e quer voltar pra home, ativa o menu principal correspondente
           const matchSide = document.querySelector(`.nav-side-item[data-tab="${tab}"]`);
           if(matchSide) matchSide.classList.add('active');
           const matchMob = document.querySelector(`.nav-item[data-tab="${tab}"]`);
@@ -1530,7 +1576,7 @@
           publicidades.forEach(pub => {
             let media = pub.video
               ? `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>`
-              : (pub.imagem ? `<div class="pub-media"><img src="${esc(safeImgSrc(pub.imagem))}"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
+              : (pub.imagem ? `<div class="pub-media"><img src="${esc(safeImgSrc(pub.imagem))}" loading="lazy"></div>` : `<div class="pub-media" style="background:var(--cor-principal); display:flex; justify-content:center; align-items:center; color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`);
             pubHtml += `<div class="pub-card">${media}<div class="pub-info"><h4>${esc(pub.titulo)}</h4><p>${esc(pub.descricao)}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${Number(pub.id)})">Conhecer Parceiro</button></div></div>`;
           });
           html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${pubHtml}</div>`;
@@ -1577,12 +1623,12 @@
           html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap">
             <button class="espaco-card" style="${esc(bgClube)}" onclick="abrirTela('clube')">
               <div class="espaco-overlay"></div>
-              <div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${esc(safeImgSrc(appState.clubeImage))}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${esc(appState.clubeName)}</h3><p class="espaco-sub">Vantagens & Vitrine</p></div></div>
+              <div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${esc(safeImgSrc(appState.clubeImage))}" loading="lazy">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${esc(appState.clubeName)}</h3><p class="espaco-sub">Vantagens & Vitrine</p></div></div>
               <p class="espaco-desc">Descontos, brindes e produtos exclusivos.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span>
             </button>
             <button class="espaco-card" style="${esc(bgRenova)}" onclick="window.open('${esc(safeHref(appState.renovaseLink || 'https://wa.me/5511997450293'))}', '_blank')">
               <div class="espaco-overlay"></div>
-              <div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${esc(safeImgSrc(appState.renovaseImage))}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Evento</span><h3 class="espaco-titulo">${esc(appState.renovaseName)}</h3><p class="espaco-sub">Transformação</p></div></div>
+              <div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${esc(safeImgSrc(appState.renovaseImage))}" loading="lazy">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Evento</span><h3 class="espaco-titulo">${esc(appState.renovaseName)}</h3><p class="espaco-sub">Transformação</p></div></div>
               <p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Saber mais <i class="fa-solid fa-arrow-right"></i></span>
             </button>
           </div>`;
@@ -1604,7 +1650,7 @@
             </button>`;
         }
         else if (secao === 'boutique') {
-          let prodsHtml = (appState.boutiqueProdutos || []).map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i}, 'boutique')"><div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}">` : '🛍️'}</div><h4>${esc(p.nome)}</h4><p class="price">R$ ${esc(p.preco)}</p></button>`).join('');
+          let prodsHtml = (appState.boutiqueProdutos || []).map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i}, 'boutique')"><div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}</div><h4>${esc(p.nome)}</h4><p class="price">R$ ${esc(p.preco)}</p></button>`).join('');
           html = `<div class="section-title-nova">Destaques</div><div class="boutique-grid-nova">${prodsHtml}</div>`;
         }
         else if (secao === 'contato') {
@@ -1656,7 +1702,7 @@
 
       container.innerHTML = prods.map((p, i) => `
         <button class="product-card-nova" onclick="abrirProduto(${i}, '${origem}')">
-          <div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}">` : '🛍️'}</div>
+          <div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}</div>
           <h4>${esc(p.nome)}</h4>
           <p class="price">R$ ${esc(p.preco)}</p>
         </button>
@@ -2596,7 +2642,7 @@
 
         container.innerHTML = registros.map(r => {
           const dataFmt = String(r.data).split('-').reverse().join('/');
-          let fotoHtml = r.foto ? `<div style="margin-top:8px;"><img src="${esc(r.foto)}" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; border:1px solid #ddd;"></div>` : '';
+          let fotoHtml = r.foto ? `<div style="margin-top:8px;"><img src="${esc(r.foto)}" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; border:1px solid #ddd;" loading="lazy"></div>` : '';
           
           return `
             <div style="background:#fff; border:1px solid #ddd; border-left:4px solid var(--cor-dourada); padding:10px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
@@ -2703,9 +2749,9 @@
       container.innerHTML = filtrados.map(c => {
         let wa = (c.telefone || '').replace(/\D/g, '');
         if (wa.length > 0 && !wa.startsWith('55')) wa = '55' + wa;
-        const btnWhats = wa ? `<a href="https://wa.me/${wa}" target="_blank" style="background:#25D366; color:#fff; padding:6px 10px; border-radius:6px; text-decoration:none; font-size:11px; font-weight:bold; display:inline-flex; align-items:center; gap:5px; margin-top:8px;"><i class="fa-brands fa-whatsapp"></i> Zap</a>` : '';
+        const btnWhats = wa ? `<a href="https://wa.me/${wa}" target="_blank" style="background:#25D366; color:#fff; padding:8px 12px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:bold; display:inline-flex; align-items:center; gap:5px; margin-top:8px;"><i class="fa-brands fa-whatsapp"></i> Zap</a>` : '';
         
-        const btnProntuario = `<button onclick="abrirProntuario('${esc(c.id)}', '${esc(c.nome)}')" style="background:#9D174D; color:#fff; padding:6px 10px; border-radius:6px; border:none; font-size:11px; font-weight:bold; display:inline-flex; align-items:center; gap:5px; margin-top:8px; cursor:pointer;"><i class="fa-solid fa-file-medical"></i> Prontuário</button>`;
+        const btnProntuario = `<button onclick="abrirProntuario('${esc(c.id)}', '${esc(c.nome)}')" style="background:#9D174D; color:#fff; padding:8px 12px; border-radius:6px; border:none; font-size:13px; font-weight:bold; display:inline-flex; align-items:center; gap:5px; margin-top:8px; cursor:pointer;"><i class="fa-solid fa-file-medical"></i> Prontuário</button>`;
 
         const telLimpo = (c.telefone || '').replace(/\D/g, '');
         const historico = agendamentos.filter(ag => {
@@ -2718,13 +2764,13 @@
         let historicoHtml = '';
         if (historico.length > 0) {
           historicoHtml = `<div style="margin-top:12px; border-top:1px solid #ccc; padding-top:8px;">
-            <span style="font-size:10px; font-weight:bold; color:#9D174D; text-transform:uppercase;">Histórico de Atendimentos:</span>
+            <span style="font-size:11px; font-weight:bold; color:#9D174D; text-transform:uppercase;">Histórico de Atendimentos:</span>
             <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">
               ${historico.map(ag => {
                 const dataFmt = String(ag.data || '').split('-').reverse().join('/');
-                return `<div style="font-size:11px; color:#333; background:#FFF2F6; padding:6px; border-radius:4px; border-left:3px solid var(--cor-dourada); margin-bottom: 4px;">
+                return `<div style="font-size:12px; color:#333; background:#FFF2F6; padding:8px; border-radius:4px; border-left:3px solid var(--cor-dourada); margin-bottom: 4px;">
                   📅 <b>${dataFmt}</b> às ⏰ <b>${ag.horaInicio || ''}</b> - ${esc(ag.servico || '')}
-                  <br><span style="font-size:9px; font-weight:bold; color: ${ag.statusConfirmacao === 'confirmado' ? 'green' : (ag.statusConfirmacao === 'cancelado' ? 'red' : '#d97706')};">
+                  <br><span style="font-size:10px; font-weight:bold; color: ${ag.statusConfirmacao === 'confirmado' ? 'green' : (ag.statusConfirmacao === 'cancelado' ? 'red' : '#d97706')};">
                     ${ag.statusConfirmacao === 'confirmado' ? '✅ Confirmado' : (ag.statusConfirmacao === 'cancelado' ? '❌ Cancelado' : '⏳ Aguardando Confirmação')}
                   </span>
                 </div>`;
@@ -2732,7 +2778,7 @@
             </div>
           </div>`;
         } else {
-          historicoHtml = `<div style="margin-top:12px; border-top:1px solid #eee; padding-top:8px; font-size:10px; color:#999;">Nenhum atendimento registrado ainda.</div>`;
+          historicoHtml = `<div style="margin-top:12px; border-top:1px solid #eee; padding-top:8px; font-size:11px; color:#999;">Nenhum atendimento registrado ainda.</div>`;
         }
         
         let dataCadFmt = 'Não informada';
@@ -2744,15 +2790,15 @@
         } catch(e) {}
 
         return `
-          <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #ddd; border-left: 4px solid var(--cor-principal); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd; border-left: 4px solid var(--cor-principal); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
               <div>
-                <strong style="font-size:14px; color:var(--cor-principal);">${esc(c.nome)}</strong><br>
-                <span style="font-size:12px; color:#555;">📞 ${esc(c.telefone || 'Sem telefone')}</span><br>
-                <span style="font-size:11px; color:#777;">✉️ ${esc(c.email || 'Sem email')}</span><br>
-                <span style="font-size:10px; color:#999;">Cliente desde: ${dataCadFmt}</span>
+                <strong style="font-size:16px; color:var(--cor-principal);">${esc(c.nome)}</strong><br>
+                <span style="font-size:13px; color:#555;">📞 ${esc(c.telefone || 'Sem telefone')}</span><br>
+                <span style="font-size:12px; color:#777;">✉️ ${esc(c.email || 'Sem email')}</span><br>
+                <span style="font-size:11px; color:#999;">Cliente desde: ${dataCadFmt}</span>
               </div>
-              <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
+              <div style="display:flex; flex-direction:row; gap:8px; align-items:flex-start;">
                 ${btnWhats}
                 ${btnProntuario}
               </div>
@@ -2859,7 +2905,7 @@
         const snapshot = await db.collection("financeiro").orderBy("data", "desc").get();
         
         if (snapshot.empty) {
-          dash.innerHTML = '<p style="text-align:center; font-size:12px; color:#777; width:100%;">Nenhum lançamento financeiro ainda.</p>';
+          dash.innerHTML = '<p style="text-align:center; font-size:13px; color:#777; width:100%;">Nenhum lançamento financeiro ainda.</p>';
           lista.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#777;">Nenhum lançamento.</td></tr>';
           return;
         }
@@ -2875,7 +2921,7 @@
 
       } catch (e) {
         console.error("Erro ao carregar financeiro:", e);
-        dash.innerHTML = '<p style="text-align:center; color:red; font-size:12px;">Erro ao carregar dados.</p>';
+        dash.innerHTML = '<p style="text-align:center; color:red; font-size:13px;">Erro ao carregar dados.</p>';
       }
     }
 
@@ -2950,7 +2996,7 @@
 
         const nomesSetores = { clinica: 'Clínica', clube: 'Clube', boutique: 'Boutique', renovase: 'Renova-se' };
 
-        lista.innerHTML = filtradas.slice(0, 30).map(t => {
+        lista.innerHTML = filtradas.slice(0, 50).map(t => {
           const isEntrada = t.tipo === 'entrada';
           const tagClass = isEntrada ? 'entrada' : 'saida';
           const sinal = isEntrada ? '+' : '-';
@@ -2959,7 +3005,7 @@
           return `
             <tr>
               <td>${dataFmt}</td>
-              <td><span style="font-size:10px; font-weight:bold; color:#555;">${nomesSetores[t.caixa] || t.caixa}</span></td>
+              <td><span style="font-size:11px; font-weight:bold; color:#555;">${nomesSetores[t.caixa] || t.caixa}</span></td>
               <td>${esc(t.descricao)}</td>
               <td><span class="fin-tag ${tagClass}">${isEntrada ? 'Entrada' : 'Saída'}</span></td>
               <td style="font-weight:bold; color:${isEntrada ? '#2e7d32' : '#c62828'}">${sinal} R$ ${Number(t.valor).toFixed(2).replace('.', ',')}</td>
