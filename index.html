@@ -203,6 +203,29 @@
     .fin-tag.entrada { background: #e8f5e9; color: #2e7d32; }
     .fin-tag.saida { background: #ffebee; color: #c62828; }
 
+    .banner-indique { display: flex; justify-content: space-between; align-items: center; border-radius: 18px; margin-bottom: 24px; }
+    .canal-item-card { display: flex; align-items: center; gap: 15px; background: #fff; padding: 18px; border-radius: 14px; margin-bottom: 12px; text-decoration: none; color: inherit; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid rgba(157,23,77,0.1); }
+    .canal-item-icon { width: 45px; height: 45px; border-radius: 12px; background: var(--cor-canal); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .canal-item-info { flex: 1; text-align: left; }
+    .canal-item-info h4 { font-size: 15px; color: var(--cor-principal); margin-bottom: 3px; font-weight: 700; }
+    .canal-item-info p { font-size: 12px; color: #666; }
+    .canal-item-arrow { color: var(--cor-principal); font-size: 14px; }
+
+    .config-item-row { display: flex; gap: 8px; align-items: center; }
+    .config-item-row input, .config-item-row textarea { flex: 1; padding: 10px; font-size: 14px; margin: 0; }
+    .btn-del { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .btn-add-item { width: 100%; padding: 12px; background: #f0f0f0; color: #333; border: 1px dashed #999; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; margin-top: 8px; }
+
+    .integracoes-card { background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .integ-left { display: flex; gap: 12px; align-items: center; flex: 1; }
+    .integ-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
+    .integ-info h4 { font-size: 14px; margin-bottom: 2px; }
+    .integ-info p { font-size: 11px; color: #666; }
+    .btn-conectar { padding: 10px 15px; border-radius: 8px; border: none; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .btn-conectar.off { background: var(--cor-principal); color: #fff; }
+    .btn-conectar.on { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
+
     @media (min-width: 768px) {
       body { background-color: #eef2f5; display: flex; align-items: stretch; }
       .app-container { flex-direction: row; max-width: 100vw; background-color: transparent; }
@@ -358,6 +381,28 @@
         </button>
       </div>
 
+      <div id="tela-cursos" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" style="background: linear-gradient(135deg, #7C3AED, #4C1D95);">
+          <span class="pagina-emoji">🎓</span>
+          <h1 class="pagina-titulo">Cursos Online</h1>
+          <p class="pagina-subtitulo">Aprenda com a Bio Renovadora</p>
+        </div>
+        <div id="lista-cursos" class="boutique-grid-nova"></div>
+      </div>
+
+      <div id="tela-curso" class="tela">
+        <button class="back-btn" onclick="abrirTela('cursos')"><i class="fa-solid fa-arrow-left"></i> Voltar aos Cursos</button>
+        <div id="curso-video-container" class="video-container" style="display:block;"></div>
+        <h1 id="curso-nome" style="font-family:'Playfair Display',serif; color:var(--cor-principal); font-size:26px; margin: 16px 0 8px;"></h1>
+        <p id="curso-descricao" style="font-size:14px; color:#555; line-height:1.6; margin-bottom:16px;"></p>
+        <div id="curso-precos" style="background:#FFF8FA; border:1.5px solid var(--cor-dourada); border-radius:14px; padding:16px; margin-bottom:16px;"></div>
+        <div id="curso-modulos" style="margin-bottom:20px;"></div>
+        <button class="btn-cta-grande" id="btn-comprar-curso" style="background:#25D366;"><i class="fa-brands fa-whatsapp"></i> Comprar pelo WhatsApp</button>
+        <button class="btn-cta-grande" id="btn-codigo-curso" style="background:#7C3AED;"><i class="fa-solid fa-key"></i> Já comprei - Inserir código</button>
+        <button class="btn-cta-grande" id="btn-acessar-curso" style="display:none; background:var(--cor-principal);"><i class="fa-solid fa-play"></i> Acessar Curso</button>
+      </div>
+
       <div id="tela-clube" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         <div class="pagina-hero" style="background: linear-gradient(135deg, #C2185B, #4C0519);">
@@ -480,6 +525,12 @@
           <div class="perfil-cargo" id="perfil-cargo">Área Administrativa</div>
         </div>
 
+        <div id="clube-status-box" style="display:none; background:#FFF8FA; border:1.5px solid var(--cor-dourada); border-radius:14px; padding:16px; margin-bottom:16px; text-align:center;">
+          <p style="font-size:15px; font-weight:700; color:var(--cor-principal); margin-bottom:10px;">🌸 Você é membro do Clube!</p>
+          <p style="font-size:12px; color:#666; margin-bottom:12px;">Seus preços exclusivos estão ativos em todo o app.</p>
+          <button onclick="sairClube()" style="background:#ffebee;color:#c62828;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Sair do Clube</button>
+        </div>
+
         <div id="acesso-configuracoes-master">
           <div class="section-title-nova" id="titulo-painel-master">Painel Master</div>
 
@@ -539,6 +590,16 @@
         <input type="text" id="input-codigo-clube" placeholder="Ex: VIP-A3F9" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
         <button onclick="verificarCodigoClube()" class="btn-enviar-cadastro">Verificar Código</button>
         <button onclick="document.getElementById('modal-codigo-clube').style.display='none'" class="btn-undo">Cancelar</button>
+      </div>
+    </div>
+
+    <div id="modal-codigo-curso" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro">
+        <h3>Acesso ao Curso 🎓</h3>
+        <p style="font-size:14px; text-align:center; margin-bottom:20px;">Digite o código de compra que você recebeu.</p>
+        <input type="text" id="input-codigo-curso" placeholder="Ex: CURSO-A3F9" style="text-transform: uppercase; text-align: center; letter-spacing: 2px; font-weight: bold;">
+        <button onclick="validarCodigoCurso()" class="btn-enviar-cadastro">Verificar Código</button>
+        <button onclick="document.getElementById('modal-codigo-curso').style.display='none'" class="btn-undo">Cancelar</button>
       </div>
     </div>
 
@@ -656,7 +717,6 @@
     let adminAutenticado = false;
     let usuarioAutenticado = null;
     let modoAdminAtivo = false;
-
     const ADMIN_EMAILS = ['estetica.alexandria@gmail.com', 'progovcomercial@gmail.com'];
 
     async function verificarAdmin(user) {
@@ -672,7 +732,6 @@
     const GEMINI_PROXY_URL = 'https://ale-gemini-proxy.progovcomercial.workers.dev';
     let historicoChatIA = [];
 
-    // ✅ ATUALIZAÇÃO: categoriasConfig com Extensões & Nuvem e Buscar Proposta
     const categoriasConfig = [
       { nome: 'Aparência & Design', icone: 'fa-palette', itens: [
         { id: 'cores', nome: 'Cores Base' }, { id: 'cores-extra', nome: 'Cores Redes' },
@@ -688,6 +747,11 @@
         { id: 'clube', nome: 'Planos e Preços' },
         { id: 'clube-beneficios', nome: 'Textos do Clube 📝' },
         { id: 'tela-inicial', nome: 'Nomes (Clube/Vitrine)' }
+      ]},
+      { nome: 'Cursos & Serviços', icone: 'fa-graduation-cap', itens: [
+        { id: 'cursos-admin', nome: 'Gerenciar Cursos 🎓' },
+        { id: 'servicos-admin', nome: 'Gerenciar Serviços 💆' },
+        { id: 'liberar-acesso', nome: 'Liberar Acesso 🔑' }
       ]},
       { nome: 'Agenda & Contato', icone: 'fa-calendar', itens: [
         { id: 'agenda-config', nome: 'Configurar Agenda' },
@@ -712,7 +776,6 @@
       ]}
     ];
 
-    // ✅ ATUALIZAÇÃO: estadoPadrao com propostaContador e extensoes
     const estadoPadrao = {
       appName: 'Alexandra Barros', logo: 'AB', logoImage: null, colorPrimary: '#9D174D', colorGold: '#D4AF37', colorText: '#333333', bgColor: '#FFF2F6', bgGradient: null, bgImage: null, video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', whatsapp: '5511997450293', mensagem: 'Cuidado especializado para a mulher que chegou aos 40',
       vitrineTitle: 'Vitrine da Alê', clubeName: 'Clube da Ale', clubeColor: '#C2185B', clubeImage: null, clubeLink: null,
@@ -756,7 +819,7 @@
         ],
         canais: [ { nome: 'Canal Bio Ale', link: 'https://wa.me/5511997450293?text=Quero%20seguir%20o%20canal', descricao: 'Novidades e ofertas no WhatsApp' } ]
       },
-      layoutOrder: ['banner', 'quick-apps', 'publicidade', 'cta', 'indique', 'videos', 'planos', 'espacos', 'clinica', 'pontos', 'boutique', 'contato'],
+      layoutOrder: ['banner', 'quick-apps', 'publicidade', 'cta', 'indique', 'videos', 'planos', 'espacos', 'clinica', 'cursos', 'pontos', 'boutique', 'contato'],
       layoutHidden: [],
       equipe: [], precos: { essencial: '29', inteligente: '59', master: '99' },
       planos: {
@@ -765,7 +828,7 @@
         master: { titulo: 'Master', subtitulo: 'Completo', features: ['Tudo incluso', 'Assistente IA'] }
       },
       agendaInicio: '09:00', agendaFim: '18:00', agendaIntervalo: '30',
-      horariosAgenda: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'],
+      horariosAgenda: ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'],
       diasDisponiveis: [1, 2, 3, 4, 5, 6],
       muralAgenda: 'Bem-vinda! Aqui cada protocolo é pensado para respeitar sua história e realçar sua beleza natural.\n\nPara agendar seu horário, por favor, chame nossa equipe no WhatsApp. Atendemos de segunda a sábado, das 09h às 18h.\n\nAgradecemos a preferência! 🌸',
       mensagemConfirmacao: 'Olá, {nome}! Passando para confirmar seu horário amanhã ({data}) às {hora} para {servico}.\n\nPor favor, confirme clicando no link:\n{link}',
@@ -778,7 +841,12 @@
         { id: 'f5', nome: 'Beatriz', cor: '#3B82F6' }
       ],
       modoAgenda: 'geral',
-      // ✅ NOVOS CAMPOS
+      cursos: [],
+      servicos: [
+        { id: 1, nome: 'Depilação a Laser', preco: '250,00', precoClube: '150,00', imagem: null, descricao: 'Depilação a laser de alta performance' },
+        { id: 2, nome: 'Limpeza de Pele Profunda', preco: '180,00', precoClube: '90,00', imagem: null, descricao: 'Limpeza profunda com extração' },
+        { id: 3, nome: 'Microagulhamento Facial', preco: '350,00', precoClube: '175,00', imagem: null, descricao: 'Indução de colágeno' }
+      ],
       propostaContador: { ano: new Date().getFullYear(), ultimo: 0 },
       extensoes: [
         { id: 'gdrive', nome: 'Google Drive', icone: 'fa-brands fa-google-drive', cor: '#4285F4', descricao: 'Armazenamento e backup', conectada: false, link: '' },
@@ -811,12 +879,13 @@
     let indexPubEditando = -1;
     let indexProdEditando = -1;
     let indexProdClubeEditando = -1;
+    let indexCursoEditando = -1;
+    let indexServicoEditando = -1;
 
     let currentDate = new Date();
     let diaSelecionado = null;
     let idAgendamentoRemarcando = null;
     let dadosRemarcando = null;
-
     let filtroFinanceiroAtual = 'todas';
     let planoSelecionadoId = null;
 
@@ -828,6 +897,8 @@
     window._listaFinanceiroCache = [];
     window._agsJaEnviados = new Set();
     window._verifConfirmando = false;
+    window._listaClientesCache = [];
+    window._listaAgendamentosCache = [];
 
     let pilhaTelas = ['inicio'];
 
@@ -851,14 +922,11 @@
       const tela = document.getElementById('tela-' + id);
       if (tela) tela.classList.add('ativa');
       document.querySelector('.app-content').scrollTop = 0;
-
       if (empilhar) empilharTela(id);
-
-      if (id === 'agenda') {
-        atualizarViewAgenda();
-        if (modoAdminAtivo) verificarConfirmacoesAmanha();
-      }
-      if (id === 'clinica') renderizarTratamentosClinica();
+      if (id === 'agenda') { atualizarViewAgenda(); if (modoAdminAtivo) verificarConfirmacoesAmanha(); }
+      if (id === 'clinica') renderizarServicosClinica();
+      if (id === 'cursos') renderizarCursos();
+      if (id === 'perfil') atualizarStatusClube();
       if (id === 'clube') renderizarClubeEVitrine();
       if (id === 'indique') document.getElementById('link-indicacao').value = getLinkIndicacao();
     }
@@ -891,8 +959,7 @@
 
     function getPlanoAtual() { return appState.planoAtual || 'diamond'; }
     function podeUsar(recurso) {
-      const plano = getPlanoAtual();
-      const limite = LIMITES_PLANO[plano];
+      const limite = LIMITES_PLANO[getPlanoAtual()];
       return limite ? limite[recurso] : false;
     }
 
@@ -900,11 +967,9 @@
         usuarioAutenticado = user;
         adminAutenticado = user ? await verificarAdmin(user) : false;
         modoAdminAtivo = adminAutenticado;
-
         const boxLogin = document.getElementById('box-login-admin');
         const boxLogado = document.getElementById('admin-logado');
         const identidade = document.getElementById('admin-identidade');
-
         if (adminAutenticado) {
             document.getElementById('app-name').innerHTML = 'Painel Admin';
             document.getElementById('admin-email').value = user.email;
@@ -983,6 +1048,8 @@
           if (!appState.senhaFinanceiro) appState.senhaFinanceiro = '1234';
           if (!appState.propostaContador) appState.propostaContador = { ano: new Date().getFullYear(), ultimo: 0 };
           if (!Array.isArray(appState.extensoes)) appState.extensoes = JSON.parse(JSON.stringify(estadoPadrao.extensoes));
+          if (!Array.isArray(appState.cursos)) appState.cursos = [];
+          if (!Array.isArray(appState.servicos)) appState.servicos = JSON.parse(JSON.stringify(estadoPadrao.servicos));
           atualizarInterfaceEstado();
         } else if (adminAutenticado) {
           db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado)
@@ -997,6 +1064,125 @@
         const dadosSeguros = { ...appState }; delete dadosSeguros.senhaAdmin;
         await db.collection("appData").doc("estadoGlobal").set(dadosSeguros); return true;
       } catch (e) { alert("Não foi possível salvar. Confira conexão e regras do Firebase."); console.error(e); return false; }
+    }
+
+    function ehMembroClube() { return localStorage.getItem('clienteClube') === 'true'; }
+    function sairClube() {
+      if (!confirm('Deseja sair do Clube? Você perderá os preços exclusivos.')) return;
+      localStorage.removeItem('clienteClube');
+      localStorage.removeItem('codigoClube');
+      mostrarToast('Você saiu do Clube.');
+      atualizarStatusClube();
+      renderizarHome();
+    }
+    function atualizarStatusClube() {
+      const box = document.getElementById('clube-status-box');
+      if (box) box.style.display = ehMembroClube() ? 'block' : 'none';
+    }
+
+    function renderizarCursos() {
+      const container = document.getElementById('lista-cursos');
+      if (!container) return;
+      const cursos = appState.cursos || [];
+      if (cursos.length === 0) {
+        container.innerHTML = '<p style="text-align:center; font-size:14px; color:#777; grid-column:1/-1;">Nenhum curso disponível ainda.</p>';
+        return;
+      }
+      const membro = ehMembroClube();
+      container.innerHTML = cursos.map(c => {
+        const precoFinal = (membro && c.precoClube) ? c.precoClube : c.preco;
+        const temDesconto = membro && c.precoClube && c.precoClube !== c.preco;
+        return `<button class="product-card-nova" onclick="abrirCurso(${c.id})">
+          <div class="product-img-box-nova">${c.imagem ? `<img src="${esc(safeImgSrc(c.imagem))}">` : '🎓'}</div>
+          <h4>${esc(c.nome)}</h4>
+          ${temDesconto ? `<p style="font-size:11px; color:#999; text-decoration:line-through;">R$ ${esc(c.preco)}</p>` : ''}
+          <p class="price">R$ ${esc(precoFinal)} ${temDesconto ? '<small style="color:var(--cor-dourada);">Clube 🌸</small>' : ''}</p>
+        </button>`;
+      }).join('');
+    }
+
+    function abrirCurso(id) {
+      const curso = (appState.cursos || []).find(c => String(c.id) === String(id));
+      if (!curso) { mostrarToast('Curso não encontrado.'); return; }
+      window._cursoAtual = curso;
+      document.getElementById('curso-video-container').innerHTML = curso.video ? gerarHTMLVideo(curso.video) : '';
+      document.getElementById('curso-nome').textContent = curso.nome;
+      document.getElementById('curso-descricao').textContent = curso.descricao || '';
+      const membro = ehMembroClube();
+      const precoFinal = (membro && curso.precoClube) ? curso.precoClube : curso.preco;
+      const temDesconto = membro && curso.precoClube && curso.precoClube !== curso.preco;
+      document.getElementById('curso-precos').innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <span style="font-size:12px; color:#777;">${temDesconto ? 'Preço no Clube:' : 'Investimento:'}</span>
+            <div style="font-size:26px; font-weight:700; color:var(--cor-principal);">R$ ${esc(precoFinal)}</div>
+            ${temDesconto ? `<div style="font-size:12px; color:#999; text-decoration:line-through;">De R$ ${esc(curso.preco)}</div>` : ''}
+          </div>
+          ${!membro && curso.precoClube ? `<div style="background:var(--cor-dourada); color:#fff; padding:8px 12px; border-radius:999px; font-size:11px; font-weight:700;">Membros do Clube pagam R$ ${esc(curso.precoClube)}</div>` : ''}
+        </div>`;
+      const modulos = curso.modulos || [];
+      document.getElementById('curso-modulos').innerHTML = modulos.length > 0 ? `
+        <div class="section-title-nova" style="margin-top:0;">Conteúdo do Curso</div>
+        <ul style="list-style:none; padding:0;">
+          ${modulos.map(m => `<li style="padding:10px 12px; background:#fff; border-left:3px solid var(--cor-dourada); border-radius:6px; margin-bottom:6px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-play-circle" style="color:var(--cor-principal);"></i> ${esc(m)}</li>`).join('')}
+        </ul>` : '';
+      const comprado = (localStorage.getItem('cursoLiberado_' + curso.id) === 'true');
+      document.getElementById('btn-acessar-curso').style.display = comprado ? 'flex' : 'none';
+      document.getElementById('btn-codigo-curso').style.display = comprado ? 'none' : 'flex';
+      document.getElementById('btn-comprar-curso').onclick = () => {
+        const wa = appState.whatsapp || '5511997450293';
+        const msg = `Olá! Tenho interesse no curso ${curso.nome} (R$ ${precoFinal}).`;
+        window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+      };
+      document.getElementById('btn-codigo-curso').onclick = () => {
+        document.getElementById('input-codigo-curso').value = '';
+        document.getElementById('modal-codigo-curso').style.display = 'flex';
+      };
+      document.getElementById('btn-acessar-curso').onclick = () => {
+        if (curso.linkAcesso) window.open(safeHref(curso.linkAcesso), '_blank');
+        else mostrarToast('Link de acesso não configurado. Fale com a equipe.');
+      };
+      abrirTela('curso');
+    }
+
+    async function validarCodigoCurso() {
+      const codigo = document.getElementById('input-codigo-curso').value.trim().toUpperCase();
+      const curso = window._cursoAtual;
+      if (!codigo || !curso) return alert('Digite o código.');
+      try {
+        const doc = await db.collection('codigos_curso').doc(codigo).get();
+        if (doc.exists && String(doc.data().cursoId) === String(curso.id)) {
+          localStorage.setItem('cursoLiberado_' + curso.id, 'true');
+          document.getElementById('modal-codigo-curso').style.display = 'none';
+          mostrarToast('✅ Acesso liberado!');
+          abrirCurso(curso.id);
+        } else { alert('❌ Código inválido para este curso.'); }
+      } catch(e) { console.error(e); alert('Erro de conexão.'); }
+    }
+
+    function renderizarServicosClinica() {
+      const container = document.getElementById('lista-tratamentos-clinica');
+      if (!container) return;
+      const servicos = appState.servicos || [];
+      if (servicos.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#777; grid-column:1/-1;">Nenhum serviço cadastrado.</p>';
+        return;
+      }
+      const membro = ehMembroClube();
+      container.innerHTML = servicos.map(s => {
+        const precoFinal = (membro && s.precoClube) ? s.precoClube : s.preco;
+        const temDesconto = membro && s.precoClube && s.precoClube !== s.preco;
+        return `<div class="product-card-nova" style="cursor:default;">
+          <div class="product-img-box-nova">${s.imagem ? `<img src="${esc(safeImgSrc(s.imagem))}">` : '💆‍♀️'}</div>
+          <h4>${esc(s.nome)}</h4>
+          ${s.descricao ? `<p style="font-size:11px; color:#888; margin-bottom:6px;">${esc(s.descricao)}</p>` : ''}
+          ${temDesconto ? `<p style="font-size:11px; color:#999; text-decoration:line-through;">R$ ${esc(s.preco)}</p>` : ''}
+          <p class="price" style="color:${temDesconto ? 'var(--cor-dourada)' : 'var(--cor-principal)'};">
+            R$ ${esc(precoFinal)} ${temDesconto ? '<small style="color:var(--cor-principal);">no Clube 🌸</small>' : ''}
+          </p>
+          ${!membro && s.precoClube ? `<p style="font-size:10px; color:var(--cor-dourada); margin-top:4px; font-weight:700;">Clube: R$ ${esc(s.precoClube)}</p>` : ''}
+        </div>`;
+      }).join('');
     }
 
     function verificarClienteLogado() {
@@ -1035,9 +1221,14 @@
       try {
         const doc = await db.collection("codigos_clube").doc(codigo).get();
         if (doc.exists) {
+          localStorage.setItem('clienteClube', 'true');
+          localStorage.setItem('codigoClube', codigo);
           mostrarToast('✅ Código válido! Bem-vinda ao Clube.');
           document.getElementById('modal-codigo-clube').style.display = 'none';
           document.getElementById('input-codigo-clube').value = '';
+          atualizarStatusClube();
+          renderizarHome();
+          if (document.getElementById('tela-clube').classList.contains('ativa')) renderizarClubeEVitrine();
         } else { alert('❌ Código inválido ou expirado.'); }
       } catch (e) { console.error(e); alert('Erro de conexão.'); }
     }
@@ -1110,6 +1301,7 @@
          document.getElementById('admin-logado').style.display = 'none';
          if(container) container.style.display = 'none';
       }
+      atualizarStatusClube();
     }
 
     function abrirChat() {
@@ -1128,14 +1320,12 @@
         document.getElementById('tela-chat').style.display = 'none';
         historicoChatIA = [];
     }
-
     function adicionarMsgAoChat(remetente, texto) {
       const body = document.getElementById('chat-body');
       const classe = remetente === 'user' ? 'msg-user' : 'msg-bot';
       body.insertAdjacentHTML('beforeend', `<div class="msg ${classe}">${esc(texto)}</div>`);
       body.scrollTop = body.scrollHeight;
     }
-
     async function enviarMsgIA() {
       const inp = document.getElementById('chat-input');
       const txt = inp.value.trim();
@@ -1215,7 +1405,6 @@
 
     function mudarMes(dir) { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + dir, 1); gerarCalendarioReal(); }
 
-    // ✅ ATUALIZAÇÃO: mostra proposta e botão Fechar Serviço
     function selecionarDiaReal(dataStr, btn) {
       document.querySelectorAll('.dia-btn').forEach(b => b.classList.remove('selecionado'));
       if (btn) btn.classList.add('selecionado');
@@ -1305,7 +1494,6 @@
 
     function fecharModalAgendar() { document.getElementById('modal-agendar').style.display = 'none'; idAgendamentoRemarcando = null; dadosRemarcando = null; }
 
-    // ✅ ATUALIZAÇÃO: preserva avisoEnviado ao editar
     async function salvarAgendamento() {
       const nome = document.getElementById('agenda-nome').value.trim();
       const tel = document.getElementById('agenda-tel').value.trim();
@@ -1356,7 +1544,6 @@
         try { await db.collection('agendamentos').doc(id).delete(); mostrarToast('Cancelado.'); selecionarDiaReal(diaSelecionado, document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`)); carregarAgendamentosAdmin(); } catch (e) { alert('Erro ao cancelar.'); }
     }
 
-    // ✅ ATUALIZAÇÃO: mostra proposta + botão Fechar Serviço na lista admin
     function carregarAgendamentosAdmin() {
       const container = document.getElementById('lista-agendamentos-admin'); if (!container) return;
       const hojeStr = new Date().toLocaleDateString('en-CA');
@@ -1398,7 +1585,6 @@
        }, 100);
     }
 
-    // ✅ NOVO: gerarProposta + fecharServicoAgendamento
     async function gerarProposta() {
       const anoAtual = new Date().getFullYear();
       if (!appState.propostaContador || appState.propostaContador.ano !== anoAtual) {
@@ -1443,7 +1629,6 @@
       }
     }
 
-    // ✅ NOVO: buscarPorProposta
     async function buscarPorProposta(termo) {
       const container = document.getElementById('resultado-busca-proposta');
       if (!container) return;
@@ -1546,7 +1731,6 @@
         </a>`).join('')}</div>`;
     }
 
-    // ✅ ATUALIZAÇÃO: badge DROPSHIP nos produtos
     function renderizarHome() {
       document.documentElement.style.setProperty('--cor-principal', appState.colorPrimary || '#9D174D');
       document.documentElement.style.setProperty('--cor-dourada', appState.colorGold || '#D4AF37');
@@ -1651,6 +1835,18 @@
               <p class="espaco-desc">Tratamentos faciais e corporais com preços especiais no Clube.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span>
             </button>`;
         }
+        else if (secao === 'cursos') {
+          const cursos = appState.cursos || [];
+          if (cursos.length > 0) {
+            html = `<div class="section-title-nova">Cursos Online</div>
+              <button class="espaco-card" style="background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);" onclick="abrirTela('cursos')">
+                <div class="espaco-overlay"></div>
+                <div class="espaco-header"><div class="espaco-icon">🎓</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Bio Renovadora</span><h3 class="espaco-titulo">Cursos Online</h3><p class="espaco-sub">${cursos.length} curso(s) disponível(is)</p></div></div>
+                <p class="espaco-desc">Aprenda técnicas profissionais. Membros do Clube têm desconto exclusivo.</p>
+                <span class="espaco-cta">Ver cursos <i class="fa-solid fa-arrow-right"></i></span>
+              </button>`;
+          }
+        }
         else if (secao === 'pontos') {
           html = `<div class="section-title-nova">Fidelidade</div>
             <button class="espaco-card" style="background: linear-gradient(135deg, #D4AF37 0%, #9D174D 100%);" onclick="abrirTela('pontos')">
@@ -1679,21 +1875,8 @@
       });
     }
 
-    function renderizarTratamentosClinica() {
-      const container = document.getElementById('lista-tratamentos-clinica'); if (!container) return;
-      let tratamentosPermitidos = TRATAMENTOS_ALEXANDRA;
-      if (LIMITES_PLANO[getPlanoAtual()].tratamentos < 999) tratamentosPermitidos = TRATAMENTOS_ALEXANDRA.slice(0, LIMITES_PLANO[getPlanoAtual()].tratamentos);
-      container.innerHTML = tratamentosPermitidos.map(t => `
-        <div class="product-card-nova" style="cursor:default;">
-          <div class="product-img-box-nova" style="font-size:40px; color:var(--cor-principal);"><i class="fa-solid ${t.icone}"></i></div>
-          <h4 style="font-size:14px;">${t.nome}</h4>
-          <p style="font-size:11px; color:#999; text-decoration:line-through; margin:4px 0;">R$ ${t.preco}</p>
-          <p class="price" style="color:var(--cor-dourada); font-size:16px;">R$ ${t.precoClube} <small style="font-size:10px; color:var(--cor-principal);">no Clube 🌸</small></p>
-        </div>
-      `).join('');
-    }
+    function renderizarTratamentosClinica() { renderizarServicosClinica(); }
 
-    // ✅ ATUALIZAÇÃO: badge DROPSHIP na vitrine do clube
     function renderizarClubeEVitrine() {
       document.getElementById('titulo-clube-tela').textContent = appState.clubeName;
       document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle;
@@ -1814,7 +1997,171 @@
       document.getElementById('modal-plano-detalhes').style.display = 'none';
     }
 
-    // ✅ ATUALIZAÇÃO: novos casos 'extensoes' e 'busca-proposta', nome Gestão Financeira, Progov
+    function mascaraPreco(input) {
+      let v = input.value.replace(/\D/g, '');
+      if (v === '') { input.value = ''; return; }
+      v = (v / 100).toFixed(2) + '';
+      v = v.replace(".", ",");
+      v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+      input.value = v;
+    }
+
+    function mostrarToast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:999px;font-size:14px;z-index:99999;box-shadow:0 4px 14px rgba(0,0,0,.3);max-width:90%;text-align:center;';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    function lerArquivoComprimido(inputId, cb) {
+      const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null);
+      const file = i.files[0];
+      const limiteImagem = 10 * 1024 * 1024;
+      if (file.size > limiteImagem) { alert('⚠️ Arquivo muito pesado! Escolha um menor que 10MB.'); i.value = ''; return cb(null); }
+      if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas'); let width = img.width, height = img.height;
+          const MAX_WIDTH = 600; if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+          cb(canvas.toDataURL('image/jpeg', 0.5));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function abrirEditorCurso(index) {
+      indexCursoEditando = index; configAtualAberta = 'curso-edit';
+      if (!Array.isArray(appState.cursos)) appState.cursos = [];
+      const c = index === -1 ? { nome: '', descricao: '', video: '', imagem: null, preco: '', precoClube: '', modulos: [], linkAcesso: '' } : appState.cursos[index];
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Curso' : 'Editar Curso';
+      document.getElementById('editor-content').innerHTML = `
+        <label style="font-size:13px;font-weight:700;">Nome do Curso</label>
+        <input type="text" id="curso-nome-input" value="${esc(c.nome||'')}">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Descrição</label>
+        <textarea id="curso-desc-input" rows="3">${esc(c.descricao||'')}</textarea>
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Vídeo Institucional (YouTube/TikTok/MP4)</label>
+        <input type="url" id="curso-video-input" value="${esc(c.video||'')}" placeholder="https://youtube.com/...">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Foto de Capa</label>
+        <input type="file" id="curso-img-input" accept="image/*" style="padding:12px;">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Público (R$)</label>
+        <input type="text" id="curso-preco-input" value="${esc(c.preco||'')}" oninput="mascaraPreco(this)">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Clube (R$)</label>
+        <input type="text" id="curso-preco-clube-input" value="${esc(c.precoClube||'')}" oninput="mascaraPreco(this)">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Módulos (uma linha por módulo)</label>
+        <textarea id="curso-modulos-input" rows="4" placeholder="Módulo 1: Introdução&#10;Módulo 2: ...">${(c.modulos||[]).join('\n')}</textarea>
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Link de Acesso (Hotmart, Drive, etc)</label>
+        <input type="url" id="curso-link-input" value="${esc(c.linkAcesso||'')}" placeholder="https://...">
+      `;
+      document.getElementById('modal-editor').style.display = 'flex';
+      document.getElementById('btn-salvar-editor').style.display = 'block';
+      document.getElementById('btn-salvar-editor').textContent = 'Salvar Curso';
+      document.getElementById('btn-salvar-editor').onclick = salvarCurso;
+      document.getElementById('btn-voltar-editor').onclick = () => { abrirConfiguracao('cursos-admin'); };
+    }
+
+    function salvarCurso() {
+      const nome = document.getElementById('curso-nome-input').value.trim();
+      const preco = document.getElementById('curso-preco-input').value.trim();
+      if (!nome || !preco) return alert('Preencha nome e preço.');
+      if (!Array.isArray(appState.cursos)) appState.cursos = [];
+      const novo = indexCursoEditando === -1 ? { id: Date.now() } : appState.cursos[indexCursoEditando];
+      novo.nome = nome;
+      novo.descricao = document.getElementById('curso-desc-input').value.trim();
+      novo.video = document.getElementById('curso-video-input').value.trim();
+      novo.preco = preco;
+      novo.precoClube = document.getElementById('curso-preco-clube-input').value.trim();
+      novo.modulos = document.getElementById('curso-modulos-input').value.split('\n').map(s => s.trim()).filter(Boolean);
+      novo.linkAcesso = document.getElementById('curso-link-input').value.trim();
+      const imgInput = document.getElementById('curso-img-input');
+      const finalizar = () => {
+        if (indexCursoEditando === -1) appState.cursos.push(novo);
+        salvarEstado(); renderizarHome(); abrirConfiguracao('cursos-admin');
+      };
+      if (imgInput.files.length) lerArquivoComprimido('curso-img-input', v => { novo.imagem = v; finalizar(); });
+      else finalizar();
+    }
+
+    function removerCurso(i) {
+      if (!confirm('Excluir curso?')) return;
+      appState.cursos.splice(i, 1);
+      salvarEstado(); renderizarHome(); abrirConfiguracao('cursos-admin');
+    }
+
+    function abrirEditorServico(index) {
+      indexServicoEditando = index; configAtualAberta = 'servico-edit';
+      if (!Array.isArray(appState.servicos)) appState.servicos = [];
+      const s = index === -1 ? { nome: '', descricao: '', imagem: null, preco: '', precoClube: '' } : appState.servicos[index];
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Serviço' : 'Editar Serviço';
+      document.getElementById('editor-content').innerHTML = `
+        <label style="font-size:13px;font-weight:700;">Nome do Serviço</label>
+        <input type="text" id="servico-nome-input" value="${esc(s.nome||'')}">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Descrição Curta</label>
+        <input type="text" id="servico-desc-input" value="${esc(s.descricao||'')}">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Foto</label>
+        <input type="file" id="servico-img-input" accept="image/*" style="padding:12px;">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Clínica (R$)</label>
+        <input type="text" id="servico-preco-input" value="${esc(s.preco||'')}" oninput="mascaraPreco(this)">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Clube (R$)</label>
+        <input type="text" id="servico-preco-clube-input" value="${esc(s.precoClube||'')}" oninput="mascaraPreco(this)">
+      `;
+      document.getElementById('modal-editor').style.display = 'flex';
+      document.getElementById('btn-salvar-editor').style.display = 'block';
+      document.getElementById('btn-salvar-editor').textContent = 'Salvar Serviço';
+      document.getElementById('btn-salvar-editor').onclick = salvarServico;
+      document.getElementById('btn-voltar-editor').onclick = () => { abrirConfiguracao('servicos-admin'); };
+    }
+
+    function salvarServico() {
+      const nome = document.getElementById('servico-nome-input').value.trim();
+      const preco = document.getElementById('servico-preco-input').value.trim();
+      if (!nome || !preco) return alert('Preencha nome e preço.');
+      if (!Array.isArray(appState.servicos)) appState.servicos = [];
+      const novo = indexServicoEditando === -1 ? { id: Date.now() } : appState.servicos[indexServicoEditando];
+      novo.nome = nome;
+      novo.descricao = document.getElementById('servico-desc-input').value.trim();
+      novo.preco = preco;
+      novo.precoClube = document.getElementById('servico-preco-clube-input').value.trim();
+      const imgInput = document.getElementById('servico-img-input');
+      const finalizar = () => {
+        if (indexServicoEditando === -1) appState.servicos.push(novo);
+        salvarEstado(); renderizarHome(); abrirConfiguracao('servicos-admin');
+      };
+      if (imgInput.files.length) lerArquivoComprimido('servico-img-input', v => { novo.imagem = v; finalizar(); });
+      else finalizar();
+    }
+
+    function removerServico(i) {
+      if (!confirm('Excluir serviço?')) return;
+      appState.servicos.splice(i, 1);
+      salvarEstado(); renderizarHome(); abrirConfiguracao('servicos-admin');
+    }
+
+    async function gerarCodigoCurso() {
+      const cursoId = document.getElementById('lib-curso-id').value;
+      const nome = document.getElementById('lib-nome').value.trim();
+      const tel = document.getElementById('lib-tel').value.trim();
+      if (!cursoId || !nome || !tel) return alert('Preencha todos os campos.');
+      const codigo = 'CURSO-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      try {
+        await db.collection('codigos_curso').doc(codigo).set({ cursoId, liberadoPara: nome, telefone: tel, dataCriacao: new Date().toISOString() });
+        const curso = (appState.cursos || []).find(c => String(c.id) === String(cursoId));
+        const msg = `Olá, ${nome}! Seu acesso ao curso ${curso?.nome || ''} está liberado. Use o código: ${codigo}`;
+        const telLimpo = tel.replace(/\D/g, '');
+        document.getElementById('codigo-gerado-resultado').innerHTML = `
+          <div style="background:#e8f5e9;border:2px solid #10A37F;border-radius:12px;padding:20px;text-align:center;">
+            <p style="font-size:13px;color:#2e7d32;font-weight:700;">✅ Código gerado!</p>
+            <p style="font-size:22px;font-weight:800;color:#2e7d32;letter-spacing:2px;margin:10px 0;">${codigo}</p>
+            <a href="https://wa.me/${telLimpo}?text=${encodeURIComponent(msg)}" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:10px;"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</a>
+          </div>`;
+      } catch(e) { console.error(e); alert('Erro ao gerar código.'); }
+    }
+
     function abrirConfiguracao(id) {
       configAtualAberta = id;
       backupState = JSON.parse(JSON.stringify(appState));
@@ -1846,7 +2193,6 @@
         html = `<label style="font-size:13px; font-weight:700;">Benefícios VIP (Aparece no topo do Clube):</label>
         <textarea id="edit-clube-beneficios" rows="6" style="width:100%; padding:15px; border:1px solid #ccc; border-radius:8px; font-family:inherit; font-size:14px;">${esc(appState.clubeBeneficios || '')}</textarea>`;
       }
-      // ✅ NOVO: extensões & nuvem
       else if (id === 'extensoes') {
         titulo.textContent = '☁️ Extensões & Nuvem';
         if (!Array.isArray(appState.extensoes) || appState.extensoes.length === 0) {
@@ -1881,7 +2227,6 @@
           </div>
         `;
       }
-      // ✅ NOVO: busca por proposta
       else if (id === 'busca-proposta') {
         titulo.textContent = '🔎 Buscar por Proposta';
         html = `
@@ -1924,7 +2269,6 @@
           <p id="migracao-status" style="font-size:14px; text-align:center; margin-top:20px; font-weight:bold; color:#333;"></p>
         `;
       }
-      // ✅ ATUALIZAÇÃO: Gestão Financeira premium + Progov
       else if (id === 'financeiro') {
         titulo.textContent = 'Gestão Financeira';
         if (!window._acessoFinanceiroLiberado) {
@@ -2081,7 +2425,7 @@
       else if (id === 'layout') {
         titulo.textContent = 'Organizar Tela';
         let listaHTML = appState.layoutOrder.map((secao, index) => {
-          const nomes = { banner: 'Banner Topo', 'quick-apps': 'Atalhos (WhatsApp, Insta...)', publicidade: 'Parceiros', cta: 'Faixa Cadastro', indique: 'Banner Clube', videos: 'Vídeo', planos: 'Planos', espacos: 'Clube / Renova-se', clinica: 'Clínica Estética', pontos: 'Pontos XP', contato: 'Contato', boutique: 'Destaques' };
+          const nomes = { banner: 'Banner Topo', 'quick-apps': 'Atalhos (WhatsApp, Insta...)', publicidade: 'Parceiros', cta: 'Faixa Cadastro', indique: 'Banner Clube', videos: 'Vídeo', planos: 'Planos', espacos: 'Clube / Renova-se', clinica: 'Clínica Estética', cursos: 'Cursos Online', pontos: 'Pontos XP', contato: 'Contato', boutique: 'Destaques' };
           const isHidden = appState.layoutHidden && appState.layoutHidden.includes(secao);
           const olhoIcon = isHidden ? 'fa-eye-slash' : 'fa-eye';
           return `<div style="display:flex; justify-content:space-between; align-items:center; background:${isHidden ? '#f9f9f9' : '#fff'}; padding:12px; border-radius:8px; margin-bottom:8px; border:1px solid #ddd;">
@@ -2170,11 +2514,53 @@
           document.getElementById('lista-clientes-vip').innerHTML = htmlClientes;
         }).catch((error) => { console.error("Erro ao buscar clientes: ", error); document.getElementById('lista-clientes-vip').innerHTML = '<p style="color:red; font-size:14px; text-align:center;">Erro ao carregar clientes.</p>'; });
       }
+      else if (id === 'cursos-admin') {
+        titulo.textContent = 'Gerenciar Cursos';
+        const cursos = appState.cursos || [];
+        let listaHTML = cursos.length === 0
+          ? '<p style="text-align:center;color:#777;padding:20px;">Nenhum curso cadastrado.</p>'
+          : cursos.map((c, i) => `<div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div style="flex:1; min-width:180px;"><div style="font-size:14px; font-weight:700;">${esc(c.nome)}</div><div style="font-size:11px; color:#666;">R$ ${esc(c.preco)}${c.precoClube ? ' | Clube: R$ ' + esc(c.precoClube) : ''}</div></div>
+              <div style="display:flex; gap:8px;">
+                <button onclick="abrirEditorCurso(${i})" style="background:#7C3AED;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">Editar</button>
+                <button onclick="removerCurso(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button>
+              </div>
+            </div>`).join('');
+        html = `<div style="background:#F3E5F5;border:1px solid #CE93D8;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#6A1B9A;line-height:1.5;"><b>🎓 Cursos Online:</b> Cadastre cursos, vídeo institucional, preços público e Clube, módulos e link de acesso. Alunos só entram após liberar o código de compra.</p></div>${listaHTML}<button onclick="abrirEditorCurso(-1)" style="width:100%;padding:15px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;margin-top:15px;">+ Adicionar Curso</button>`;
+      }
+      else if (id === 'servicos-admin') {
+        titulo.textContent = 'Gerenciar Serviços';
+        const servicos = appState.servicos || [];
+        let listaHTML = servicos.length === 0
+          ? '<p style="text-align:center;color:#777;padding:20px;">Nenhum serviço cadastrado.</p>'
+          : servicos.map((s, i) => `<div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div style="flex:1; min-width:180px;"><div style="font-size:14px; font-weight:700;">${esc(s.nome)}</div><div style="font-size:11px; color:#666;">Clínica: R$ ${esc(s.preco)} | Clube: R$ ${esc(s.precoClube || '—')}</div></div>
+              <div style="display:flex; gap:8px;">
+                <button onclick="abrirEditorServico(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">Editar</button>
+                <button onclick="removerServico(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button>
+              </div>
+            </div>`).join('');
+        html = `<div style="background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#E65100;line-height:1.5;"><b>💆 Serviços:</b> Cadastre cada serviço com foto e dois preços (clínica e Clube). Membros do Clube veem o valor menor automaticamente.</p></div>${listaHTML}<button onclick="abrirEditorServico(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;margin-top:15px;">+ Adicionar Serviço</button>`;
+      }
+      else if (id === 'liberar-acesso') {
+        titulo.textContent = 'Liberar Acesso a Cursos';
+        html = `<div style="background:#E0F7FA;border:1px solid #00BCD4;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#006064;line-height:1.5;"><b>🔑 Como liberar:</b> Escolha o curso e o comprador abaixo. Um código único será gerado — envie para o aluno por WhatsApp. Ele insere no app e libera o acesso.</p></div>
+        <label style="font-size:13px;font-weight:700;display:block;margin-bottom:6px;">Curso:</label>
+        <select id="lib-curso-id" style="width:100%;padding:14px;border:1px solid #ccc;border-radius:8px;font-size:15px;margin-bottom:15px;">
+          ${(appState.cursos||[]).map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('') || '<option value="">Nenhum curso cadastrado</option>'}
+        </select>
+        <label style="font-size:13px;font-weight:700;display:block;margin-bottom:6px;">Nome do Comprador:</label>
+        <input type="text" id="lib-nome" placeholder="Nome do aluno" style="width:100%;padding:14px;border:1px solid #ccc;border-radius:8px;font-size:15px;margin-bottom:15px;">
+        <label style="font-size:13px;font-weight:700;display:block;margin-bottom:6px;">WhatsApp (com DDD):</label>
+        <input type="tel" id="lib-tel" placeholder="11999999999" style="width:100%;padding:14px;border:1px solid #ccc;border-radius:8px;font-size:15px;margin-bottom:15px;">
+        <button onclick="gerarCodigoCurso()" style="width:100%;padding:16px;background:#10A37F;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:20px;">🔑 Gerar Código de Acesso</button>
+        <div id="codigo-gerado-resultado"></div>`;
+      }
 
       if(id !== 'vip') { content.innerHTML = html; }
       document.getElementById('modal-editor').style.display = 'flex';
 
-      if (id === 'integracoes' || id === 'vip' || id === 'migracao' || id === 'lista-clientes' || id === 'financeiro' || id === 'extensoes' || id === 'busca-proposta') {
+      if (id === 'integracoes' || id === 'vip' || id === 'migracao' || id === 'lista-clientes' || id === 'financeiro' || id === 'extensoes' || id === 'busca-proposta' || id === 'cursos-admin' || id === 'servicos-admin' || id === 'liberar-acesso') {
          document.getElementById('btn-salvar-editor').style.display = 'none';
          document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
          document.getElementById('btn-voltar-editor').onclick = fecharEditor;
@@ -2207,7 +2593,6 @@
       }
     }
 
-    // ✅ NOVO: toggleExtensao
     function toggleExtensao(id) {
       if (!Array.isArray(appState.extensoes)) appState.extensoes = JSON.parse(JSON.stringify(estadoPadrao.extensoes));
       document.querySelectorAll('.ext-link').forEach(inp => {
@@ -2381,7 +2766,6 @@
 
     function removerPublicidade(index) { if (confirm('Excluir?')) { appState.publicidades.splice(index, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); } }
 
-    // ✅ ATUALIZAÇÃO: dropship no editor de produto
     function abrirEditorProduto(index) {
       indexProdEditando = index; configAtualAberta = 'boutique-edit';
       const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index];
@@ -2406,7 +2790,6 @@
 
     function removerProdutoBoutique(i) { if(confirm('Excluir produto?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
 
-    // ✅ ATUALIZAÇÃO: dropship no editor de produto do clube
     function abrirEditorProdutoClube(index) {
       indexProdClubeEditando = index; configAtualAberta = 'loja-clube-edit';
       if (!Array.isArray(appState.produtosClube)) appState.produtosClube = [];
@@ -2434,8 +2817,6 @@
     }
 
     function removerProdutoClube(i) { if(confirm('Excluir produto do Clube?')) { appState.produtosClube.splice(i, 1); salvarEstado(); renderizarHome(); renderizarClubeEVitrine(); abrirConfiguracao('loja-clube'); } }
-
-    function mascaraPreco(input) { let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; } v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v; }
 
     function salvarConfigAtual() {
       const id = configAtualAberta;
@@ -2542,29 +2923,6 @@
     function restaurarCoresExtras() { document.getElementById('edit-c-nav').value = '#9D174D'; document.getElementById('edit-c-chat').value = '#9D174D'; document.getElementById('edit-c-whats').value = '#25D366'; document.getElementById('edit-c-instagram').value = '#E4405F'; document.getElementById('edit-c-canal').value = '#128C7E'; document.getElementById('edit-c-email').value = '#333333'; }
     function restaurarGradientes() { document.getElementById('grad-vitrine-start').value = '#B91C1C'; document.getElementById('grad-vitrine-end').value = '#4C0519'; document.getElementById('grad-planos-start').value = '#FFFCF2'; document.getElementById('grad-planos-end').value = '#FFF2F6'; document.getElementById('grad-cta-start').value = '#9D174D'; document.getElementById('grad-cta-end').value = '#560021'; document.getElementById('grad-indique-start').value = '#FFD700'; document.getElementById('grad-indique-end').value = '#FFA500'; }
 
-    function mostrarToast(msg) { const t = document.createElement('div'); t.textContent = msg; t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:999px;font-size:14px;z-index:99999;box-shadow:0 4px 14px rgba(0,0,0,.3);max-width:90%;text-align:center;'; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
-
-    function lerArquivoComprimido(inputId, cb) {
-      const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null);
-      const file = i.files[0];
-      const limiteImagem = 10 * 1024 * 1024;
-      if (file.size > limiteImagem) { alert('⚠️ Arquivo muito pesado! Escolha um menor que 10MB.'); i.value = ''; return cb(null); }
-      if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas'); let width = img.width, height = img.height;
-          const MAX_WIDTH = 600; if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-          cb(canvas.toDataURL('image/jpeg', 0.5));
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
     async function abrirProntuario(idCliente, nomeCliente) {
       window._prontuarioClienteAtual = idCliente;
       document.getElementById('prontuario-titulo').innerHTML = `Prontuário: <span style="color:var(--cor-dourada);">${esc(nomeCliente)}</span>`;
@@ -2657,7 +3015,6 @@
 
     function filtrarClientes(valor) { renderizarListaClientes(valor); }
 
-    // ✅ ATUALIZAÇÃO: anti-duplicação
     async function verificarConfirmacoesAmanha() {
       if (!window._agsJaEnviados) window._agsJaEnviados = new Set();
       if (window._verifConfirmando) return;
@@ -2683,7 +3040,6 @@
       } catch (e) { console.error("Erro ao verificar confirmações:", e); }
     }
 
-    // ✅ ATUALIZAÇÃO: marca em lote ANTES de abrir WhatsApp
     async function dispararConfirmacoes(pendentes) {
       if (!window._agsJaEnviados) window._agsJaEnviados = new Set();
       const ids = pendentes.map(p => p.id);
@@ -2749,7 +3105,6 @@
       } catch (e) { console.error("Erro:", e); dash.innerHTML = '<p style="text-align:center; color:red; font-size:14px;">Erro ao carregar dados.</p>'; }
     }
 
-    // ✅ ATUALIZAÇÃO: incluir Progov nos nomes de setores
     function filtrarFinanceiro(caixa, isInitial = false) {
       if(!isInitial) filtroFinanceiroAtual = caixa;
       const transacoes = window._listaFinanceiroCache || [];
@@ -2865,7 +3220,9 @@
       aplicarRestricoes();
       gerarCalendarioReal();
       carregarEstado();
-      renderizarTratamentosClinica();
+      renderizarServicosClinica();
+      renderizarCursos();
+      atualizarStatusClube();
       renderizarClubeEVitrine();
       if (appState.iaWelcome) {
         const body = document.getElementById('chat-body');
