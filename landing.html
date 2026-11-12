@@ -4,64 +4,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#9D174D">
-  <title>Progov - App Próprio para Clínicas e Lojas</title>
+  <title>Progov - O App da Sua Clínica</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    :root { --primary: #9D174D; --gold: #D4AF37; --text: #1a1a2e; --bg: #FFFBF8; }
+    :root { --primary: #9D174D; --gold: #D4AF37; --text: #1a1a2e; --bg: #FFFBF8; --green: #25D366; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden;}
     .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
     
     /* Header */
-    header { padding: 20px 0; text-align: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    header { padding: 20px 0; text-align: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; z-index: 10;}
     header h1 { font-family: 'Playfair Display', serif; color: var(--primary); font-size: 28px; }
     header h1 span { color: var(--gold); }
-    header a { color: #666; text-decoration: none; font-size: 14px; display: inline-block; margin-top: 10px; transition: color 0.2s; }
+    header a { color: #666; text-decoration: none; font-size: 14px; display: inline-block; margin-top: 10px; transition: color 0.2s; font-weight: 600;}
     header a:hover { color: var(--primary); }
     
     /* Hero */
     .hero { padding: 80px 0; text-align: center; background: radial-gradient(circle at top, #2a0a1f 0%, #0f0518 100%); color: #fff; }
-    .hero h2 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: #fff; }
+    .hero h2 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: #fff; line-height: 1.2;}
     .hero h2 span { color: var(--gold); }
     .hero p { font-size: clamp(16px, 2vw, 18px); color: rgba(255,255,255,0.85); max-width: 800px; margin: 0 auto 40px; line-height: 1.8; }
     
     /* Botões */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 18px 36px; border-radius: 12px; font-weight: 800; font-size: 16px; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px;}
-    .btn-primary { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; box-shadow: 0 10px 25px rgba(37,211,102,0.3); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 18px 36px; border-radius: 12px; font-weight: 800; font-size: 16px; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; max-width: 400px; }
+    .btn-primary { background: linear-gradient(135deg, var(--green), #128C7E); color: #fff; box-shadow: 0 10px 25px rgba(37,211,102,0.3); }
     .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37,211,102,0.4); }
     .btn-secondary { background: #fff; color: var(--primary); border: 2px solid var(--primary); margin-top: 15px; }
     .btn-secondary:hover { background: var(--primary); color: #fff; }
     
+    /* Problema x Solução */
+    .problem-section { padding: 80px 0; background: #fff; }
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    .problem-box { padding: 30px; border-radius: 20px; }
+    .problem-box.bad { background: #fef2f2; border: 1px solid #fecaca; }
+    .problem-box.good { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .problem-box h3 { font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .problem-box.bad h3 { color: #dc2626; }
+    .problem-box.good h3 { color: #16a34a; }
+    .problem-box ul { list-style: none; }
+    .problem-box ul li { margin-bottom: 12px; display: flex; gap: 10px; align-items: flex-start; color: #444; font-size: 15px;}
+    .problem-box.bad i { color: #dc2626; margin-top: 5px;}
+    .problem-box.good i { color: #16a34a; margin-top: 5px;}
+
     /* Features */
-    .features { padding: 80px 0; background: #fff; }
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
-    .feature-card { padding: 30px; border-radius: 20px; background: var(--bg); border: 1px solid #eee; text-align: center; transition: transform 0.3s; }
+    .features { padding: 80px 0; background: var(--bg); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+    .feature-card { padding: 30px; border-radius: 20px; background: #fff; border: 1px solid #eee; text-align: left; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
     .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-    .feature-icon { width: 60px; height: 60px; background: var(--primary); color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px; }
-    .feature-card h3 { font-size: 20px; margin-bottom: 10px; color: var(--primary); }
-    .feature-card p { font-size: 14px; color: #666; }
+    .feature-icon { width: 60px; height: 60px; background: var(--primary); color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+    .feature-card h3 { font-size: 20px; margin-bottom: 10px; color: var(--text); }
+    .feature-card p { font-size: 15px; color: #666; }
     
     /* Pricing */
     .pricing { padding: 80px 0; background: #fff; text-align: center; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
-    .price-card { padding: 40px 30px; border-radius: 24px; border: 2px solid #eee; background: #fff; position: relative; transition: transform 0.3s; display: flex; flex-direction: column; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; align-items: center;}
+    .price-card { padding: 40px 30px; border-radius: 24px; border: 2px solid #eee; background: #fff; position: relative; transition: transform 0.3s; display: flex; flex-direction: column; text-align: left; height: 100%;}
     .price-card:hover { transform: translateY(-5px); }
-    .price-card.featured { border-color: var(--primary); box-shadow: 0 20px 40px rgba(157,23,77,0.1); transform: scale(1.05); }
+    .price-card.featured { border-color: var(--primary); box-shadow: 0 20px 40px rgba(157,23,77,0.1); transform: scale(1.05); z-index: 2; background: linear-gradient(180deg, #fff 0%, #FFF8FA 100%);}
     .price-card.featured:hover { transform: scale(1.05) translateY(-5px); }
-    .price-card h4 { font-size: 22px; text-transform: uppercase; color: var(--text); margin-bottom: 10px; font-weight: 800;}
+    .price-card h4 { font-size: 22px; text-transform: uppercase; color: var(--text); margin-bottom: 5px; font-weight: 800;}
+    .price-card .price-desc { font-size: 14px; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;}
+    .price-card.featured .price-desc { color: var(--primary); font-weight: 600;}
     .price-card .price { font-size: 48px; font-weight: 800; color: var(--primary); margin-bottom: 30px; }
     .price-card .price span { font-size: 16px; font-weight: 600; color: #666; }
-    .price-card ul { list-style: none; text-align: left; margin-bottom: 40px; font-size: 15px; color: #444; flex: 1; }
+    .price-card ul { list-style: none; margin-bottom: 40px; font-size: 15px; color: #444; flex: 1; }
     .price-card ul li { margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;}
-    .price-card ul li i { color: #10b981; margin-top: 3px; }
-    
+    .price-card ul li i { color: var(--green); margin-top: 3px; }
+    .btn-price { width: 100%; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; text-align: center; text-decoration: none; display: block; transition: 0.2s;}
+    .btn-price.outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
+    .btn-price.outline:hover { background: var(--primary); color: #fff; }
+    .btn-price.solid { background: var(--primary); color: #fff; border: 2px solid var(--primary); box-shadow: 0 8px 20px rgba(157,23,77,0.3);}
+    .btn-price.solid:hover { background: #7a123b; }
+
     /* Footer */
-    footer { padding: 40px 0; text-align: center; border-top: 1px solid #eee; color: #777; font-size: 14px; }
+    footer { padding: 40px 0; text-align: center; border-top: 1px solid #eee; color: #777; font-size: 14px; background: #fff;}
     
     @media (max-width: 768px) {
+      .problem-grid { grid-template-columns: 1fr; gap: 20px;}
       .price-card.featured { transform: scale(1); }
       .price-card.featured:hover { transform: translateY(-5px); }
     }
@@ -76,42 +98,92 @@
     </div>
   </header>
 
+  <!-- HERO SECTION -->
   <section class="hero">
     <div class="container">
       <h2>Transforme seguidores em <span>clientes fiéis</span></h2>
-      <p>💼 Você tem uma clínica, salão ou loja e quer transformar seguidores em clientes fiéis?<br><br>
+      <p>💼 Você tem uma clínica, salão ou loja e quer parar de perder tempo respondendo mensagens no WhatsApp?<br><br>
       Chegou a hora de ter o seu próprio aplicativo profissional, automatizar sua agenda e vender seus produtos 24 horas por dia, sem complicações técnicas.<br><br>
       <strong>Escolha o plano ideal para o tamanho do seu negócio e comece a escalar suas vendas hoje mesmo!</strong></p>
       
       <a href="https://wa.me/5511997450293?text=Olá!%20Quero%20contratar%20a%20Progov" target="_blank" class="btn btn-primary">
-        👉 QUERO CONTRATAR A PROGOV
+        <i class="fa-brands fa-whatsapp" style="font-size: 22px;"></i> Quero contratar a Progov
       </a>
     </div>
   </section>
 
+  <!-- ANTES E DEPOIS (DOR X SOLUÇÃO) -->
+  <section class="problem-section">
+    <div class="container">
+      <h2 style="text-align: center; font-family: 'Playfair Display', serif; font-size: 36px; color: var(--text);">Por que você precisa da Progov?</h2>
+      <div class="problem-grid">
+        
+        <div class="problem-box bad">
+          <h3><i class="fa-solid fa-circle-xmark"></i> A sua rotina hoje:</h3>
+          <ul>
+            <li><i class="fa-solid fa-xmark"></i> Celular lotado de mensagens de "quanto custa?" e "tem horário?".</li>
+            <li><i class="fa-solid fa-xmark"></i> Agenda no papel ou na cabeça, causando confusão e esquecimentos.</li>
+            <li><i class="fa-solid fa-xmark"></i> Perder clientes porque você não conseguiu responder a tempo.</li>
+            <li><i class="fa-solid fa-xmark"></i> Depender do algoritmo do Instagram para vender.</li>
+          </ul>
+        </div>
+
+        <div class="problem-box good">
+          <h3><i class="fa-solid fa-circle-check"></i> Com a Progov:</h3>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> O App atende, tira dúvidas e agende automaticamente (até de madrugada).</li>
+            <li><i class="fa-solid fa-check"></i> Suas clientes marcam sozinhas, e o sistema avisa 1 dia antes.</li>
+            <li><i class="fa-solid fa-check"></i> Você vende produtos na vitrine 24h sem precisar ficar de plantão.</li>
+            <li><i class="fa-solid fa-check"></i> O aplicativo com a sua marca fica salvo no celular da cliente.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES / RECURSOS -->
   <section class="features">
     <div class="container">
       <h2 style="text-align: center; font-family: 'Playfair Display', serif; font-size: 36px;">Tudo o que o seu negócio precisa</h2>
+      <p style="text-align: center; color: #666; margin-top: 10px; font-size: 16px;">Uma verdadeira máquina de vendas no bolso das suas clientes.</p>
+      
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-store"></i></div>
-          <h3>Vitrine Digital 24h</h3>
-          <p>Exiba seus produtos e serviços com visual de aplicativo nativo. Suas clientes compram direto pelo WhatsApp.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-calendar-check"></i></div>
-          <h3>Agenda Automatizada</h3>
-          <p>Suas clientes marcam sozinhas pelo app. Você recebe confirmação, evita faltas e organiza sua equipe.</p>
-        </div>
         <div class="feature-card">
           <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
           <h3>Inteligência Artificial</h3>
-          <p>Uma IA treinada com o seu negócio responde dúvidas, envia preços e atende no WhatsApp 24h por dia.</p>
+          <p>Uma IA treinada com os seus preços e serviços. Ela responde às dúvidas no WhatsApp 24h por dia, como se fosse você.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          <h3>Agenda Automática</h3>
+          <p>Chega de vai e vem. A cliente escolhe o horário no app. O sistema organiza sua equipe e envia lembretes para evitar faltas.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-store"></i></div>
+          <h3>Vitrine 24 Horas</h3>
+          <p>Exiba produtos e serviços com fotos lindas. Quando a cliente clica em comprar, o pedido cai direto no seu WhatsApp.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-gem"></i></div>
+          <h3>Clube VIP</h3>
+          <p>Crie planos de assinatura. Tenha uma renda mensal garantida e faça a cliente voltar sempre para usar os benefícios.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-star"></i></div>
+          <h3>Pontos de Fidelidade</h3>
+          <p>Cada compra gera pontos. A cliente troca por brindes. É o velho cartãozinho de fidelidade, mas de forma digital e chique.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h3>Gestão Financeira</h3>
+          <p>Controle o caixa, lançe despesas e veja os relatórios do seu negócio em um painel exclusivo e seguro.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- PLANOS -->
   <section class="pricing">
     <div class="container">
       <h2 style="font-family: 'Playfair Display', serif; font-size: 36px;">Escolha o seu plano</h2>
@@ -122,49 +194,50 @@
         <!-- Plano Essencial -->
         <div class="price-card">
           <h4>Essencial</h4>
-          <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Ideal para iniciar a digitalização</p>
+          <p class="price-desc">Ideal para iniciar a digitalização</p>
           <div class="price">R$ 67<span>/mês</span></div>
           <ul>
             <li><i class="fa-solid fa-check"></i> Vitrine digital básica de produtos e serviços</li>
             <li><i class="fa-solid fa-check"></i> Cadastro de itens e link exclusivo de acesso</li>
             <li><i class="fa-solid fa-check"></i> Suporte padrão por e-mail</li>
           </ul>
-          <a href="https://wa.me/5511997450293?text=Quero%20o%20plano%20Essencial%20da%20Progov" target="_blank" class="btn btn-secondary" style="width: 100%;">Contratar</a>
+          <a href="https://wa.me/5511997450293?text=Quero%20o%20plano%20Essencial%20da%20Progov" target="_blank" class="btn-price outline">Começar</a>
         </div>
         
         <!-- Plano Inteligente -->
         <div class="price-card featured">
-          <span style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 800; letter-spacing: 1px;">MAIS VENDIDO</span>
+          <span style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 800; letter-spacing: 1px; white-space: nowrap;">MAIS VENDIDO</span>
           <h4>Inteligente</h4>
-          <p style="font-size: 14px; color: var(--primary); font-weight: 600; margin-bottom: 20px;">Foco em Automação</p>
+          <p class="price-desc">Foco em Automação</p>
           <div class="price">R$ 147<span>/mês</span></div>
           <ul>
-            <li><i class="fa-solid fa-check"></i> Vitrine completa</li>
-            <li><i class="fa-solid fa-check"></i> Integração com canais de vendas (Shopee / Mercado Livre)</li>
-            <li><i class="fa-solid fa-check"></i> Agenda inteligente automatizada com lembretes</li>
-            <li><i class="fa-solid fa-check"></i> Relatórios financeiros e métricas de desempenho do negócio</li>
+            <li><i class="fa-solid fa-check"></i> <strong>Vitrine completa</strong></li>
+            <li><i class="fa-solid fa-check"></i> Integração com Shopee / Mercado Livre</li>
+            <li><i class="fa-solid fa-check"></i> Agenda inteligente com lembretes automáticos</li>
+            <li><i class="fa-solid fa-check"></i> Relatórios financeiros e métricas de desempenho</li>
           </ul>
-          <a href="https://wa.me/5511997450293?text=Quero%20o%20plano%20Inteligente%20da%20Progov" target="_blank" class="btn btn-primary" style="width: 100%;">Contratar</a>
+          <a href="https://wa.me/5511997450293?text=Quero%20o%20plano%20Inteligente%20da%20Progov" target="_blank" class="btn-price solid">Contratar Agora</a>
         </div>
         
         <!-- Plano Master -->
         <div class="price-card">
           <h4>Master</h4>
-          <p style="font-size: 14px; color: #666; margin-bottom: 20px;">A Solução Definitiva</p>
+          <p class="price-desc">A Solução Definitiva</p>
           <div class="price">R$ 297<span>/mês</span></div>
           <ul>
             <li><i class="fa-solid fa-check"></i> <strong>Tudo do plano Inteligente</strong></li>
-            <li><i class="fa-solid fa-check"></i> Assistente de Inteligência Artificial integrado para atendimento e suporte</li>
+            <li><i class="fa-solid fa-check"></i> Assistente de Inteligência Artificial no WhatsApp</li>
             <li><i class="fa-solid fa-check"></i> Clube VIP exclusivo com gestão de pontos e recorrência</li>
             <li><i class="fa-solid fa-check"></i> Notificações Push ilimitadas e suporte prioritário</li>
           </ul>
-          <a href="https://wa.me/5511997450293?text=Quero%20o%20plano%20Master%20da%20Progov" target="_blank" class="btn btn-secondary" style="width: 100%;">Contratar</a>
+          <a href="https://wa.me/5511997450293?text=Quero%20o%20plano%20Master%20da%20Progov" target="_blank" class="btn-price outline">Começar</a>
         </div>
 
       </div>
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
     <div class="container">
       <p>© 2026 Progov. Todos os direitos reservados.</p>
