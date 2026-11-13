@@ -310,13 +310,16 @@
       .product-card-nova h4 { font-size: 18px; margin-top: 15px; margin-bottom: 8px; }
       .product-card-nova .price { font-size: 22px; margin-top: 10px; }
       .section-title-nova { font-size: 20px; margin: 45px 0 28px 0; letter-spacing: 1px; }
-      .planos-scroll { grid-template-columns: repeat(3, 1fr); gap: 32px; }
-      .plano-card { padding: 38px 30px; border-radius: 22px; transition: transform 0.2s, box-shadow 0.2s; }
+      
+      /* AJUSTE DOS PLANOS NO DESKTOP */
+      .planos-scroll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; overflow: visible; padding: 0; margin: 0; }
+      .plano-card { width: auto; flex-shrink: 1; scroll-snap-align: none; padding: 38px 30px; border-radius: 22px; transition: transform 0.2s, box-shadow 0.2s; }
       .plano-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(157,23,77,0.15); }
       .plano-nome { font-size: 26px; margin-bottom: 10px; }
       .plano-preco { font-size: 38px; margin-bottom: 22px; }
       .plano-features { font-size: 16px; margin-bottom: 26px; line-height: 1.9; }
       .plano-btn { padding: 15px; font-size: 16px; }
+      
       .pub-scroll { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 32px; }
       .pub-media { height: 240px; }
       .pub-info { padding: 26px; }
@@ -390,7 +393,6 @@
   </style>
 </head>
 <body>
-  <body>
 
   <nav class="nav-side" id="nav-side">
     <div class="nav-side-header">
@@ -405,13 +407,13 @@
     <div class="nav-side-section-title">Navegação</div>
     <button class="nav-side-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
     <button class="nav-side-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
-    <button class="nav-side-item" data-tab="indique" onclick="trocarTela(this, 'indique')"><i class="fa-solid fa-gift"></i> Indique</button>
+    <button class="nav-side-item" data-tab="indique" data-modulo="indiqueGanhe" onclick="trocarTela(this, 'indique')"><i class="fa-solid fa-gift"></i> Indique</button>
     <button class="nav-side-item" data-tab="perfil" onclick="trocarTela(this, 'perfil')"><i class="fa-regular fa-user"></i> Perfil</button>
     <div class="nav-side-section-title">Acesso Rápido</div>
     <div class="nav-side-quick">
-      <button class="nav-side-quick-btn" onclick="abrirTela('cursos')"><i class="fa-solid fa-graduation-cap" style="color:#a78bfa;"></i> Cursos Online <span class="qbadge" id="qtd-cursos-badge">0</span></button>
-      <button class="nav-side-quick-btn" onclick="abrirTela('clinica')"><i class="fa-solid fa-spa" style="color:#f472b6;"></i> Clínica Estética <span class="qbadge" id="qtd-servicos-badge">0</span></button>
-      <button class="nav-side-quick-btn" onclick="abrirTela('clube')"><i class="fa-solid fa-gem" style="color:#D4AF37;"></i> Clube VIP</button>
+      <button class="nav-side-quick-btn" data-modulo="cursos" onclick="abrirTela('cursos')"><i class="fa-solid fa-graduation-cap" style="color:#a78bfa;"></i> Cursos Online <span class="qbadge" id="qtd-cursos-badge">0</span></button>
+      <button class="nav-side-quick-btn" data-modulo="agenda" onclick="abrirTela('clinica')"><i class="fa-solid fa-spa" style="color:#f472b6;"></i> Clínica Estética <span class="qbadge" id="qtd-servicos-badge">0</span></button>
+      <button class="nav-side-quick-btn" data-modulo="clubeVip" onclick="abrirTela('clube')"><i class="fa-solid fa-gem" style="color:#D4AF37;"></i> Clube VIP</button>
     </div>
     <div style="padding: 20px 25px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06);">
       <a href="landing.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 10px; color: #D4AF37; font-size: 12px; font-weight: 700; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='rgba(212,175,55,0.2)'" onmouseout="this.style.background='rgba(212,175,55,0.1)'">
@@ -766,7 +768,7 @@
     <nav class="nav-bottom">
       <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
       <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
-      <button class="nav-item" data-tab="indique" onclick="trocarTela(this, 'indique')"><i class="fa-solid fa-gift"></i> Indique</button>
+      <button class="nav-item" data-tab="indique" data-modulo="indiqueGanhe" onclick="trocarTela(this, 'indique')"><i class="fa-solid fa-gift"></i> Indique</button>
       <button class="nav-item" data-tab="perfil" onclick="trocarTela(this, 'perfil')"><i class="fa-regular fa-user"></i> Perfil</button>
     </nav>
 
@@ -790,6 +792,100 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
+
+    // ==================== MULTI-TENANT / WHITE-LABEL ====================
+    const _wlParams = new URLSearchParams(window.location.search);
+    const CLINICA_ID = _wlParams.get('c') || 'alexandra-barros';
+    window.CLINICA_ATUAL = CLINICA_ID;
+    window.CLINICA_CONFIG = null;
+
+    async function carregarConfigClinica() {
+      try {
+        const snap = await db.collection('clinicas').doc(CLINICA_ID).get();
+        if (!snap.exists) {
+          console.info('[Multi-Tenant] Clínica', CLINICA_ID, 'não encontrada. Modo single-tenant ativo.');
+          return null;
+        }
+        const cfg = snap.data();
+        window.CLINICA_CONFIG = cfg;
+
+        if (cfg.statusAssinatura && cfg.statusAssinatura !== 'ativo') {
+          document.body.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0f0f10;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:20px;">
+              <div>
+                <div style="font-size:64px;margin-bottom:20px;">🔒</div>
+                <h1 style="font-size:24px;margin-bottom:10px;color:#D4AF37;">Aplicativo Temporariamente Suspenso</h1>
+                <p style="color:#aaa;max-width:400px;margin:auto;">Entre em contato com a administração da clínica para reativar seu acesso.</p>
+              </div>
+            </div>`;
+          return null;
+        }
+        return cfg;
+      } catch (e) {
+        console.error('[Multi-Tenant] Erro:', e);
+        return null;
+      }
+    }
+
+    function moduloAtivo(nome) {
+      const cfg = window.CLINICA_CONFIG;
+      if (!cfg || !cfg.modulos) return true;
+      return cfg.modulos[nome] !== false;
+    }
+
+    function aplicarTravasModulos() {
+      const cfg = window.CLINICA_CONFIG;
+      if (!cfg || !cfg.modulos) return;
+      document.querySelectorAll('[data-modulo]').forEach(el => {
+        const mod = el.getAttribute('data-modulo');
+        el.style.display = cfg.modulos[mod] === false ? 'none' : '';
+      });
+    }
+
+    function aplicarWhiteLabelMeta() {
+      const cfg = window.CLINICA_CONFIG;
+      if (!cfg) return;
+      if (cfg.nomeApp) {
+        document.title = cfg.nomeApp + ' - App Oficial';
+        const appleM = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+        if (appleM) appleM.setAttribute('content', cfg.nomeApp);
+        const navH = document.querySelector('.nav-side-header h2');
+        if (navH) navH.textContent = cfg.nomeApp;
+      }
+      if (cfg.corPrimaria) {
+        const tc = document.querySelector('meta[name="theme-color"]');
+        if (tc) tc.setAttribute('content', cfg.corPrimaria);
+      }
+      aplicarTravasModulos();
+    }
+
+    function atualizarManifestPWA() {
+      const cfg = window.CLINICA_CONFIG;
+      if (!cfg) return;
+      const manifestData = {
+        name: cfg.nomeApp || 'App',
+        short_name: (cfg.nomeApp || 'App').substring(0, 12),
+        start_url: window.location.pathname + '?c=' + CLINICA_ID,
+        scope: '/',
+        display: 'standalone',
+        background_color: cfg.corFundo || '#FFF2F6',
+        theme_color: cfg.corPrimaria || '#9D174D',
+        icons: cfg.logoUrl ? [
+          { src: cfg.logoUrl, sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: cfg.logoUrl, sizes: '512x512', type: 'image/png', purpose: 'any' }
+        ] : [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }
+        ]
+      };
+      try {
+        const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.querySelector('link[rel="manifest"]');
+        if (link) link.href = url;
+      } catch (e) { console.warn('Manifest dinâmico falhou:', e); }
+    }
+    // ==================== FIM MULTI-TENANT ====================
 
     let adminAutenticado = false, usuarioAutenticado = null, modoAdminAtivo = false;
     const ADMIN_EMAILS = ['estetica.alexandria@gmail.com', 'progovcomercial@gmail.com'];
@@ -863,6 +959,12 @@
     window.addEventListener('popstate', () => { if (pilhaTelas.length > 1) { pilhaTelas.pop(); abrirTela(pilhaTelas[pilhaTelas.length - 1], false); } });
 
     function abrirTela(id, empilhar = true) {
+      const _travaMapa = { 'clube': 'clubeVip', 'pontos': 'pontosXp', 'cursos': 'cursos', 'curso': 'cursos' };
+      const _trava = _travaMapa[id];
+      if (_trava && !moduloAtivo(_trava)) {
+        mostrarToast('🔒 Recurso não disponível no seu plano.');
+        return;
+      }
       document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
       const tela = document.getElementById('tela-' + id); if (tela) tela.classList.add('ativa');
       document.querySelector('.app-content').scrollTop = 0; if (empilhar) empilharTela(id);
@@ -913,6 +1015,21 @@
           const dbO = Array.isArray(appState.layoutOrder) ? appState.layoutOrder : []; const nS = estadoPadrao.layoutOrder.filter(s => !dbO.includes(s)); appState.layoutOrder = [...dbO, ...nS];
           if (!appState.funcionarios) appState.funcionarios = estadoPadrao.funcionarios; if (!appState.senhaFinanceiro) appState.senhaFinanceiro = '1234'; if (!appState.propostaContador) appState.propostaContador = { ano: new Date().getFullYear(), ultimo: 0 }; if (!Array.isArray(appState.extensoes)) appState.extensoes = JSON.parse(JSON.stringify(estadoPadrao.extensoes));
           if (!Array.isArray(appState.cursos)) appState.cursos = []; if (!Array.isArray(appState.servicos)) appState.servicos = JSON.parse(JSON.stringify(estadoPadrao.servicos)); if (!Array.isArray(appState.depoimentos)) appState.depoimentos = JSON.parse(JSON.stringify(estadoPadrao.depoimentos));
+
+          // ===== WHITE-LABEL OVERRIDE (dados da clínica sobrescrevem o padrão) =====
+          if (window.CLINICA_CONFIG) {
+            const cc = window.CLINICA_CONFIG;
+            if (cc.corPrimaria) appState.colorPrimary = cc.corPrimaria;
+            if (cc.corDourada) appState.colorGold = cc.corDourada;
+            if (cc.corFundo) appState.bgColor = cc.corFundo;
+            if (cc.nomeApp) appState.appName = cc.nomeApp;
+            if (cc.logoUrl) appState.logoImage = cc.logoUrl;
+            if (cc.whatsapp) appState.whatsapp = cc.whatsapp;
+            if (cc.subtitulo) appState.mensagem = cc.subtitulo;
+            aplicarWhiteLabelMeta();
+            atualizarManifestPWA();
+          }
+
           atualizarInterfaceEstado();
         } else if (adminAutenticado) { db.collection("appData").doc("estadoGlobal").set(estadoPadrao).then(atualizarInterfaceEstado).catch(e => console.error(e)); } else { atualizarInterfaceEstado(); }
       }, e => console.error("Erro:", e));
@@ -920,6 +1037,17 @@
 
     async function salvarEstado() { if (!adminAutenticado) { mostrarToast("Entre como administrador para salvar."); return false; } try { const dados = { ...appState }; delete dados.senhaAdmin; await db.collection("appData").doc("estadoGlobal").set(dados); return true; } catch (e) { alert("Erro ao salvar."); return false; } }
     function mostrarToast(msg) { const t = document.createElement('div'); t.textContent = msg; t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:999px;font-size:14px;z-index:99999;box-shadow:0 4px 14px rgba(0,0,0,.3);max-width:90%;text-align:center;'; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+    
+    function atualizarRelogioSidebar() {
+      const agora = new Date();
+      const dataFormatada = agora.toLocaleDateString('pt-BR');
+      const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const elData = document.getElementById('sidebar-data');
+      const elHora = document.getElementById('sidebar-hora');
+      if (elData) elData.textContent = dataFormatada;
+      if (elHora) elHora.textContent = horaFormatada;
+    }
+
     function mascaraPreco(input) { let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; } v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v; }
     function lerArquivoComprimido(inputId, cb) { const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null); const file = i.files[0]; if (file.size > 10 * 1024 * 1024) { alert('⚠️ Arquivo muito pesado! Máx 10MB.'); i.value = ''; return cb(null); } if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; } const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let w = img.width, h = img.height; const MAX = 600; if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); cb(canvas.toDataURL('image/jpeg', 0.5)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
 
@@ -949,10 +1077,26 @@
       document.getElementById('app-logo').innerHTML = appState.logoImage ? `<img src="${esc(safeImgSrc(appState.logoImage))}">` : esc(appState.logo || 'AB'); document.getElementById('ia-name-header').textContent = appState.iaName || 'Assistente'; verificarClienteLogado();
       const homeSections = document.getElementById('home-sections'); homeSections.innerHTML = ''; const layout = Array.isArray(appState.layoutOrder) ? appState.layoutOrder : estadoPadrao.layoutOrder; const hidden = Array.isArray(appState.layoutHidden) ? appState.layoutHidden : []; const pubs = Array.isArray(appState.publicidades) ? appState.publicidades : [];
 
+      const _mapaTravaModulos = {
+        'indique': 'indiqueGanhe',
+        'cursos': 'cursos',
+        'pontos': 'pontosXp',
+        'clinica': 'agenda',
+        'espacos': 'clubeVip'
+      };
+
       layout.forEach(secao => {
-        if (hidden.includes(secao)) return; let html = '';
+        if (hidden.includes(secao)) return;
+        const _trava = _mapaTravaModulos[secao];
+        if (_trava && !moduloAtivo(_trava)) return;
+        let html = '';
+        
         if (secao === 'banner') html = `<div class="vitrine-banner-nova"><h2>${esc(appState.boutiqueName)}</h2><p>MODA | BELEZA | EXPERIÊNCIAS</p></div>`;
-        else if (secao === 'cta-topo') { const wa = appState.whatsapp || '5511997450293'; html = `<div class="cta-topo-wrap"><button class="cta-topo-btn agendar" onclick="window.open('https://wa.me/${wa}?text=Olá! Gostaria de agendar uma avaliação.', '_blank')"><i class="fa-solid fa-calendar-check"></i> Agendar Horário</button><button class="cta-topo-btn clube" onclick="abrirTela('clube')"><i class="fa-solid fa-gem"></i> Desconto no Clube</button></div>`; }
+        else if (secao === 'cta-topo') {
+          const wa = appState.whatsapp || '5511997450293';
+          const podeClube = moduloAtivo('clubeVip');
+          html = `<div class="cta-topo-wrap" style="grid-template-columns:${podeClube ? '1fr 1fr' : '1fr'};"><button class="cta-topo-btn agendar" onclick="window.open('https://wa.me/${wa}?text=Olá! Gostaria de agendar uma avaliação.', '_blank')"><i class="fa-solid fa-calendar-check"></i> Agendar Horário</button>${podeClube ? `<button class="cta-topo-btn clube" onclick="abrirTela('clube')"><i class="fa-solid fa-gem"></i> Desconto no Clube</button>` : ''}</div>`;
+        }
         else if (secao === 'quick-apps') html = renderizarQuickApps();
         else if (secao === 'publicidade' && pubs.length > 0) { let p = ''; pubs.forEach(pub => { let m = pub.video ? `<div class="pub-media">${gerarHTMLVideo(pub.video)}</div>` : (pub.imagem ? `<div class="pub-media"><img src="${esc(safeImgSrc(pub.imagem))}" loading="lazy"></div>` : `<div class="pub-media" style="background:var(--cor-principal);display:flex;justify-content:center;align-items:center;color:#fff;"><i class="fa-solid fa-bullhorn"></i></div>`); p += `<div class="pub-card">${m}<div class="pub-info"><h4>${esc(pub.titulo)}</h4><p>${esc(pub.descricao)}</p><button class="pub-btn" onclick="abrirDetalhesParceiro(${Number(pub.id)})">Conhecer</button></div></div>`; }); html = `<div class="section-title-nova">Nossos Parceiros</div><div class="pub-scroll">${p}</div>`; }
         else if (secao === 'cta') { if (!localStorage.getItem('clienteNome') && !modoAdminAtivo) { html = `<div style="background:linear-gradient(135deg,#FFF8FA,#FFE4EE);border:1.5px solid var(--cor-dourada);border-radius:18px;padding:20px;margin-bottom:24px;display:flex;align-items:center;gap:15px;flex-wrap:wrap;"><div style="width:50px;height:50px;flex-shrink:0;border-radius:50%;background:linear-gradient(135deg,var(--cor-principal),var(--cor-dourada));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;"><i class="fa-solid fa-user-plus"></i></div><div style="flex:1;"><h3 style="font-size:15px;color:var(--cor-principal);font-weight:700;margin-bottom:4px;">Cadastre-se</h3><p style="font-size:12px;color:var(--cor-texto-mutado);">${esc(appState.mensagem)}</p></div><button style="background:var(--cor-principal);color:#fff;border:none;padding:12px 20px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;" onclick="document.getElementById('modal-cadastro').style.display='flex'">Cadastrar</button></div>`; } }
@@ -960,7 +1104,7 @@
         else if (secao === 'indique') { if (podeUsar('clube')) { html = `<div class="banner-indique" style="background:linear-gradient(135deg,#C2185B,#4C0519);color:#fff;padding:20px;" onclick="abrirTela('clube')"><div><h3 style="color:#FFE4A8;font-size:18px;">${esc(appState.clubeName)} 🌸</h3><p style="color:#fff;font-size:13px;">Até 50% OFF em todos os protocolos</p></div><i class="fa-solid fa-gem" style="color:#FFE4A8;font-size:28px;"></i></div>`; } }
         else if (secao === 'videos' && appState.video) { html = `<div class="video-container" style="display:block;"><div class="section-title-nova">Nosso Vídeo</div><div style="width:100%;">${gerarHTMLVideo(appState.video)}</div></div>`; }
         else if (secao === 'planos') { let pH = ''; ['essencial', 'inteligente', 'master'].forEach(id => { const data = appState.planos[id] || estadoPadrao.planos[id]; const dest = id === 'inteligente', master = id === 'master'; let cls = 'plano-card'; if (dest) cls += ' destaque'; if (master) cls += ' master-gold'; let bdg = ''; if (dest) bdg = '<span class="plano-badge">Mais vendido</span>'; else if (master) bdg = '<span class="plano-badge" style="background:linear-gradient(135deg,#7C3AED,#D4AF37);left:auto;right:12px;">Premium</span>'; let ai = master ? '<div class="master-ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> IA INCLUÍDA</div>' : ''; pH += `<div class="${cls}" onclick="abrirPlano('${id}')">${bdg}${ai}<span class="plano-nome">${esc(data.titulo)}</span><span class="plano-preco">R$ ${esc(appState.precos[id])}<small>/mês</small></span><ul class="plano-features">${(data.features || []).map(f => `<li>${esc(f)}</li>`).join('')}</ul><button class="plano-btn" style="${master ? 'background:linear-gradient(135deg,#7C3AED,#D4AF37);' : ''}">Ver detalhes</button></div>`; }); html = `<div class="section-title-nova">Planos</div><div class="planos-scroll">${pH}</div>`; }
-        else if (secao === 'espacos') { const bgC = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url(${cssUrl(safeImgSrc(appState.clubeImage))});` : `background: linear-gradient(135deg, ${esc(appState.clubeColor || '#C2185B')} 0%, #4C0519 100%);`; const bgR = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url(${cssUrl(safeImgSrc(appState.renovaseImage))});` : `background: linear-gradient(135deg, ${esc(appState.renovaseColor || '#B8852E')} 0%, #4A2300 100%);`; html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${esc(bgC)}" onclick="abrirTela('clube')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${esc(safeImgSrc(appState.clubeImage))}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${esc(appState.clubeName)}</h3><p class="espaco-sub">Vantagens & Vitrine</p></div></div><p class="espaco-desc">Descontos e produtos exclusivos.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${esc(bgR)}" onclick="window.open('${esc(safeHref(appState.renovaseLink || 'https://wa.me/5511997450293'))}', '_blank')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${esc(safeImgSrc(appState.renovaseImage))}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Evento</span><h3 class="espaco-titulo">${esc(appState.renovaseName)}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Saber mais <i class="fa-solid fa-arrow-right"></i></span></button></div>`; }
+        else if (secao === 'espacos') { const bgC = appState.clubeImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url(${cssUrl(safeImgSrc(appState.clubeImage))});` : `background: linear-gradient(135deg, ${esc(appState.clubeColor || '#C2185B')} 0%, #4C0519 100%);`; const bgR = appState.renovaseImage ? `background-image: linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url(${cssUrl(safeImgSrc(appState.renovaseImage))});` : `background: linear-gradient(135deg, ${esc(appState.renovaseColor || '#B8852E')} 0%, #4A2300 100%);`; html = `<div class="section-title-nova">Espaços</div><div class="espacos-wrap"><button class="espaco-card" style="${esc(bgC)}" onclick="abrirTela('clube')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.clubeImage ? `<img src="${esc(safeImgSrc(appState.clubeImage))}">` : '🌸'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Exclusivo</span><h3 class="espaco-titulo">${esc(appState.clubeName)}</h3><p class="espaco-sub">Vantagens & Vitrine</p></div></div><p class="espaco-desc">Descontos e produtos exclusivos.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button><button class="espaco-card" style="${esc(bgR)}" onclick="abrirLinkRenovase()"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">${appState.renovaseImage ? `<img src="${esc(safeImgSrc(appState.renovaseImage))}">` : '✨'}</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Evento</span><h3 class="espaco-titulo">${esc(appState.renovaseName)}</h3><p class="espaco-sub">Transformação</p></div></div><p class="espaco-desc">Jornada de beleza e autocuidado.</p><span class="espaco-cta">Saber mais <i class="fa-solid fa-arrow-right"></i></span></button></div>`; }
         else if (secao === 'clinica') { html = `<div class="section-title-nova">Clínica</div><button class="espaco-card" style="background:linear-gradient(135deg,#9D174D 0%,#560021 100%);" onclick="abrirTela('clinica')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">💆‍♀️</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Protocolos</span><h3 class="espaco-titulo">Clínica Estética</h3><p class="espaco-sub">Para mulheres 40+</p></div></div><p class="espaco-desc">Tratamentos com preços especiais no Clube.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button>`; }
         else if (secao === 'cursos') { const cursos = appState.cursos || []; if (cursos.length > 0) { html = `<div class="section-title-nova">Cursos Online</div><button class="espaco-card" style="background:linear-gradient(135deg,#7C3AED 0%,#4C1D95 100%);" onclick="abrirTela('cursos')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">🎓</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Bio Renovadora</span><h3 class="espaco-titulo">Cursos Online</h3><p class="espaco-sub">${cursos.length} curso(s) disponível(is)</p></div></div><p class="espaco-desc">Aprenda técnicas. Membros têm desconto.</p><span class="espaco-cta">Ver cursos <i class="fa-solid fa-arrow-right"></i></span></button>`; } }
         else if (secao === 'pontos') { html = `<div class="section-title-nova">Fidelidade</div><button class="espaco-card" style="background:linear-gradient(135deg,#D4AF37 0%,#9D174D 100%);" onclick="abrirTela('pontos')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">⭐</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Recompensa</span><h3 class="espaco-titulo">Pontos XP</h3><p class="espaco-sub">Cada visita vale</p></div></div><p class="espaco-desc">Acumule e troque por tratamentos.</p><span class="espaco-cta">Saber mais <i class="fa-solid fa-arrow-right"></i></span></button>`; }
@@ -968,6 +1112,45 @@
         else if (secao === 'contato') { const c = appState.contato || {}; let rH = (c.redesSociais || []).map(r => { const ico = r.icone || 'fa-link'; const marcas = ['fa-whatsapp','fa-instagram','fa-telegram','fa-facebook','fa-tiktok','fa-youtube']; const ehM = marcas.some(m => ico === m); return `<a href="${esc(safeHref(r.link))}" target="_blank" rel="noopener" class="rede-btn ${esc(r.classe || 'custom')}"><i class="${ehM ? 'fa-brands' : 'fa-solid'} ${esc(ico)}"></i> ${esc(r.nome)}</a>`; }).join(''); if (c.canais?.length) rH += `<button onclick="abrirTelaCanais()" class="rede-btn canal"><i class="fa-solid fa-bullhorn"></i> Canais (${c.canais.length})</button>`; html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${esc(c.endereco)}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${esc(c.horario)}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${esc(c.telefone)}</div><button class="btn-maps" onclick="abrirGoogleMaps()"><i class="fa-solid fa-map-location-dot"></i> Como Chegar (Google Maps)</button><div class="contato-redes">${rH}</div></div><div style="text-align:center;margin:30px 0 20px;padding:20px;background:linear-gradient(135deg,#FFF8FA,#FFFBF8);border-radius:16px;border:1px dashed rgba(157,23,77,0.2);"><p style="font-size:12px;color:#777;margin-bottom:10px;">💼 Você tem uma clínica, salão ou loja?</p><a href="landing.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,var(--cor-principal),var(--cor-dourada));color:#fff;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none;"><i class="fa-solid fa-rocket"></i> Conheça a Plataforma</a></div>`; }
         if (html) homeSections.innerHTML += html;
       });
+
+      // ===== Aplicar travas de módulos e meta após render =====
+      aplicarTravasModulos();
+      aplicarWhiteLabelMeta();
+    }
+
+    function abrirPlano(id) {
+      const data = appState.planos[id] || estadoPadrao.planos[id];
+      const preco = appState.precos[id] || estadoPadrao.precos[id];
+      
+      document.getElementById('plano-modal-titulo').textContent = data.titulo;
+      document.getElementById('plano-modal-preco').textContent = `R$ ${preco}/mês`;
+      document.getElementById('plano-modal-sub').textContent = data.subtitulo || '';
+      
+      const featuresHtml = (data.features || []).map(f => `<li style="margin-bottom:8px;"><i class="fa-solid fa-check" style="color:var(--cor-dourada); margin-right:8px;"></i> ${esc(f)}</li>`).join('');
+      document.getElementById('plano-modal-features').innerHTML = featuresHtml;
+      
+      document.getElementById('modal-plano-detalhes').style.display = 'flex';
+    }
+
+    function assinarPlanoWhatsApp() {
+      const titulo = document.getElementById('plano-modal-titulo').textContent;
+      const wa = appState.whatsapp || '5511997450293';
+      const msg = encodeURIComponent(`Olá! Quero assinar o plano ${titulo}.`);
+      window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
+      document.getElementById('modal-plano-detalhes').style.display = 'none';
+    }
+
+    function abrirLinkRenovase() {
+      const link = appState.renovaseLink;
+      if (!link || link.trim() === '') {
+        mostrarToast('O link do Renova-se ainda não foi configurado.');
+        return;
+      }
+      if (link.startsWith('http')) {
+        window.open(link, '_blank');
+      } else {
+        window.location.href = link;
+      }
     }
 
     function abrirGoogleMaps() { const end = (appState.contato && appState.contato.endereco) || 'Rua Silvio Donini 223 - Centro, Diadema'; window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end), '_blank'); }
@@ -1004,10 +1187,22 @@
     function abrirChat() { if (!modoAdminAtivo && appState.iaEnabled === false) { mostrarToast('Assistente indisponível.'); return; } document.getElementById('ia-name-header').textContent = appState.iaName || 'Assistente'; const body = document.getElementById('chat-body'); if (body.children.length === 0) adicionarMsgAoChat('bot', appState.iaWelcome || 'Olá! Como posso ajudar?'); document.getElementById('tela-chat').style.display = 'block'; }
     function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; historicoChatIA = []; }
     function adicionarMsgAoChat(rem, txt) { const body = document.getElementById('chat-body'); const cls = rem === 'user' ? 'msg-user' : 'msg-bot'; body.insertAdjacentHTML('beforeend', `<div class="msg ${cls}">${esc(txt)}</div>`); body.scrollTop = body.scrollHeight; }
+    
     async function enviarMsgIA() {
       const inp = document.getElementById('chat-input'), txt = inp.value.trim(); if (!txt) return; adicionarMsgAoChat('user', txt); inp.value = '';
       const idD = 'dig-' + Date.now(), body = document.getElementById('chat-body'); body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot" id="${idD}">Digitando...</div>`); body.scrollTop = body.scrollHeight;
-      try { historicoChatIA.push({ role: 'user', parts: [{ text: txt }] }); const proxyUrl = appState.iaProxyUrl || GEMINI_PROXY_URL, sys = appState.iaSystemPrompt || `Você é a ${appState.iaName}.`; const resp = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: historicoChatIA, systemInstruction: { parts: [{ text: sys }] } }) }); if (!resp.ok) throw new Error('HTTP ' + resp.status); const dados = await resp.json(), partes = dados.candidates?.[0]?.content?.parts || []; document.getElementById(idD)?.remove(); const t = partes[0]?.text || 'Desculpe.'; adicionarMsgAoChat('bot', t); historicoChatIA.push({ role: 'model', parts: [{ text: t }] }); } catch (e) { document.getElementById(idD)?.remove(); adicionarMsgAoChat('bot', '⚠️ ' + e.message); }
+      try { 
+        historicoChatIA.push({ role: 'user', parts: [{ text: txt }] }); const proxyUrl = appState.iaProxyUrl || GEMINI_PROXY_URL, sys = appState.iaSystemPrompt || `Você é a ${appState.iaName}.`; const resp = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: historicoChatIA, systemInstruction: { parts: [{ text: sys }] } }) }); if (!resp.ok) throw new Error('HTTP ' + resp.status); const dados = await resp.json(), partes = dados.candidates?.[0]?.content?.parts || []; document.getElementById(idD)?.remove(); const t = partes[0]?.text || 'Desculpe.'; adicionarMsgAoChat('bot', t); historicoChatIA.push({ role: 'model', parts: [{ text: t }] }); 
+      } catch (e) { 
+        document.getElementById(idD)?.remove(); 
+        let msg = e.message;
+        if (msg.includes('429') || msg.includes('Too Many Requests')) {
+          msg = 'Muitas mensagens em pouco tempo. Aguarde 30 segundos e tente novamente.';
+        } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+          msg = 'Não consegui conectar ao servidor da IA. Verifique sua internet.';
+        }
+        adicionarMsgAoChat('bot', '⚠️ ' + msg); 
+      }
     }
 
     function abrirConfiguracao(id) {
@@ -1248,13 +1443,37 @@
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('btn-instalar-app').style.display = 'block'; });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      renderizarHome(); renderizarServicosClinica(); renderizarCursos(); atualizarStatusClube(); aplicarRestricoes(); atualizarBoxNotificacoes();
+    document.addEventListener('DOMContentLoaded', async () => {
+      atualizarRelogioSidebar();
+      setInterval(atualizarRelogioSidebar, 60000);
+
+      // 1º: carrega a clínica (white-label)
+      await carregarConfigClinica();
+
+      // 2º: renderiza tudo
+      renderizarHome();
+      renderizarServicosClinica();
+      renderizarCursos();
+      atualizarStatusClube();
+      aplicarRestricoes();
+      atualizarBoxNotificacoes();
+
       const urlParams = new URLSearchParams(window.location.search);
       const idConfirmar = urlParams.get('confirmar');
-      if (idConfirmar) { document.getElementById('modal-confirmacao-cliente').style.display = 'flex'; window._agendamentoParaConfirmar = idConfirmar; }
-      gerarCalendarioReal(); carregarEstado(); renderizarClubeEVitrine();
-      if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW:', e)); }); }
+      if (idConfirmar) {
+        document.getElementById('modal-confirmacao-cliente').style.display = 'flex';
+        window._agendamentoParaConfirmar = idConfirmar;
+      }
+
+      gerarCalendarioReal();
+      carregarEstado();
+      renderizarClubeEVitrine();
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW:', e));
+        });
+      }
     });
   </script>
 </body>
