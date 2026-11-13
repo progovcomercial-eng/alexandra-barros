@@ -121,12 +121,23 @@
     .espaco-cta { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cor-principal); border: none; padding: 10px 18px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; z-index: 1; width: fit-content; }
 
     .boutique-grid-nova { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px; }
-    .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: none; width: 100%; display: flex; flex-direction: column; position: relative; }
+    .product-card-nova { background: var(--cor-card-fundo); border-radius: 18px; padding: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: none; width: 100%; display: flex; flex-direction: column; position: relative; }
     .product-img-box-nova { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; font-size: 40px; }
     .product-img-box-nova img { width: 100%; height: 100%; object-fit: cover; }
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
-    .product-card-nova .price { font-size: 14px; color: var(--cor-principal); font-weight: 700; margin-top: auto; }
     .dropship-badge { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, #10A37F, #0d8a6c); color: #fff; font-size: 9px; padding: 4px 9px; border-radius: 999px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 2; }
+
+    /* --- NOVOS ESTILOS DE PREÇO E ESTOQUE --- */
+    .product-card-nova .price { font-size: 12px; color: var(--cor-texto-mutado); font-weight: 600; margin-top: auto; text-decoration: line-through; }
+    .product-card-nova .price-clube { font-size: 20px; color: var(--cor-dourada); font-weight: 800; display: block; margin-top: 4px; }
+    .product-card-nova .price-clube small { font-size: 10px; color: var(--cor-principal); font-weight: 700; display: block; letter-spacing: 0.5px; }
+    .tag-clube { background: linear-gradient(135deg, var(--cor-dourada), #B8852E); color: #fff; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 999px; position: absolute; top: 8px; left: 8px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .btn-comprar-direto { background: linear-gradient(135deg, #10A37F, #0d8a6c); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px; width: 100%; margin-top: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-comprar-direto:disabled { background: #ccc; cursor: not-allowed; }
+    .stock-badge { position: absolute; top: 8px; right: 8px; font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 999px; z-index: 2; color: #fff; }
+    .stock-badge.ok { background: #10A37F; }
+    .stock-badge.low { background: #F59E0B; }
+    .stock-badge.out { background: #EF4444; }
 
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 12px; color: var(--cor-texto-mutado); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -308,7 +319,6 @@
       .product-card-nova:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(157,23,77,0.15); }
       .product-img-box-nova { height: 260px; border-radius: 14px; }
       .product-card-nova h4 { font-size: 18px; margin-top: 15px; margin-bottom: 8px; }
-      .product-card-nova .price { font-size: 22px; margin-top: 10px; }
       .section-title-nova { font-size: 20px; margin: 45px 0 28px 0; letter-spacing: 1px; }
       
       /* AJUSTE DOS PLANOS NO DESKTOP */
@@ -663,6 +673,28 @@
       </div>
     </div>
 
+    <!-- MODAL DE COMPRA DIRETA -->
+    <div id="modal-checkout" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro" style="text-align:center;">
+        <h3 style="font-size:22px;">Finalizar Compra 🛍️</h3>
+        <p id="checkout-produto-nome" style="font-size:16px; color:var(--cor-principal); font-weight:700; margin:10px 0;"></p>
+        <p id="checkout-produto-preco" style="font-size:24px; font-weight:800; color:var(--cor-dourada); margin-bottom:20px;"></p>
+        
+        <input type="text" id="checkout-nome" placeholder="Seu nome completo" required>
+        <input type="tel" id="checkout-tel" placeholder="WhatsApp (com DDD)" required>
+        <select id="checkout-pagamento">
+          <option value="Pix">Pix</option>
+          <option value="Cartão de Crédito">Cartão de Crédito</option>
+          <option value="Boleto">Boleto</option>
+        </select>
+        
+        <button id="btn-confirmar-checkout" onclick="finalizarCompraDireta()" class="btn-enviar-cadastro" style="background:#10A37F;">
+          <i class="fa-solid fa-check"></i> Confirmar Pagamento
+        </button>
+        <button class="btn-undo" onclick="document.getElementById('modal-checkout').style.display='none'">Cancelar</button>
+      </div>
+    </div>
+
     <div id="modal-codigo-clube" class="modal-cadastro-fixo">
       <div class="cartao-cadastro">
         <h3>Clube da Ale 🤫</h3>
@@ -909,7 +941,11 @@
       { nome: 'Depoimentos & Prova Social', icone: 'fa-quote-left', itens: [{ id: 'depoimentos-admin', nome: 'Gerenciar Depoimentos 💬' }]},
       { nome: 'Agenda & Contato', icone: 'fa-calendar', itens: [{ id: 'agenda-config', nome: 'Configurar Agenda' }, { id: 'msg-confirmacao', nome: 'Msg Confirmação 💬' }, { id: 'mural', nome: 'Mural da Agenda' }, { id: 'equipe', nome: 'Gerenciar Equipe 👥' }, { id: 'lista-clientes', nome: 'Lista de Clientes 👥' }, { id: 'busca-proposta', nome: '🔎 Buscar Proposta' }, { id: 'migracao', nome: 'Importar Clientes 📥' }, { id: 'contato', nome: 'Redes & Contato' }, { id: 'links', nome: 'Links Ambientes' }]},
       { nome: 'Financeiro & Gestão', icone: 'fa-chart-line', itens: [{ id: 'financeiro', nome: 'Gestão Financeira 💎' }]},
-      { nome: 'Comercial', icone: 'fa-rocket', itens: [{ id: 'ver-landing', nome: 'Ver Landing Comercial 🚀' }, { id: 'ver-app-exemplo', nome: 'Ver App de Exemplo 📱' }]},
+      { nome: 'Comercial', icone: 'fa-rocket', itens: [
+        { id: 'painel-vendas', nome: 'Painel de Vendas 🛒' }, 
+        { id: 'ver-landing', nome: 'Ver Landing Comercial 🚀' }, 
+        { id: 'ver-app-exemplo', nome: 'Ver App de Exemplo 📱' }
+      ]},
       { nome: 'Sistema & Integrações', icone: 'fa-gear', itens: [{ id: 'ia', nome: 'Assistente Gemini IA' }, { id: 'push-admin', nome: 'Notificações Push 🔔' }, { id: 'identidade', nome: 'Nome & Senha' }, { id: 'integracoes', nome: 'Integrações' }, { id: 'link-envio', nome: 'Enviar Link' }]}
     ];
 
@@ -920,7 +956,10 @@
       renovaseName: 'Renova-se', renovaseColor: '#B8852E', renovaseImage: null, renovaseLink: null, boutiqueName: 'Boutique do Alê',
       colorMuted: '#777777', colorCardBg: '#FFFFFF', colorHeader: '#9D174D', colorWhatsapp: '#25D366', colorInstagram: '#E4405F', colorCanal: '#128C7E', colorEmail: '#333333', colorNav: '#9D174D', colorChat: '#9D174D',
       gradVitrineStart: '#B91C1C', gradVitrineEnd: '#4C0519', gradPlanosStart: '#FFFCF2', gradPlanosEnd: '#FFF2F6', gradCtaStart: '#9D174D', gradCtaEnd: '#560021', gradIndiqueStart: '#FFD700', gradIndiqueEnd: '#FFA500',
-      boutiqueProdutos: [{ id: 1, nome: 'Calcinhas AleClube', preco: '49,90', imagem: null }, { id: 2, nome: 'Brincos AleClube', preco: '99,90', imagem: null }],
+      boutiqueProdutos: [
+        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagem: null, dropship: false }, 
+        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagem: null, dropship: true }
+      ],
       produtosClube: [],
       publicidades: [{ id: 1, titulo: 'Parceiro Exemplo', descricao: 'Confira as novidades!', sobre: 'Somos parceiros oficiais.', imagem: null, video: null }],
       iaName: 'Assistente Alexandra', iaWelcome: 'Olá, seja bem-vinda! 🌸 Sou a assistente virtual da Alexandra Barros. Posso tirar dúvidas sobre nossos protocolos para mulheres 40+ ou ajudar você a agendar um horário.', iaSystemPrompt: 'Você é a Assistente Ale, assistente virtual da clínica de estética Alexandra Barros. Seu tom é acolhedor. Foco em mulheres 40+. Tire dúvidas sobre tratamentos e pós-procedimentos. Nunca invente preços.', iaEnabled: true, iaProxyUrl: null,
@@ -952,6 +991,7 @@
     let appState = JSON.parse(JSON.stringify(estadoPadrao));
     let backupState = null, configAtualAberta = '', indexPubEditando = -1, indexProdEditando = -1, indexProdClubeEditando = -1, indexCursoEditando = -1, indexServicoEditando = -1, indexDepoimentoEditando = -1;
     let currentDate = new Date(), diaSelecionado = null, idAgendamentoRemarcando = null, dadosRemarcando = null, filtroFinanceiroAtual = 'todas', planoSelecionadoId = null;
+    let _produtoCheckout = null; // <-- DECLARADO APENAS UMA VEZ AQUI
     window._agsCache = {}; window._prontuarioClienteAtual = null; window._acessoFinanceiroLiberado = false; window._agendamentoParaConfirmar = null; window._listaFinanceiroCache = []; window._agsJaEnviados = new Set(); window._verifConfirmando = false; window._listaClientesCache = []; window._listaAgendamentosCache = []; window._cursoAtual = null;
     let pilhaTelas = ['inicio'];
 
@@ -1108,7 +1148,43 @@
         else if (secao === 'clinica') { html = `<div class="section-title-nova">Clínica</div><button class="espaco-card" style="background:linear-gradient(135deg,#9D174D 0%,#560021 100%);" onclick="abrirTela('clinica')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">💆‍♀️</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Protocolos</span><h3 class="espaco-titulo">Clínica Estética</h3><p class="espaco-sub">Para mulheres 40+</p></div></div><p class="espaco-desc">Tratamentos com preços especiais no Clube.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button>`; }
         else if (secao === 'cursos') { const cursos = appState.cursos || []; if (cursos.length > 0) { html = `<div class="section-title-nova">Cursos Online</div><button class="espaco-card" style="background:linear-gradient(135deg,#7C3AED 0%,#4C1D95 100%);" onclick="abrirTela('cursos')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">🎓</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Bio Renovadora</span><h3 class="espaco-titulo">Cursos Online</h3><p class="espaco-sub">${cursos.length} curso(s) disponível(is)</p></div></div><p class="espaco-desc">Aprenda técnicas. Membros têm desconto.</p><span class="espaco-cta">Ver cursos <i class="fa-solid fa-arrow-right"></i></span></button>`; } }
         else if (secao === 'pontos') { html = `<div class="section-title-nova">Fidelidade</div><button class="espaco-card" style="background:linear-gradient(135deg,#D4AF37 0%,#9D174D 100%);" onclick="abrirTela('pontos')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">⭐</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Recompensa</span><h3 class="espaco-titulo">Pontos XP</h3><p class="espaco-sub">Cada visita vale</p></div></div><p class="espaco-desc">Acumule e troque por tratamentos.</p><span class="espaco-cta">Saber mais <i class="fa-solid fa-arrow-right"></i></span></button>`; }
-        else if (secao === 'boutique') { const filtrados = (appState.boutiqueProdutos || []).filter(p => { const lim = String(p.preco || '').replace(/[^\d]/g, ''); return lim !== '' && parseInt(lim) > 0; }); let pH = filtrados.map(p => { const idx = (appState.boutiqueProdutos || []).indexOf(p); return `<button class="product-card-nova" onclick="abrirProduto(${idx}, 'boutique')">${p.dropship ? '<span class="dropship-badge">🚚 DROPSHIP</span>' : ''}<div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy" onerror="this.parentElement.innerHTML='🛍️'">` : '🛍️'}</div><h4>${esc(p.nome)}</h4><p class="price">R$ ${esc(p.preco)}</p></button>`; }).join(''); if (filtrados.length > 0) html = `<div class="section-title-nova">Destaques</div><div class="boutique-grid-nova">${pH}</div>`; }
+        else if (secao === 'boutique') { 
+          const filtrados = (appState.boutiqueProdutos || []).filter(p => { const lim = String(p.preco || '').replace(/[^\d]/g, ''); return lim !== '' && parseInt(lim) > 0; }); 
+          let pH = filtrados.map(p => { 
+            const idx = (appState.boutiqueProdutos || []).indexOf(p); 
+            const membro = ehMembroClube();
+            const temClube = p.precoClube && p.precoClube !== '';
+            const precoMostrar = (membro && temClube) ? p.precoClube : p.preco;
+            
+            let stockHtml = '';
+            let btnDisabled = false;
+            if (p.estoque !== undefined) {
+              if (p.estoque <= 0) { stockHtml = `<span class="stock-badge out">ESGOTADO</span>`; btnDisabled = true; }
+              else if (p.estoque <= 5) { stockHtml = `<span class="stock-badge low">Últimas ${p.estoque} un.</span>`; }
+              else { stockHtml = `<span class="stock-badge ok">${p.estoque} em estoque</span>`; }
+            }
+
+            return `
+              <div class="product-card-nova" style="position:relative;">
+                ${p.dropship ? '<span class="dropship-badge" style="right:auto; left:8px;">🚚 DROPSHIP</span>' : ''}
+                ${!membro && temClube ? '<span class="tag-clube">🌟 PREÇO CLUBE</span>' : ''}
+                ${stockHtml}
+                <div class="product-img-box-nova" onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">
+                  ${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}
+                </div>
+                <h4 onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">${esc(p.nome)}</h4>
+                <p style="font-size:11px; color:#999; margin-bottom:6px;">Cód: ${esc(p.codigo || '---')}</p>
+                
+                ${(!membro && temClube) ? `<p class="price" style="font-size:12px;">De: R$ ${esc(p.preco)}</p>` : ''}
+                <p class="price-clube">R$ ${esc(precoMostrar)} ${membro ? '<small>Preço VIP Ativo</small>' : (temClube ? '<small>Seja VIP e economize</small>' : '')}</p>
+                
+                <button class="btn-comprar-direto" onclick="abrirCheckout(${idx})" ${btnDisabled ? 'disabled' : ''}>
+                  <i class="fa-solid fa-cart-shopping"></i> ${btnDisabled ? 'Esgotado' : 'Comprar Agora'}
+                </button>
+              </div>`; 
+          }).join(''); 
+          if (filtrados.length > 0) html = `<div class="section-title-nova">Destaques</div><div class="boutique-grid-nova">${pH}</div>`; 
+        }
         else if (secao === 'contato') { const c = appState.contato || {}; let rH = (c.redesSociais || []).map(r => { const ico = r.icone || 'fa-link'; const marcas = ['fa-whatsapp','fa-instagram','fa-telegram','fa-facebook','fa-tiktok','fa-youtube']; const ehM = marcas.some(m => ico === m); return `<a href="${esc(safeHref(r.link))}" target="_blank" rel="noopener" class="rede-btn ${esc(r.classe || 'custom')}"><i class="${ehM ? 'fa-brands' : 'fa-solid'} ${esc(ico)}"></i> ${esc(r.nome)}</a>`; }).join(''); if (c.canais?.length) rH += `<button onclick="abrirTelaCanais()" class="rede-btn canal"><i class="fa-solid fa-bullhorn"></i> Canais (${c.canais.length})</button>`; html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${esc(c.endereco)}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${esc(c.horario)}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${esc(c.telefone)}</div><button class="btn-maps" onclick="abrirGoogleMaps()"><i class="fa-solid fa-map-location-dot"></i> Como Chegar (Google Maps)</button><div class="contato-redes">${rH}</div></div><div style="text-align:center;margin:30px 0 20px;padding:20px;background:linear-gradient(135deg,#FFF8FA,#FFFBF8);border-radius:16px;border:1px dashed rgba(157,23,77,0.2);"><p style="font-size:12px;color:#777;margin-bottom:10px;">💼 Você tem uma clínica, salão ou loja?</p><a href="landing.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,var(--cor-principal),var(--cor-dourada));color:#fff;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none;"><i class="fa-solid fa-rocket"></i> Conheça a Plataforma</a></div>`; }
         if (html) homeSections.innerHTML += html;
       });
@@ -1118,17 +1194,109 @@
       aplicarWhiteLabelMeta();
     }
 
+    function abrirCheckout(index) {
+      const p = appState.boutiqueProdutos[index];
+      if (!p) return;
+      if (p.estoque <= 0) return alert('Produto esgotado!');
+      
+      _produtoCheckout = p;
+      const membro = ehMembroClube();
+      const precoFinal = (membro && p.precoClube) ? p.precoClube : p.preco;
+
+      document.getElementById('checkout-produto-nome').textContent = p.nome;
+      document.getElementById('checkout-produto-preco').textContent = `R$ ${precoFinal} ${membro && p.precoClube ? '(Preço VIP)' : ''}`;
+      
+      const nomeSalvo = localStorage.getItem('clienteNome');
+      const telSalvo = localStorage.getItem('clienteTelefone');
+      if (nomeSalvo) document.getElementById('checkout-nome').value = nomeSalvo;
+      if (telSalvo) document.getElementById('checkout-tel').value = telSalvo;
+
+      document.getElementById('modal-checkout').style.display = 'flex';
+    }
+
+    async function finalizarCompraDireta() {
+      const nome = document.getElementById('checkout-nome').value.trim();
+      const tel = document.getElementById('checkout-tel').value.trim();
+      const pgt = document.getElementById('checkout-pagamento').value;
+
+      if (!nome || !tel) return alert('Preencha seu nome e WhatsApp para continuar.');
+
+      const btn = document.getElementById('btn-confirmar-checkout');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+
+      try {
+        const membro = ehMembroClube();
+        const precoStr = (membro && _produtoCheckout.precoClube) ? _produtoCheckout.precoClube : _produtoCheckout.preco;
+        const valorNumerico = parseFloat(precoStr.replace(/\./g, '').replace(',', '.'));
+
+        // 1. Registrar a Venda
+        await db.collection('vendas').add({
+          produtoId: _produtoCheckout.id,
+          produtoNome: _produtoCheckout.nome,
+          produtoCodigo: _produtoCheckout.codigo || '',
+          clienteNome: nome,
+          clienteTelefone: tel,
+          valor: valorNumerico,
+          formaPagamento: pgt,
+          dataVenda: new Date().toISOString(),
+          status: 'concluido',
+          tipoPreco: membro ? 'clube' : 'normal'
+        });
+
+        // 2. Dar baixa no estoque
+        const idxProd = appState.boutiqueProdutos.findIndex(x => x.id === _produtoCheckout.id);
+        if (idxProd > -1 && appState.boutiqueProdutos[idxProd].estoque !== undefined) {
+           appState.boutiqueProdutos[idxProd].estoque -= 1;
+           await salvarEstado();
+        }
+
+        // 3. Lançar no Financeiro
+        await db.collection('financeiro').add({
+          caixa: 'boutique',
+          tipo: 'entrada',
+          data: new Date().toLocaleDateString('en-CA'),
+          descricao: `Venda App: ${_produtoCheckout.nome} (${nome})`,
+          valor: valorNumerico
+        });
+
+        localStorage.setItem('clienteNome', nome);
+        localStorage.setItem('clienteTelefone', tel);
+
+        document.getElementById('modal-checkout').style.display = 'none';
+        mostrarToast('✅ Compra realizada com sucesso!');
+        
+        alert(`🎉 COMPRA CONCLUÍDA!\n\nObrigado, ${nome}!\nSeu pedido: ${_produtoCheckout.nome}\nValor: R$ ${precoStr}\nPagamento: ${pgt}\n\nNossa equipe entrará em contato pelo WhatsApp ${tel}.`);
+        
+        renderizarHome(); 
+
+      } catch(e) {
+        console.error(e);
+        alert('Erro ao processar compra. Tente novamente.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirmar Pagamento';
+      }
+    }
+
+    function abrirDetalhesParceiro(id) {
+      const pub = appState.publicidades.find(p => Number(p.id) === Number(id));
+      if (!pub) return;
+      document.getElementById('parceiro-img-grande').innerHTML = pub.video ? gerarHTMLVideo(pub.video) : (pub.imagem ? `<img src="${esc(safeImgSrc(pub.imagem))}" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">` : '🤝');
+      document.getElementById('parceiro-nome').textContent = pub.titulo;
+      document.getElementById('parceiro-desc').textContent = pub.descricao;
+      document.getElementById('parceiro-conteudo').textContent = pub.sobre || 'Nenhuma informação adicional.';
+      abrirTela('parceiro');
+    }
+
     function abrirPlano(id) {
       const data = appState.planos[id] || estadoPadrao.planos[id];
       const preco = appState.precos[id] || estadoPadrao.precos[id];
-      
       document.getElementById('plano-modal-titulo').textContent = data.titulo;
       document.getElementById('plano-modal-preco').textContent = `R$ ${preco}/mês`;
       document.getElementById('plano-modal-sub').textContent = data.subtitulo || '';
-      
       const featuresHtml = (data.features || []).map(f => `<li style="margin-bottom:8px;"><i class="fa-solid fa-check" style="color:var(--cor-dourada); margin-right:8px;"></i> ${esc(f)}</li>`).join('');
       document.getElementById('plano-modal-features').innerHTML = featuresHtml;
-      
       document.getElementById('modal-plano-detalhes').style.display = 'flex';
     }
 
@@ -1142,20 +1310,16 @@
 
     function abrirLinkRenovase() {
       const link = appState.renovaseLink;
-      if (!link || link.trim() === '') {
-        mostrarToast('O link do Renova-se ainda não foi configurado.');
-        return;
-      }
-      if (link.startsWith('http')) {
-        window.open(link, '_blank');
-      } else {
-        window.location.href = link;
-      }
+      if (!link || link.trim() === '') { mostrarToast('O link do Renova-se ainda não foi configurado.'); return; }
+      if (link.startsWith('http')) { window.open(link, '_blank'); } else { window.location.href = link; }
     }
 
     function abrirGoogleMaps() { const end = (appState.contato && appState.contato.endereco) || 'Rua Silvio Donini 223 - Centro, Diadema'; window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end), '_blank'); }
+    
     function renderizarServicosClinica() { const c = document.getElementById('lista-tratamentos-clinica'); if (!c) return; const servicos = appState.servicos || []; if (servicos.length === 0) { c.innerHTML = '<p style="text-align:center;color:#777;grid-column:1/-1;">Nenhum serviço cadastrado.</p>'; return; } const membro = ehMembroClube(); c.innerHTML = servicos.map(s => { const precoFinal = (membro && s.precoClube) ? s.precoClube : s.preco; const temD = membro && s.precoClube && s.precoClube !== s.preco; return `<div class="product-card-nova" style="cursor:default;"><div class="product-img-box-nova">${s.imagem ? `<img src="${esc(safeImgSrc(s.imagem))}">` : '💆‍♀️'}</div><h4>${esc(s.nome)}</h4>${s.descricao ? `<p style="font-size:11px;color:#888;margin-bottom:6px;">${esc(s.descricao)}</p>` : ''}${temD ? `<p style="font-size:11px;color:#999;text-decoration:line-through;">R$ ${esc(s.preco)}</p>` : ''}<p class="price" style="color:${temD ? 'var(--cor-dourada)' : 'var(--cor-principal)'};">R$ ${esc(precoFinal)} ${temD ? '<small style="color:var(--cor-principal);">no Clube 🌸</small>' : ''}</p>${!membro && s.precoClube ? `<p style="font-size:10px;color:var(--cor-dourada);margin-top:4px;font-weight:700;">Clube: R$ ${esc(s.precoClube)}</p>` : ''}</div>`; }).join(''); }
+    
     function verificarClienteLogado() { const n = localStorage.getItem('clienteNome'); const b = document.getElementById('welcome-banner'); if (n && b && !modoAdminAtivo) { b.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--cor-dourada);margin-right:5px;"></i> Olá, ${esc(n)}! Seja bem-vinda.`; b.style.display = 'block'; } else if (b) { b.style.display = 'none'; } }
+    
     async function enviarCadastro(e) { e.preventDefault(); const nome = document.getElementById('cad-nome').value.trim(), email = document.getElementById('cad-email').value.trim(), tel = document.getElementById('cad-tel').value.trim(); try { await db.collection("clientes").add({ nome, email, telefone: tel, dataCadastro: new Date().toISOString(), status: 'pendente' }); localStorage.setItem('clienteNome', nome); localStorage.setItem('clienteTelefone', tel); localStorage.setItem('clienteEmail', email); document.getElementById('modal-cadastro').style.display = 'none'; mostrarToast('✅ Cadastro realizado!'); voltarInicio(); document.getElementById('app-name').innerHTML = `Olá, ${esc(nome.split(' ')[0])}`; verificarClienteLogado(); renderizarHome(); document.getElementById('cad-nome').value = ''; document.getElementById('cad-email').value = ''; document.getElementById('cad-tel').value = ''; } catch (e) { alert('Erro ao cadastrar.'); } }
 
     function pedirCodigoClube() { document.getElementById('modal-codigo-clube').style.display = 'flex'; }
@@ -1208,6 +1372,42 @@
     function abrirConfiguracao(id) {
       configAtualAberta = id; backupState = JSON.parse(JSON.stringify(appState)); if (!adminAutenticado) { mostrarToast('Acesso restrito.'); return; }
       const content = document.getElementById('editor-content'), titulo = document.getElementById('editor-titulo'); let html = '';
+      
+      if (id === 'painel-vendas') {
+        titulo.textContent = '🛒 Painel de Vendas';
+        content.innerHTML = '<div id="lista-vendas-admin"><p style="text-align:center;padding:30px;color:#777;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando vendas...</p></div>';
+        document.getElementById('modal-editor').style.display = 'flex';
+        document.getElementById('btn-salvar-editor').style.display = 'none';
+        document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
+        document.getElementById('btn-voltar-editor').onclick = fecharEditor;
+        
+        db.collection('vendas').orderBy('dataVenda', 'desc').limit(50).get().then(snap => {
+          if (snap.empty) {
+            document.getElementById('lista-vendas-admin').innerHTML = '<p style="text-align:center;color:#777;">Nenhuma venda registrada ainda.</p>';
+            return;
+          }
+          let html = '';
+          snap.forEach(doc => {
+            const v = doc.data();
+            const dataStr = new Date(v.dataVenda).toLocaleString('pt-BR');
+            html += `
+              <div style="background:#fff; border-left:4px solid #10A37F; padding:15px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                  <strong style="color:var(--cor-principal); font-size:15px;">${esc(v.produtoNome)}</strong>
+                  <span style="background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:800;">CONCLUÍDO</span>
+                </div>
+                <div style="font-size:13px; color:#444;"><i class="fa-solid fa-user"></i> ${esc(v.clienteNome)}</div>
+                <div style="font-size:13px; color:#444;"><i class="fa-brands fa-whatsapp"></i> ${esc(v.clienteTelefone)}</div>
+                <div style="font-size:13px; color:#444;"><i class="fa-solid fa-money-bill"></i> R$ ${Number(v.valor).toFixed(2)} (${esc(v.formaPagamento)})</div>
+                <div style="font-size:11px; color:#888; margin-top:8px;">📅 ${dataStr} | Cód: ${esc(v.produtoCodigo || 'S/N')}</div>
+              </div>
+            `;
+          });
+          document.getElementById('lista-vendas-admin').innerHTML = html;
+        });
+        return;
+      }
+
       if (id === 'dashboard-kpi') { titulo.textContent = '📊 Dashboard'; content.innerHTML = '<div id="kpi-container"><p style="text-align:center;padding:30px;color:#777;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</p></div>'; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'none'; document.getElementById('btn-voltar-editor').textContent = '↩ Fechar'; document.getElementById('btn-voltar-editor').onclick = fecharEditor; carregarKPIs(); return; }
       if (id === 'link-envio') { titulo.textContent = 'Enviar Link'; let linkApp = window.location.origin + window.location.pathname; html = `<p style="font-size:14px;color:#666;margin-bottom:20px;">Copie o link e envie para suas clientes.</p><div style="display:flex;gap:8px;margin-bottom:20px;"><input type="text" id="link-app-clientes" value="${esc(linkApp)}" readonly style="flex:1;padding:15px;border:1px solid #ccc;border-radius:8px;font-size:14px;background:#f9f9f9;"><button onclick="copiarLinkApp()" style="background:var(--cor-principal);color:#fff;border:none;padding:15px 20px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:14px;">Copiar</button></div>`; }
       else if (id === 'agenda-config') { titulo.textContent = 'Configurar Agenda'; let inicio = appState.agendaInicio || '09:00', fim = appState.agendaFim || '18:00', intervalo = appState.agendaIntervalo || '30', diasDisponiveis = appState.diasDisponiveis || [1,2,3,4,5,6]; let diasHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map((dia, i) => `<label style="font-size:14px;display:flex;align-items:center;gap:8px;background:#f5f5f5;padding:12px;border-radius:8px;cursor:pointer;"><input type="checkbox" id="dia-${i}" ${diasDisponiveis.includes(i) ? 'checked' : ''} style="width:auto;margin:0;"> ${dia}</label>`).join(''); html = `<p style="font-size:14px;margin-bottom:15px;font-weight:700;">Dias de Atendimento:</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px;">${diasHTML}</div><p style="font-size:14px;margin-bottom:15px;font-weight:700;">Horário de Funcionamento:</p><div style="display:flex;gap:15px;margin-bottom:20px;"><div style="flex:1;"><label style="font-size:12px;color:#666;display:block;margin-bottom:5px;">Abertura</label><input type="time" id="agenda-inicio" value="${esc(inicio)}" style="margin:0;padding:12px;font-size:16px;"></div><div style="flex:1;"><label style="font-size:12px;color:#666;display:block;margin-bottom:5px;">Fechamento</label><input type="time" id="agenda-fim" value="${esc(fim)}" style="margin:0;padding:12px;font-size:16px;"></div></div><label style="font-size:14px;margin-bottom:8px;font-weight:700;display:block;">Intervalo:</label><select id="agenda-intervalo" style="margin-bottom:25px;padding:12px;font-size:16px;"><option value="15" ${intervalo === '15' ? 'selected' : ''}>15min</option><option value="30" ${intervalo === '30' ? 'selected' : ''}>30min</option><option value="45" ${intervalo === '45' ? 'selected' : ''}>45min</option><option value="60" ${intervalo === '60' ? 'selected' : ''}>1h</option></select>`; }
@@ -1276,11 +1476,101 @@
     function addFuncionarioConfig() { document.getElementById('funcionarios-container').insertAdjacentHTML('beforeend', `<div class="config-item-row" style="margin-bottom:12px;background:#f9f9f9;padding:12px;border-radius:8px;"><input type="color" class="func-cor" value="#9D174D" style="width:50px;height:45px;"><input type="text" class="func-nome" placeholder="Nome" style="flex:1;padding:12px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`); }
     
     function abrirEditorPublicidade(index) { indexPubEditando = index; configAtualAberta = 'publicidade-edit'; const pub = index === -1 ? { titulo: '', descricao: '', sobre: '', imagem: null, video: null } : appState.publicidades[index]; document.getElementById('editor-titulo').textContent = index === -1 ? 'Nova Publicidade' : 'Editar'; document.getElementById('editor-content').innerHTML = `<label style="font-size:13px;font-weight:700;">Título</label><input type="text" id="pub-titulo" value="${esc(pub.titulo || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Descrição</label><input type="text" id="pub-descricao" value="${esc(pub.descricao || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Sobre</label><textarea id="pub-sobre" rows="3">${esc(pub.sobre || '')}</textarea><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Imagem</label><input type="file" id="pub-imagem" accept="image/*" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Link Vídeo</label><input type="url" id="pub-video-link" value="${esc(pub.video || '')}">`; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'block'; document.getElementById('btn-salvar-editor').textContent = 'Salvar'; document.getElementById('btn-salvar-editor').onclick = salvarPublicidade; document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('publicidade'); }
-    function salvarPublicidade() { const novaPub = indexPubEditando === -1 ? { id: Date.now() } : appState.publicidades[indexPubEditando]; novaPub.titulo = document.getElementById('pub-titulo').value; novaPub.descricao = document.getElementById('pub-descricao').value; novaPub.sobre = document.getElementById('pub-sobre').value; const vid = document.getElementById('pub-video-link').value; const img = document.getElementById('pub-imagem'); const fin = () => { if (indexPubEditando === -1) appState.publicidades.push(novaPub); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); }; if (vid) { novaPub.video = vid; novaPub.imagem = null; fin(); } else if (img.files.length) { lerArquivoComprimido('pub-imagem', v => { novaPub.imagem = v; novaPub.video = null; fin(); }); } else { novaPub.video = null; fin(); } }
+    
+    function salvarPublicidade() { 
+      const novaPub = indexPubEditando === -1 ? { id: Date.now() } : appState.publicidades[indexPubEditando]; 
+      novaPub.titulo = document.getElementById('pub-titulo').value; 
+      novaPub.descricao = document.getElementById('pub-descricao').value; 
+      novaPub.sobre = document.getElementById('pub-sobre').value; 
+      
+      const vid = document.getElementById('pub-video-link').value.trim(); 
+      const img = document.getElementById('pub-imagem'); 
+      
+      const fin = () => { 
+        if (indexPubEditando === -1) appState.publicidades.push(novaPub); 
+        salvarEstado(); 
+        renderizarHome(); 
+        abrirConfiguracao('publicidade'); 
+      }; 
+      
+      if (vid !== '') { 
+        novaPub.video = vid; 
+        novaPub.imagem = null; 
+        fin(); 
+      } else if (img.files.length) { 
+        lerArquivoComprimido('pub-imagem', v => { 
+          novaPub.imagem = v; 
+          novaPub.video = null; 
+          fin(); 
+        }); 
+      } else { 
+        fin(); 
+      } 
+    }
+    
     function removerPublicidade(index) { if (confirm('Excluir?')) { appState.publicidades.splice(index, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('publicidade'); } }
 
-    function abrirEditorProduto(index) { indexProdEditando = index; configAtualAberta = 'boutique-edit'; const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.boutiqueProdutos[index]; document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar'; document.getElementById('editor-content').innerHTML = `<label style="font-size:13px;font-weight:700;">Nome</label><input type="text" id="prod-nome" value="${esc(prod.nome || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço</label><input type="text" id="prod-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label><input type="file" id="prod-imagem" accept="image/*" style="padding:15px;"><label style="font-size:13px;font-weight:700;margin-top:15px;display:flex;align-items:center;gap:10px;background:#E0F7FA;padding:12px;border-radius:8px;cursor:pointer;"><input type="checkbox" id="prod-dropship" ${prod.dropship ? 'checked' : ''} style="width:auto;"> 🚚 Dropship</label>`; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'block'; document.getElementById('btn-salvar-editor').textContent = 'Salvar'; document.getElementById('btn-salvar-editor').onclick = salvarProdutoBoutique; document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('boutique'); }
-    function salvarProdutoBoutique() { const nome = document.getElementById('prod-nome').value; const preco = document.getElementById('prod-preco').value; if (!nome || !preco) return alert('Preencha tudo.'); const novo = indexProdEditando === -1 ? { id: Date.now() } : appState.boutiqueProdutos[indexProdEditando]; novo.nome = nome; novo.preco = preco; novo.dropship = document.getElementById('prod-dropship').checked; const img = document.getElementById('prod-imagem'); const fin = () => { if (indexProdEditando === -1) appState.boutiqueProdutos.push(novo); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); }; if (img.files.length) lerArquivoComprimido('prod-imagem', v => { novo.imagem = v; fin(); }); else fin(); }
+    function abrirEditorProduto(index) { 
+      indexProdEditando = index; configAtualAberta = 'boutique-edit'; 
+      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagem: null, dropship: false } : appState.boutiqueProdutos[index]; 
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar'; 
+      document.getElementById('editor-content').innerHTML = `
+        <label style="font-size:13px;font-weight:700;">Nome</label>
+        <input type="text" id="prod-nome" value="${esc(prod.nome || '')}">
+        
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Preço Normal (R$)</label><input type="text" id="prod-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700; color:var(--cor-dourada);">Preço Clube (R$)</label><input type="text" id="prod-preco-clube" value="${esc(prod.precoClube || '')}" oninput="mascaraPreco(this)" style="border-color:var(--cor-dourada);"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Código do Produto</label><input type="text" id="prod-codigo" value="${esc(prod.codigo || '')}"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Estoque (Qtd)</label><input type="number" id="prod-estoque" value="${prod.estoque !== undefined ? prod.estoque : 10}"></div>
+        </div>
+
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label>
+        <input type="file" id="prod-imagem" accept="image/*" style="padding:15px;">
+        
+        <label style="font-size:13px;font-weight:700;margin-top:15px;display:flex;align-items:center;gap:10px;background:#E0F7FA;padding:12px;border-radius:8px;cursor:pointer;">
+          <input type="checkbox" id="prod-dropship" ${prod.dropship ? 'checked' : ''} style="width:auto;"> 🚚 Dropship
+        </label>
+      `; 
+      document.getElementById('modal-editor').style.display = 'flex'; 
+      document.getElementById('btn-salvar-editor').style.display = 'block'; 
+      document.getElementById('btn-salvar-editor').textContent = 'Salvar'; 
+      document.getElementById('btn-salvar-editor').onclick = salvarProdutoBoutique; 
+      document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('boutique'); 
+    }
+
+    function salvarProdutoBoutique() { 
+      const nome = document.getElementById('prod-nome').value; 
+      const preco = document.getElementById('prod-preco').value; 
+      const precoClube = document.getElementById('prod-preco-clube').value;
+      const codigo = document.getElementById('prod-codigo').value;
+      const estoque = parseInt(document.getElementById('prod-estoque').value) || 0;
+      
+      if (!nome || !preco) return alert('Preencha o nome e o preço normal.'); 
+      
+      const novo = indexProdEditando === -1 ? { id: Date.now() } : appState.boutiqueProdutos[indexProdEditando]; 
+      novo.nome = nome; 
+      novo.preco = preco; 
+      novo.precoClube = precoClube;
+      novo.codigo = codigo;
+      novo.estoque = estoque;
+      novo.dropship = document.getElementById('prod-dropship').checked; 
+      
+      const img = document.getElementById('prod-imagem'); 
+      const fin = () => { 
+        if (indexProdEditando === -1) appState.boutiqueProdutos.push(novo); 
+        salvarEstado(); 
+        renderizarHome(); 
+        renderizarClubeEVitrine();
+        abrirConfiguracao('boutique'); 
+      }; 
+      if (img.files.length) lerArquivoComprimido('prod-imagem', v => { novo.imagem = v; fin(); }); 
+      else fin(); 
+    }
+    
     function removerProdutoBoutique(i) { if (confirm('Excluir?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
 
     function abrirEditorProdutoClube(index) { indexProdClubeEditando = index; configAtualAberta = 'clube-edit'; if (!Array.isArray(appState.produtosClube)) appState.produtosClube = []; const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.produtosClube[index]; document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto Clube' : 'Editar'; document.getElementById('editor-content').innerHTML = `<label style="font-size:13px;font-weight:700;">Nome</label><input type="text" id="prod-clube-nome" value="${esc(prod.nome || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço</label><input type="text" id="prod-clube-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label><input type="file" id="prod-clube-imagem" accept="image/*" style="padding:15px;">`; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'block'; document.getElementById('btn-salvar-editor').textContent = 'Salvar'; document.getElementById('btn-salvar-editor').onclick = salvarProdutoClube; document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('loja-clube'); }
@@ -1311,6 +1601,58 @@
     function renderizarClubeEVitrine() { document.getElementById('titulo-clube-tela').textContent = appState.clubeName; document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle; document.getElementById('texto-clube-beneficios').textContent = appState.clubeBeneficios || ''; document.getElementById('vitrine-admin-bar').style.display = modoAdminAtivo ? 'block' : 'none'; const c = document.getElementById('vitrine-produtos-grid-clube'); const prods = (appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos; const orig = (appState.produtosClube.length > 0) ? 'clube' : 'boutique'; c.innerHTML = prods.map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i}, '${orig}')"><div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}">` : '🛍️'}</div><h4>${esc(p.nome)}</h4><p class="price">R$ ${esc(p.preco)}</p></button>`).join(''); }
     function abrirCurso(id) { const c = appState.cursos.find(x => String(x.id) === String(id)); if (!c) return; window._cursoAtual = c; document.getElementById('curso-video-container').innerHTML = c.video ? gerarHTMLVideo(c.video) : ''; document.getElementById('curso-nome').textContent = c.nome; document.getElementById('curso-descricao').textContent = c.descricao || ''; document.getElementById('curso-precos').innerHTML = `<div style="font-size:26px;font-weight:700;color:var(--cor-principal);">R$ ${esc(c.preco)}</div>`; document.getElementById('curso-modulos').innerHTML = (c.modulos || []).map(m => `<li>${esc(m)}</li>`).join(''); const comprado = localStorage.getItem('cursoLiberado_' + c.id) === 'true'; document.getElementById('btn-acessar-curso').style.display = comprado ? 'flex' : 'none'; document.getElementById('btn-codigo-curso').style.display = comprado ? 'none' : 'flex'; document.getElementById('btn-comprar-curso').onclick = () => window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Quero o curso '+c.nome)}`, '_blank'); document.getElementById('btn-codigo-curso').onclick = () => document.getElementById('modal-codigo-curso').style.display = 'flex'; document.getElementById('btn-acessar-curso').onclick = () => window.open(safeHref(c.linkAcesso), '_blank'); abrirTela('curso'); }
     async function validarCodigoCurso() { const codigo = document.getElementById('input-codigo-curso').value.trim().toUpperCase(); const c = window._cursoAtual; if (!codigo || !c) return; try { const doc = await db.collection('codigos_curso').doc(codigo).get(); if (doc.exists && String(doc.data().cursoId) === String(c.id)) { localStorage.setItem('cursoLiberado_' + c.id, 'true'); document.getElementById('modal-codigo-curso').style.display = 'none'; mostrarToast('✅ Liberado!'); abrirCurso(c.id); } else { alert('❌ Inválido.'); } } catch(e) { alert('Erro.'); } }
+    
+    function renderizarCursos() {
+      const c = document.getElementById('lista-cursos'); if (!c) return;
+      const cursos = appState.cursos || [];
+      if (cursos.length === 0) { c.innerHTML = '<p style="text-align:center;color:#777;grid-column:1/-1;">Nenhum curso disponível.</p>'; return; }
+      c.innerHTML = cursos.map(curso => `
+        <button class="product-card-nova" onclick="abrirCurso('${curso.id}')" style="cursor:pointer;">
+          <div class="product-img-box-nova">${curso.imagem ? `<img src="${esc(safeImgSrc(curso.imagem))}">` : '🎓'}</div>
+          <h4>${esc(curso.nome)}</h4>
+          <p class="price" style="color:var(--cor-principal); font-size:16px; font-weight:700;">R$ ${esc(curso.preco)}</p>
+        </button>
+      `).join('');
+    }
+
+    function abrirProduto(index, origem) {
+      const prods = (origem === 'clube' && appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos;
+      const p = prods[index];
+      if (!p) return;
+      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">` : '🛍️';
+      document.getElementById('produto-nome').textContent = p.nome;
+      document.getElementById('produto-preco').textContent = `R$ ${esc(p.preco)}`;
+      document.getElementById('produto-desc').textContent = p.descricao || 'Produto exclusivo da nossa loja.';
+      document.getElementById('btn-comprar-produto').onclick = () => {
+         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} (R$ ${p.preco}).`);
+         window.open(`https://wa.me/${appState.whatsapp}?text=${msg}`, '_blank');
+      };
+      abrirTela('produto');
+    }
+
+    function abrirTelaCanais() {
+      const container = document.getElementById('canais-lista-container');
+      const canais = appState.contato?.canais || [];
+      if (canais.length === 0) { container.innerHTML = '<p style="text-align:center;color:#777;">Nenhum canal cadastrado.</p>'; return; }
+      container.innerHTML = canais.map(c => `
+        <a href="${esc(safeHref(c.link))}" target="_blank" class="canal-item-card">
+          <div class="canal-item-icon"><i class="fa-solid fa-bullhorn"></i></div>
+          <div class="canal-item-info"><h4>${esc(c.nome)}</h4><p>${esc(c.descricao)}</p></div>
+          <i class="fa-solid fa-chevron-right canal-item-arrow"></i>
+        </a>
+      `).join('');
+      abrirTela('canais');
+    }
+
+    function getLinkIndicacao() {
+      const nome = localStorage.getItem('clienteNome') || 'cliente';
+      const base = window.location.origin + window.location.pathname;
+      return `${base}?ref=${encodeURIComponent(nome)}`;
+    }
+    function copiarLink() { const input = document.getElementById('link-indicacao'); input.select(); document.execCommand('copy'); mostrarToast('✅ Link copiado!'); }
+    function compartilharIndicacao() { const link = getLinkIndicacao(); const msg = encodeURIComponent(`Olá! Use meu link para conhecer a clínica e ganhar 15% de desconto na primeira compra: ${link}`); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
+    
+    function enviarPush() { alert('Notificação Push enviada com sucesso! (Simulação)'); document.getElementById('push-resultado').innerHTML = '<span style="color:#2e7d32;font-weight:bold;">✅ Enviado!</span>'; }
 
     function carregarKPIs() { const c = document.getElementById('kpi-container'); if (!c) return; Promise.all([db.collection('clientes').get(), db.collection('agendamentos').get(), db.collection('financeiro').get().catch(() => ({ forEach: () => {} }))]).then(([sc, sa, sf]) => { const hoje = new Date(); const iM = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0]; let agM = 0, fatM = 0; sa.forEach(d => { if (d.data().data >= iM) agM++; }); sf.forEach(d => { if (d.data().data >= iM && d.data().tipo === 'entrada') fatM += Number(d.data().valor) || 0; }); c.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;"><div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#777;">Faturamento Mês</div><div style="font-size:28px;font-weight:800;color:#10A37F;">R$ ${fatM.toFixed(2).replace('.', ',')}</div></div><div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#777;">Clientes</div><div style="font-size:28px;font-weight:800;color:#7C3AED;">${sc.size}</div></div><div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#777;">Agendamentos</div><div style="font-size:28px;font-weight:800;color:#9D174D;">${agM}</div></div></div>`; }); }
     function atualizarBoxNotificacoes() { const box = document.getElementById('notificacoes-box'); if (!box) return; const ativo = localStorage.getItem('pushAtivo') === 'true'; box.style.display = 'block'; box.innerHTML = ativo ? `<p style="font-size:14px;font-weight:700;color:#2e7d32;margin-bottom:8px;">✅ Notificações ativas</p><button onclick="desativarNotificacoes()" style="background:#ffebee;color:#c62828;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Desativar</button>` : `<p style="font-size:14px;font-weight:700;color:var(--cor-principal);margin-bottom:8px;">🔔 Ativar notificações?</p><button onclick="ativarNotificacoes()" style="background:var(--cor-principal);color:#fff;border:none;padding:12px 24px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;"><i class="fa-solid fa-bell"></i> Ativar</button>`; }
