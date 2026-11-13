@@ -682,14 +682,24 @@
         
         <input type="text" id="checkout-nome" placeholder="Seu nome completo" required>
         <input type="tel" id="checkout-tel" placeholder="WhatsApp (com DDD)" required>
+        
+        <label style="font-size:13px; font-weight:700; display:block; text-align:left; margin-top:15px; margin-bottom:5px; color:#555;">Como você quer receber?</label>
+        <select id="checkout-entrega" onchange="toggleEnderecoCheckout()" style="margin-bottom:10px;">
+          <option value="Retirada na Loja">🏪 Retirar na Loja</option>
+          <option value="Entrega">🚚 Receber em Casa (Entrega)</option>
+        </select>
+        
+        <input type="text" id="checkout-endereco" placeholder="Endereço completo (Rua, Nº, Bairro)" style="display:none; margin-bottom:10px;">
+
+        <label style="font-size:13px; font-weight:700; display:block; text-align:left; margin-top:10px; margin-bottom:5px; color:#555;">Forma de Pagamento:</label>
         <select id="checkout-pagamento">
           <option value="Pix">Pix</option>
           <option value="Cartão de Crédito">Cartão de Crédito</option>
           <option value="Boleto">Boleto</option>
         </select>
         
-        <button id="btn-confirmar-checkout" onclick="finalizarCompraDireta()" class="btn-enviar-cadastro" style="background:#10A37F;">
-          <i class="fa-solid fa-check"></i> Confirmar Pagamento
+        <button id="btn-confirmar-checkout" onclick="finalizarCompraDireta()" class="btn-enviar-cadastro" style="background:#10A37F; margin-top:20px;">
+          <i class="fa-solid fa-lock"></i> Ir para o Pagamento Seguro
         </button>
         <button class="btn-undo" onclick="document.getElementById('modal-checkout').style.display='none'">Cancelar</button>
       </div>
@@ -991,7 +1001,7 @@
     let appState = JSON.parse(JSON.stringify(estadoPadrao));
     let backupState = null, configAtualAberta = '', indexPubEditando = -1, indexProdEditando = -1, indexProdClubeEditando = -1, indexCursoEditando = -1, indexServicoEditando = -1, indexDepoimentoEditando = -1;
     let currentDate = new Date(), diaSelecionado = null, idAgendamentoRemarcando = null, dadosRemarcando = null, filtroFinanceiroAtual = 'todas', planoSelecionadoId = null;
-    let _produtoCheckout = null; // <-- DECLARADO APENAS UMA VEZ AQUI
+    let _produtoCheckout = null; 
     window._agsCache = {}; window._prontuarioClienteAtual = null; window._acessoFinanceiroLiberado = false; window._agendamentoParaConfirmar = null; window._listaFinanceiroCache = []; window._agsJaEnviados = new Set(); window._verifConfirmando = false; window._listaClientesCache = []; window._listaAgendamentosCache = []; window._cursoAtual = null;
     let pilhaTelas = ['inicio'];
 
@@ -1194,6 +1204,19 @@
       aplicarWhiteLabelMeta();
     }
 
+    function toggleEnderecoCheckout() {
+      const tipo = document.getElementById('checkout-entrega').value;
+      const endereco = document.getElementById('checkout-endereco');
+      if (tipo === 'Entrega') {
+        endereco.style.display = 'block';
+        endereco.required = true;
+      } else {
+        endereco.style.display = 'none';
+        endereco.required = false;
+        endereco.value = '';
+      }
+    }
+
     function abrirCheckout(index) {
       const p = appState.boutiqueProdutos[index];
       if (!p) return;
@@ -1210,7 +1233,12 @@
       const telSalvo = localStorage.getItem('clienteTelefone');
       if (nomeSalvo) document.getElementById('checkout-nome').value = nomeSalvo;
       if (telSalvo) document.getElementById('checkout-tel').value = telSalvo;
-
+      
+      // Reset checkout fields
+      document.getElementById('checkout-entrega').value = 'Retirada na Loja';
+      document.getElementById('checkout-endereco').value = '';
+      document.getElementById('checkout-endereco').style.display = 'none';
+      
       document.getElementById('modal-checkout').style.display = 'flex';
     }
 
@@ -1218,64 +1246,86 @@
       const nome = document.getElementById('checkout-nome').value.trim();
       const tel = document.getElementById('checkout-tel').value.trim();
       const pgt = document.getElementById('checkout-pagamento').value;
+      const tipoEntrega = document.getElementById('checkout-entrega').value;
+      const endereco = document.getElementById('checkout-endereco').value.trim();
 
       if (!nome || !tel) return alert('Preencha seu nome e WhatsApp para continuar.');
+      if (tipoEntrega === 'Entrega' && !endereco) return alert('Por favor, preencha o endereço para entrega.');
 
       const btn = document.getElementById('btn-confirmar-checkout');
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando pagamento...';
 
       try {
         const membro = ehMembroClube();
         const precoStr = (membro && _produtoCheckout.precoClube) ? _produtoCheckout.precoClube : _produtoCheckout.preco;
         const valorNumerico = parseFloat(precoStr.replace(/\./g, '').replace(',', '.'));
 
-        // 1. Registrar a Venda
-        await db.collection('vendas').add({
+        const vendaRef = await db.collection('vendas').add({
           produtoId: _produtoCheckout.id,
           produtoNome: _produtoCheckout.nome,
           produtoCodigo: _produtoCheckout.codigo || '',
           clienteNome: nome,
           clienteTelefone: tel,
+          tipoEntrega: tipoEntrega,
+          endereco: tipoEntrega === 'Entrega' ? endereco : 'Retirada na Loja',
           valor: valorNumerico,
           formaPagamento: pgt,
           dataVenda: new Date().toISOString(),
-          status: 'concluido',
+          status: 'pendente', 
           tipoPreco: membro ? 'clube' : 'normal'
         });
 
-        // 2. Dar baixa no estoque
         const idxProd = appState.boutiqueProdutos.findIndex(x => x.id === _produtoCheckout.id);
         if (idxProd > -1 && appState.boutiqueProdutos[idxProd].estoque !== undefined) {
            appState.boutiqueProdutos[idxProd].estoque -= 1;
-           await salvarEstado();
+           if (adminAutenticado) { await salvarEstado(); }
         }
 
-        // 3. Lançar no Financeiro
+        const waClinica = appState.whatsapp || '5511997450293';
+        const textoMsg = `Olá! Acabei de fazer um pedido no app:\n\n🛍️ *${_produtoCheckout.nome}*\n💰 *R$ ${precoStr}*\n📦 *${tipoEntrega}*\n💳 *${pgt}*\n👤 *${nome}* (${tel})\n\nEstou no checkout, como prosseguir com o pagamento?`;
+        const linkWhats = `https://wa.me/${waClinica}?text=${encodeURIComponent(textoMsg)}`;
+
+        const modalContent = document.querySelector('#modal-checkout .cartao-cadastro');
+        modalContent.innerHTML = `
+          <div style="text-align:center;">
+            <i class="fa-solid fa-shield-halved" style="font-size:50px; color:#10A37F; margin-bottom:15px;"></i>
+            <h3 style="color:#333; font-size:22px;">Checkout Seguro</h3>
+            <p style="font-size:14px; color:#666; margin:10px 0 20px;">Pedido #${vendaRef.id.substring(0,6).toUpperCase()} gerado!</p>
+            
+            <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px dashed #ccc; margin-bottom:20px; text-align:left;">
+              <p style="font-size:13px; margin-bottom:5px;"><b>Produto:</b> ${esc(_produtoCheckout.nome)}</p>
+              <p style="font-size:13px; margin-bottom:5px;"><b>Entrega:</b> ${tipoEntrega} ${tipoEntrega === 'Entrega' ? ' - ' + esc(endereco) : ''}</p>
+              <p style="font-size:13px; margin-bottom:5px;"><b>Pagamento:</b> ${pgt}</p>
+              <p style="font-size:18px; font-weight:800; color:#10A37F; margin-top:10px;">Total: R$ ${precoStr}</p>
+            </div>
+
+            <p style="font-size:13px; color:#555; margin-bottom:20px; line-height:1.5;">
+              Clique abaixo para ser redirecionado ao ambiente de pagamento do <b>${pgt}</b>.
+            </p>
+
+            <!-- BOTÃO DE PAGAMENTO REAL -->
+            <a href="${linkWhats}" target="_blank" class="btn-enviar-cadastro" style="background:${pgt === 'Pix' ? '#10A37F' : (pgt === 'Cartão de Crédito' ? '#3B82F6' : '#F59E0B')}; display:flex; align-items:center; justify-content:center; text-decoration:none; margin-bottom:10px;">
+              <i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:8px;"></i> Pagar com ${pgt}
+            </a>
+            <button onclick="location.reload()" class="btn-undo">Voltar para a Loja</button>
+          </div>
+        `;
+
         await db.collection('financeiro').add({
           caixa: 'boutique',
           tipo: 'entrada',
           data: new Date().toLocaleDateString('en-CA'),
-          descricao: `Venda App: ${_produtoCheckout.nome} (${nome})`,
+          descricao: `Pedido Pendente: ${_produtoCheckout.nome} (${nome})`,
           valor: valorNumerico
         });
 
-        localStorage.setItem('clienteNome', nome);
-        localStorage.setItem('clienteTelefone', tel);
-
-        document.getElementById('modal-checkout').style.display = 'none';
-        mostrarToast('✅ Compra realizada com sucesso!');
-        
-        alert(`🎉 COMPRA CONCLUÍDA!\n\nObrigado, ${nome}!\nSeu pedido: ${_produtoCheckout.nome}\nValor: R$ ${precoStr}\nPagamento: ${pgt}\n\nNossa equipe entrará em contato pelo WhatsApp ${tel}.`);
-        
-        renderizarHome(); 
-
       } catch(e) {
         console.error(e);
-        alert('Erro ao processar compra. Tente novamente.');
+        alert('Erro ao gerar pedido. Tente novamente.');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirmar Pagamento';
+        btn.innerHTML = '<i class="fa-solid fa-lock"></i> Ir para o Pagamento Seguro';
       }
     }
 
@@ -1381,30 +1431,38 @@
         document.getElementById('btn-voltar-editor').textContent = '↩ Fechar';
         document.getElementById('btn-voltar-editor').onclick = fecharEditor;
         
-        db.collection('vendas').orderBy('dataVenda', 'desc').limit(50).get().then(snap => {
-          if (snap.empty) {
-            document.getElementById('lista-vendas-admin').innerHTML = '<p style="text-align:center;color:#777;">Nenhuma venda registrada ainda.</p>';
-            return;
-          }
-          let html = '';
-          snap.forEach(doc => {
-            const v = doc.data();
-            const dataStr = new Date(v.dataVenda).toLocaleString('pt-BR');
-            html += `
-              <div style="background:#fff; border-left:4px solid #10A37F; padding:15px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                  <strong style="color:var(--cor-principal); font-size:15px;">${esc(v.produtoNome)}</strong>
-                  <span style="background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:800;">CONCLUÍDO</span>
+        db.collection('vendas').orderBy('dataVenda', 'desc').limit(50).get()
+          .then(snap => {
+            if (snap.empty) {
+              document.getElementById('lista-vendas-admin').innerHTML = '<p style="text-align:center;color:#777;padding:20px;">Nenhuma venda registrada ainda.</p>';
+              return;
+            }
+            let html = '';
+            snap.forEach(doc => {
+              const v = doc.data();
+              const dataStr = new Date(v.dataVenda).toLocaleString('pt-BR');
+              
+              let corPagto = '#10A37F'; 
+              if (v.formaPagamento === 'Cartão de Crédito') corPagto = '#3B82F6'; 
+              if (v.formaPagamento === 'Boleto') corPagto = '#F59E0B';
+
+              html += `
+                <div style="background:#fff; border-left:4px solid ${corPagto}; padding:15px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <strong style="color:var(--cor-principal); font-size:15px;">${esc(v.produtoNome)}</strong>
+                    <span style="background:${corPagto}20; color:${corPagto}; padding:4px 10px; border-radius:99px; font-size:11px; font-weight:800; border:1px solid ${corPagto}40;">${esc(v.formaPagamento)}</span>
+                  </div>
+                  <div style="font-size:13px; color:#444; margin-bottom:4px;"><i class="fa-solid fa-user" style="width:15px;"></i> ${esc(v.clienteNome)}</div>
+                  <div style="font-size:13px; color:#444; margin-bottom:4px;"><i class="fa-solid fa-box" style="width:15px;"></i> ${esc(v.tipoEntrega || 'Retirada')} ${v.endereco && v.tipoEntrega === 'Entrega' ? '- ' + esc(v.endereco) : ''}</div>
+                  <div style="font-size:13px; color:#444; margin-bottom:4px;"><i class="fa-brands fa-whatsapp" style="width:15px;"></i> ${esc(v.clienteTelefone)}</div>
+                  <div style="font-size:14px; font-weight:700; color:#2e7d32; margin-top:8px;"><i class="fa-solid fa-money-bill" style="width:15px;"></i> R$ ${Number(v.valor).toFixed(2)}</div>
+                  <div style="font-size:11px; color:#888; margin-top:10px; border-top:1px dashed #eee; padding-top:8px;">📅 ${dataStr} | Cód: ${esc(v.produtoCodigo || 'S/N')}</div>
                 </div>
-                <div style="font-size:13px; color:#444;"><i class="fa-solid fa-user"></i> ${esc(v.clienteNome)}</div>
-                <div style="font-size:13px; color:#444;"><i class="fa-brands fa-whatsapp"></i> ${esc(v.clienteTelefone)}</div>
-                <div style="font-size:13px; color:#444;"><i class="fa-solid fa-money-bill"></i> R$ ${Number(v.valor).toFixed(2)} (${esc(v.formaPagamento)})</div>
-                <div style="font-size:11px; color:#888; margin-top:8px;">📅 ${dataStr} | Cód: ${esc(v.produtoCodigo || 'S/N')}</div>
-              </div>
-            `;
-          });
-          document.getElementById('lista-vendas-admin').innerHTML = html;
-        });
+              `;
+            });
+            document.getElementById('lista-vendas-admin').innerHTML = html;
+          })
+          .catch(error => { document.getElementById('lista-vendas-admin').innerHTML = `<p style="color:red;text-align:center;">Erro: ${esc(error.message)}</p>`; });
         return;
       }
 
@@ -1417,7 +1475,55 @@
       else if (id === 'busca-proposta') { titulo.textContent = '🔎 Buscar Proposta'; html = `<div style="margin-bottom:20px;"><input type="text" id="busca-proposta-input" placeholder="Ex: R01-2026" oninput="buscarPorProposta(this.value)" style="width:100%;padding:18px;border:2px solid var(--cor-principal);border-radius:10px;font-size:18px;text-transform:uppercase;font-weight:600;box-sizing:border-box;"></div><div id="resultado-busca-proposta"><p style="text-align:center;color:#999;padding:20px;">Digite o número completo.</p></div>`; }
       else if (id === 'equipe') { titulo.textContent = 'Gerenciar Equipe'; const funcs = appState.funcionarios || []; let funcsForm = funcs.map(f => `<div class="config-item-row" style="margin-bottom:12px;background:#f9f9f9;padding:12px;border-radius:8px;"><input type="color" class="func-cor" value="${esc(f.cor)}" style="width:50px;height:45px;"><input type="text" class="func-nome" value="${esc(f.nome)}" placeholder="Nome" style="flex:1;padding:12px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); html = `<div id="funcionarios-container">${funcsForm}</div><button type="button" class="btn-add-item" onclick="addFuncionarioConfig()">+ Adicionar</button>`; }
       else if (id === 'migracao') { titulo.textContent = 'Migrar Clientes'; html = `<div style="background:#E0F7FA;border:1px solid #00BCD4;border-radius:8px;padding:20px;margin-bottom:20px;"><p style="font-size:14px;color:#006064;"><b>Como importar:</b> CSV com colunas <b>Nome, Email, Telefone</b>.</p></div><input type="file" id="csv-file" accept=".csv" style="padding:15px;border:1px solid #ccc;border-radius:8px;width:100%;margin-bottom:20px;"><button type="button" onclick="processarMigracaoCSV()" style="width:100%;padding:18px;background:#10A37F;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;"><i class="fa-solid fa-file-import"></i> Importar</button><p id="migracao-status" style="font-size:14px;text-align:center;margin-top:20px;font-weight:bold;"></p>`; }
-      else if (id === 'financeiro') { titulo.textContent = 'Gestão Financeira'; if (!window._acessoFinanceiroLiberado) { html = `<div style="text-align:center;padding:40px 20px;"><i class="fa-solid fa-lock" style="font-size:60px;color:var(--cor-principal);margin-bottom:20px;"></i><h4 style="font-size:20px;">Acesso Restrito</h4><p style="font-size:15px;color:#666;margin-bottom:25px;">Digite o PIN.</p><input type="password" id="fin-senha-acesso" inputmode="numeric" placeholder="****" style="text-align:center;font-size:24px;letter-spacing:5px;max-width:200px;margin:0 auto 20px;padding:15px;border-radius:10px;border:1px solid #ccc;display:block;"><button onclick="verificarSenhaFinanceiro()" style="width:100%;max-width:300px;margin:0 auto;padding:18px;background:var(--cor-principal);color:#fff;border:none;border-radius:8px;font-weight:bold;display:block;">Desbloquear</button><p id="fin-senha-status" style="font-size:14px;color:red;margin-top:15px;font-weight:bold;"></p></div>`; } else { html = `<div style="text-align:center;margin-bottom:30px;"><h2 style="font-size:34px;font-weight:800;background:linear-gradient(135deg,#9D174D,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">💎 Gestão Financeira</h2></div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;background:#e8f5e9;padding:15px 20px;border-radius:12px;flex-wrap:wrap;gap:15px;"><span style="font-size:14px;font-weight:bold;color:#2e7d32;"><i class="fa-solid fa-lock-open"></i> Liberado</span><div style="display:flex;gap:10px;"><button onclick="alterarSenhaFinanceiro()" style="background:#fff;border:1px solid #ccc;padding:10px 15px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:bold;">Trocar PIN</button><button onclick="bloquearFinanceiro()" style="background:#ffebee;color:#c62828;border:none;padding:10px 15px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:bold;">Bloquear</button></div></div><div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center;margin-bottom:30px;background:#fff;padding:20px;border-radius:12px;border:1px solid #eee;"><div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;"><label style="font-size:15px;font-weight:bold;">Filtrar:</label><select id="fin-filtro-caixa" onchange="filtrarFinanceiro(this.value)" style="padding:12px;border-radius:8px;border:1px solid #ccc;font-size:15px;"><option value="todas" ${filtroFinanceiroAtual === 'todas' ? 'selected' : ''}>Todos</option><option value="clinica" ${filtroFinanceiroAtual === 'clinica' ? 'selected' : ''}>Clínica</option><option value="clube" ${filtroFinanceiroAtual === 'clube' ? 'selected' : ''}>Clube</option><option value="boutique" ${filtroFinanceiroAtual === 'boutique' ? 'selected' : ''}>Boutique</option></select></div><button onclick="abrirFechamentoCaixa()" style="background:var(--cor-principal);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer;">Fechar Caixa</button></div><div class="fin-dashboard-cards" id="dashboard-financeiro"></div><div style="display:flex;gap:30px;flex-wrap:wrap;margin-bottom:30px;"><div style="flex:1;min-width:300px;background:#f9f9f9;padding:25px;border-radius:16px;border:1px solid #ddd;"><h4 style="font-size:16px;color:var(--cor-principal);margin-bottom:20px;">Novo Lançamento</h4><select id="fin-caixa" style="width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;"><option value="clinica">Clínica</option><option value="clube">Clube</option><option value="boutique">Boutique</option></select><div style="display:flex;gap:15px;margin-bottom:15px;"><div style="flex:1;"><select id="fin-tipo" style="width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;"><option value="entrada">Entrada (+)</option><option value="saida">Saída (-)</option></select></div><div style="flex:1;"><input type="date" id="fin-data" style="width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;"></div></div><input type="text" id="fin-desc" placeholder="Descrição" style="width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;"><input type="number" id="fin-valor" placeholder="0.00" step="0.01" style="width:100%;padding:12px;margin-bottom:20px;border-radius:8px;border:1px solid #ccc;"><button onclick="salvarLancamentoFinanceiro()" style="width:100%;padding:15px;background:var(--cor-principal);color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Adicionar</button><p id="fin-status" style="font-size:13px;text-align:center;margin-top:15px;font-weight:bold;"></p></div><div style="flex:2;min-width:300px;overflow-x:auto;"><h4 style="font-size:16px;color:var(--cor-principal);margin-bottom:20px;">Últimos Lançamentos</h4><table class="fin-table"><thead><tr><th>Data</th><th>Setor</th><th>Descrição</th><th>Tipo</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="lista-financeiro"><tr><td colspan="6" style="text-align:center;padding:20px;">Carregando...</td></tr></tbody></table></div></div>`; } }
+      else if (id === 'financeiro') { 
+        titulo.textContent = 'Gestão Financeira'; 
+        if (!window._acessoFinanceiroLiberado) { 
+          html = `<div style="text-align:center;padding:40px 20px;"><i class="fa-solid fa-lock" style="font-size:60px;color:var(--cor-principal);margin-bottom:20px;"></i><h4 style="font-size:20px;">Acesso Restrito</h4><p style="font-size:15px;color:#666;margin-bottom:25px;">Digite o PIN.</p><input type="password" id="fin-senha-acesso" inputmode="numeric" placeholder="****" style="text-align:center;font-size:24px;letter-spacing:5px;max-width:200px;margin:0 auto 20px;padding:15px;border-radius:10px;border:1px solid #ccc;display:block;"><button onclick="verificarSenhaFinanceiro()" style="width:100%;max-width:300px;margin:0 auto;padding:18px;background:var(--cor-principal);color:#fff;border:none;border-radius:8px;font-weight:bold;display:block;">Desbloquear</button><p id="fin-senha-status" style="font-size:14px;color:red;margin-top:15px;font-weight:bold;"></p></div>`; 
+        } else { 
+          html = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="font-size:28px;font-weight:800;color:#333;">💎 Painel Financeiro</h2>
+            <div style="display:flex; gap:10px;">
+              <button onclick="abrirModalNovoLancamento()" style="background:var(--cor-principal); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-plus"></i> Novo Lançamento</button>
+              <button onclick="bloquearFinanceiro()" style="background:#ffebee; color:#c62828; border:1px solid #ffcdd2; padding:10px 15px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-lock"></i> Bloquear</button>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:15px; margin-bottom:25px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px; background:linear-gradient(135deg, #10A37F, #0d8a6c); padding:20px; border-radius:16px; color:#fff; box-shadow:0 10px 20px rgba(16,163,127,0.2);">
+              <div style="font-size:13px; opacity:0.9; margin-bottom:5px;"><i class="fa-solid fa-arrow-up"></i> Entradas</div>
+              <div id="fin-card-entradas" style="font-size:28px; font-weight:800;">R$ 0,00</div>
+            </div>
+            <div style="flex:1; min-width:200px; background:linear-gradient(135deg, #EF4444, #b91c1c); padding:20px; border-radius:16px; color:#fff; box-shadow:0 10px 20px rgba(239,68,68,0.2);">
+              <div style="font-size:13px; opacity:0.9; margin-bottom:5px;"><i class="fa-solid fa-arrow-down"></i> Saídas</div>
+              <div id="fin-card-saidas" style="font-size:28px; font-weight:800;">R$ 0,00</div>
+            </div>
+            <div style="flex:1; min-width:200px; background:linear-gradient(135deg, #1e293b, #0f172a); padding:20px; border-radius:16px; color:#fff; box-shadow:0 10px 20px rgba(15,23,42,0.2);">
+              <div style="font-size:13px; opacity:0.9; margin-bottom:5px;"><i class="fa-solid fa-wallet"></i> Saldo em Caixa</div>
+              <div id="fin-card-saldo" style="font-size:28px; font-weight:800; color:var(--cor-dourada);">R$ 0,00</div>
+            </div>
+          </div>
+
+          <div style="background:#fff; border:1px solid #eee; border-radius:16px; overflow:hidden;">
+            <div style="padding:15px 20px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:#fcfcfc;">
+              <h4 style="font-size:16px; color:#333; margin:0;">Histórico de Movimentações</h4>
+              <select id="fin-filtro-caixa" onchange="filtrarFinanceiro(this.value)" style="padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-size:14px;">
+                <option value="todas" ${filtroFinanceiroAtual === 'todas' ? 'selected' : ''}>Todos os Setores</option>
+                <option value="clinica" ${filtroFinanceiroAtual === 'clinica' ? 'selected' : ''}>Clínica</option>
+                <option value="clube" ${filtroFinanceiroAtual === 'clube' ? 'selected' : ''}>Clube</option>
+                <option value="boutique" ${filtroFinanceiroAtual === 'boutique' ? 'selected' : ''}>Boutique</option>
+              </select>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="fin-table" style="min-width:600px; margin:0; box-shadow:none;">
+                <thead><tr><th>Data</th><th>Setor</th><th>Descrição</th><th>Valor</th><th style="text-align:center;">Ação</th></tr></thead>
+                <tbody id="lista-financeiro"><tr><td colspan="5" style="text-align:center;padding:20px;">Carregando...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          `; 
+        } 
+      }
       else if (id === 'lista-clientes') { titulo.textContent = 'Lista de Clientes'; html = `<div style="margin-bottom:20px;"><input type="text" id="busca-cliente" placeholder="🔍 Buscar..." oninput="filtrarClientes(this.value)" style="width:100%;padding:16px;border:2px solid var(--cor-principal);border-radius:10px;font-size:16px;box-sizing:border-box;"></div><div id="lista-clientes-container" style="max-height:500px;overflow-y:auto;"><p style="text-align:center;font-size:14px;color:#777;">Carregando...</p></div>`; }
       else if (id === 'mural') { titulo.textContent = 'Mural da Agenda'; html = `<textarea id="edit-mural" rows="8" style="width:100%;padding:15px;border:1px solid #ccc;border-radius:8px;font-family:inherit;font-size:15px;">${esc(appState.muralAgenda || '')}</textarea>`; }
       else if (id === 'integracoes') { titulo.textContent = 'Integrações'; const conectadas = appState.integracoes.filter(i => i.conectada).length; let limiteTxt = LIMITES_PLANO[appState.planoAtual]?.integracoes || 1; let cardsHtml = appState.integracoes.map(integ => { let btnClass = 'btn-conectar off', btnTxt = 'Conectar', disabled = ''; if (integ.conectada) { btnClass = 'btn-conectar on'; btnTxt = 'Conectado'; } else { if (conectadas >= limiteTxt) { btnClass = 'btn-conectar limit'; btnTxt = 'Limite'; disabled = 'disabled'; } } return `<div class="integracoes-card"><div class="integ-left"><div class="integ-icon" style="background: ${esc(integ.cor)};"><i class="fa-solid ${esc(integ.icone)}"></i></div><div class="integ-info"><h4>${esc(integ.nome)}</h4><p>${esc(integ.desc)}</p></div></div><button class="${btnClass}" onclick="toggleIntegracao('${esc(integ.id)}')" ${disabled} style="padding:10px 15px;font-size:14px;">${esc(btnTxt)}</button></div>`; }).join(''); html = cardsHtml; }
@@ -1654,7 +1760,65 @@
     
     function enviarPush() { alert('Notificação Push enviada com sucesso! (Simulação)'); document.getElementById('push-resultado').innerHTML = '<span style="color:#2e7d32;font-weight:bold;">✅ Enviado!</span>'; }
 
-    function carregarKPIs() { const c = document.getElementById('kpi-container'); if (!c) return; Promise.all([db.collection('clientes').get(), db.collection('agendamentos').get(), db.collection('financeiro').get().catch(() => ({ forEach: () => {} }))]).then(([sc, sa, sf]) => { const hoje = new Date(); const iM = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0]; let agM = 0, fatM = 0; sa.forEach(d => { if (d.data().data >= iM) agM++; }); sf.forEach(d => { if (d.data().data >= iM && d.data().tipo === 'entrada') fatM += Number(d.data().valor) || 0; }); c.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;"><div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#777;">Faturamento Mês</div><div style="font-size:28px;font-weight:800;color:#10A37F;">R$ ${fatM.toFixed(2).replace('.', ',')}</div></div><div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#777;">Clientes</div><div style="font-size:28px;font-weight:800;color:#7C3AED;">${sc.size}</div></div><div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#777;">Agendamentos</div><div style="font-size:28px;font-weight:800;color:#9D174D;">${agM}</div></div></div>`; }); }
+    function carregarKPIs() { 
+      const c = document.getElementById('kpi-container'); 
+      if (!c) return; 
+      
+      Promise.all([
+        db.collection('clientes').get(), 
+        db.collection('agendamentos').get(), 
+        db.collection('financeiro').get().catch(() => ({ forEach: () => {} })),
+        db.collection('vendas').orderBy('dataVenda', 'desc').limit(3).get().catch(() => ({ forEach: () => {} }))
+      ]).then(([sc, sa, sf, sv]) => { 
+        const hoje = new Date(); 
+        const iM = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0]; 
+        let agM = 0, fatM = 0; 
+        
+        sa.forEach(d => { if (d.data().data >= iM) agM++; }); 
+        sf.forEach(d => { if (d.data().data >= iM && d.data().tipo === 'entrada') fatM += Number(d.data().valor) || 0; }); 
+        
+        let vendasHtml = '';
+        let temVendas = false;
+        sv.forEach(doc => {
+          temVendas = true;
+          const v = doc.data();
+          let corPagto = v.formaPagamento === 'Pix' ? '#10A37F' : (v.formaPagamento === 'Boleto' ? '#F59E0B' : '#3B82F6');
+          vendasHtml += `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
+              <div>
+                <div style="font-size:14px; font-weight:700; color:#333;">${esc(v.produtoNome)}</div>
+                <div style="font-size:12px; color:#777;">${esc(v.clienteNome)}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:14px; font-weight:700; color:#2e7d32;">R$ ${Number(v.valor).toFixed(2)}</div>
+                <div style="font-size:10px; color:${corPagto}; font-weight:700; background:${corPagto}15; padding:2px 6px; border-radius:4px; margin-top:4px; display:inline-block;">${esc(v.formaPagamento)}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        c.innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;">
+            <div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:12px;font-weight:700;color:#777;">Faturamento Mês</div>
+              <div style="font-size:28px;font-weight:800;color:#10A37F;">R$ ${fatM.toFixed(2).replace('.', ',')}</div>
+            </div>
+            <div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:12px;font-weight:700;color:#777;">Clientes</div>
+              <div style="font-size:28px;font-weight:800;color:#7C3AED;">${sc.size}</div>
+            </div>
+            <div style="background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:12px;font-weight:700;color:#777;">Agendamentos</div>
+              <div style="font-size:28px;font-weight:800;color:#9D174D;">${agM}</div>
+            </div>
+          </div>
+          <h4 style="font-size:16px; color:var(--cor-principal); margin-bottom:15px; border-top:1px solid #eee; padding-top:20px;">Últimas Vendas Executadas</h4>
+          <div style="background:#f9f9f9; padding:15px; border-radius:12px;">
+            ${temVendas ? vendasHtml : '<p style="text-align:center; color:#999; font-size:14px;">Nenhuma venda recente.</p>'}
+          </div>
+        `; 
+      }); 
+    }
     function atualizarBoxNotificacoes() { const box = document.getElementById('notificacoes-box'); if (!box) return; const ativo = localStorage.getItem('pushAtivo') === 'true'; box.style.display = 'block'; box.innerHTML = ativo ? `<p style="font-size:14px;font-weight:700;color:#2e7d32;margin-bottom:8px;">✅ Notificações ativas</p><button onclick="desativarNotificacoes()" style="background:#ffebee;color:#c62828;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Desativar</button>` : `<p style="font-size:14px;font-weight:700;color:var(--cor-principal);margin-bottom:8px;">🔔 Ativar notificações?</p><button onclick="ativarNotificacoes()" style="background:var(--cor-principal);color:#fff;border:none;padding:12px 24px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;"><i class="fa-solid fa-bell"></i> Ativar</button>`; }
     async function ativarNotificacoes() { try { const perm = await Notification.requestPermission(); if (perm === 'granted') { localStorage.setItem('pushAtivo', 'true'); mostrarToast('✅ Ativado!'); atualizarBoxNotificacoes(); } } catch(e) {} }
     async function desativarNotificacoes() { localStorage.removeItem('pushAtivo'); atualizarBoxNotificacoes(); }
@@ -1767,7 +1931,106 @@
     async function fecharServicoAgendamento(id) { const ag = window._agsCache[id]; if (!ag) return; if (ag.proposta) return alert('Já fechado.'); if (!confirm('Fechar?')) return; try { const n = await gerarProposta(); await db.collection('agendamentos').doc(id).update({ proposta: n, statusConfirmacao: 'concluido' }); mostrarToast('✅ Fechado: ' + n); if (diaSelecionado) selecionarDiaReal(diaSelecionado, document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`)); carregarAgendamentosAdmin(); } catch(e) {} }
     function buscarPorProposta(t) { const c = document.getElementById('resultado-busca-proposta'); if (!c) return; c.innerHTML = 'Buscando...'; }
     function carregarDadosFinanceiros() { const dash = document.getElementById('dashboard-financeiro'), lista = document.getElementById('lista-financeiro'); if (!dash) return; db.collection('financeiro').orderBy('data', 'desc').get().then(snap => { let t = []; snap.forEach(d => t.push({ id: d.id, ...d.data() })); window._listaFinanceiroCache = t; filtrarFinanceiro(filtroFinanceiroAtual, true); }); }
-    function filtrarFinanceiro(caixa, init = false) { if (!init) filtroFinanceiroAtual = caixa; const t = window._listaFinanceiroCache || []; const f = caixa === 'todas' ? t : t.filter(x => x.caixa === caixa); let e = 0, s = 0; f.forEach(x => { if (x.tipo === 'entrada') e += Number(x.valor); else s += Number(x.valor); }); const dash = document.getElementById('dashboard-financeiro'); if (dash) { dash.innerHTML = `<div class="fin-card entrada"><h5>Entradas</h5><div class="valor">R$ ${e.toFixed(2)}</div></div><div class="fin-card saida"><h5>Saídas</h5><div class="valor">R$ ${s.toFixed(2)}</div></div><div class="fin-card saldo"><h5>Saldo</h5><div class="valor">R$ ${(e-s).toFixed(2)}</div></div>`; } const list = document.getElementById('lista-financeiro'); if (list) { list.innerHTML = f.map(x => `<tr><td>${x.data}</td><td>${x.caixa}</td><td>${x.descricao}</td><td>${x.tipo}</td><td>R$ ${Number(x.valor).toFixed(2)}</td><td><button onclick="deletarLancamentoFinanceiro('${x.id}')" style="background:none;border:none;color:red;">X</button></td></tr>`).join(''); } }
+    
+    function filtrarFinanceiro(caixa, init = false) { 
+      if (!init) filtroFinanceiroAtual = caixa; 
+      const t = window._listaFinanceiroCache || []; 
+      const f = caixa === 'todas' ? t : t.filter(x => x.caixa === caixa); 
+      let e = 0, s = 0; 
+      
+      f.forEach(x => { 
+        if (x.tipo === 'entrada') e += Number(x.valor); 
+        else s += Number(x.valor); 
+      }); 
+      
+      atualizarCardsFinanceiros(e, s);
+
+      const list = document.getElementById('lista-financeiro'); 
+      if (list) { 
+        list.innerHTML = f.map(x => `
+          <tr>
+            <td style="color:#555; font-size:13px;">${x.data.split('-').reverse().join('/')}</td>
+            <td><span style="background:#eee; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700; text-transform:capitalize;">${x.caixa}</span></td>
+            <td style="font-weight:600; color:#333;">${x.descricao}</td>
+            <td style="font-weight:700; color:${x.tipo === 'entrada' ? '#2e7d32' : '#c62828'};">${x.tipo === 'entrada' ? '+' : '-'} R$ ${Number(x.valor).toFixed(2).replace('.', ',')}</td>
+            <td style="text-align:center;"><button onclick="deletarLancamentoFinanceiro('${x.id}')" style="background:#ffebee; border:none; color:#c62828; width:30px; height:30px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
+          </tr>
+        `).join(''); 
+      } 
+    }
+
+    function abrirModalNovoLancamento() {
+      const modal = document.getElementById('modal-editor');
+      document.getElementById('editor-titulo').textContent = '💰 Novo Lançamento';
+      document.getElementById('editor-content').innerHTML = `
+        <label style="font-size:13px; font-weight:700; color:#555;">Setor / Caixa</label>
+        <select id="novo-fin-caixa" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; margin-bottom:10px; font-size:15px;">
+          <option value="clinica">Clínica</option>
+          <option value="clube">Clube</option>
+          <option value="boutique">Boutique</option>
+        </select>
+        
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <div style="flex:1;">
+            <label style="font-size:13px; font-weight:700; color:#555;">Tipo</label>
+            <select id="novo-fin-tipo" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:15px;">
+              <option value="entrada">Entrada (+)</option>
+              <option value="saida">Saída (-)</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:13px; font-weight:700; color:#555;">Data</label>
+            <input type="date" id="novo-fin-data" value="${new Date().toLocaleDateString('en-CA')}" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:15px;">
+          </div>
+        </div>
+
+        <label style="font-size:13px; font-weight:700; color:#555;">Descrição</label>
+        <input type="text" id="novo-fin-desc" placeholder="Ex: Pagamento fornecedor, Venda à vista..." style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; margin-bottom:10px; font-size:15px;">
+        
+        <label style="font-size:13px; font-weight:700; color:#555;">Valor (R$)</label>
+        <input type="number" id="novo-fin-valor" placeholder="0.00" step="0.01" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:18px; font-weight:700;">
+      `;
+      
+      document.getElementById('modal-editor').style.display = 'flex';
+      
+      const btnSalvar = document.getElementById('btn-salvar-editor');
+      btnSalvar.style.display = 'block';
+      btnSalvar.textContent = 'Salvar Lançamento';
+      btnSalvar.onclick = async () => {
+        const c = document.getElementById('novo-fin-caixa').value;
+        const t = document.getElementById('novo-fin-tipo').value;
+        const d = document.getElementById('novo-fin-data').value;
+        const desc = document.getElementById('novo-fin-desc').value.trim();
+        const v = parseFloat(document.getElementById('novo-fin-valor').value);
+        
+        if (!d || !desc || isNaN(v) || v <= 0) return alert('Preencha todos os campos corretamente.');
+        
+        btnSalvar.textContent = 'Salvando...';
+        try {
+          await db.collection('financeiro').add({ caixa: c, tipo: t, data: d, descricao: desc, valor: v });
+          fecharEditor();
+          carregarDadosFinanceiros();
+          mostrarToast('✅ Lançamento registrado!');
+        } catch(e) {
+          alert('Erro ao salvar: ' + e.message);
+        } finally {
+          btnSalvar.textContent = 'Salvar Lançamento';
+        }
+      };
+      
+      document.getElementById('btn-voltar-editor').textContent = '↩ Cancelar';
+      document.getElementById('btn-voltar-editor').onclick = fecharEditor;
+    }
+
+    function atualizarCardsFinanceiros(entradas, saidas) {
+      const elE = document.getElementById('fin-card-entradas');
+      const elS = document.getElementById('fin-card-saidas');
+      const elSaldo = document.getElementById('fin-card-saldo');
+      if (elE) elE.textContent = `R$ ${entradas.toFixed(2).replace('.', ',')}`;
+      if (elS) elS.textContent = `R$ ${saidas.toFixed(2).replace('.', ',')}`;
+      if (elSaldo) elSaldo.textContent = `R$ ${(entradas - saidas).toFixed(2).replace('.', ',')}`;
+    }
+
     function abrirFechamentoCaixa() {}
     async function salvarLancamentoFinanceiro() { const c = document.getElementById('fin-caixa').value, t = document.getElementById('fin-tipo').value, d = document.getElementById('fin-data').value, desc = document.getElementById('fin-desc').value, v = parseFloat(document.getElementById('fin-valor').value); if (!d || !desc || isNaN(v)) return alert('Preencha'); await db.collection('financeiro').add({ caixa: c, tipo: t, data: d, descricao: desc, valor: v }); carregarDadosFinanceiros(); }
     async function deletarLancamentoFinanceiro(id) { if (confirm('Apagar?')) { await db.collection('financeiro').doc(id).delete(); carregarDadosFinanceiros(); } }
