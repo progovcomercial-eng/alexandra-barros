@@ -266,9 +266,10 @@
     .btn-conectar.on { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
 
-    /* --- AJUSTE DA IMAGEM DO PRODUTO ABERTO --- */
-    #produto-img-grande { background: #f9f9f9; border-radius: 22px; padding: 20px; text-align: center; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 300px; max-height: 500px; }
-    #produto-img-grande img { width: 100%; height: 100%; object-fit: contain; border-radius: 22px; }
+    /* --- AJUSTE DA IMAGEM DO PRODUTO ABERTO E GALERIA --- */
+    .product-gallery { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .product-gallery::-webkit-scrollbar { display: none; }
+    .product-gallery img { width: 100%; flex-shrink: 0; scroll-snap-align: start; object-fit: contain; min-height: 300px; max-height: 500px; border-radius: 16px; background: #f9f9f9; }
 
     @media (min-width: 768px) {
       body { background-color: #eef2f5; display: flex; align-items: stretch; }
@@ -407,6 +408,10 @@
       #fin-desc, #fin-valor, #fin-caixa, #fin-tipo, #fin-data { padding: 16px; font-size: 16px; margin-bottom: 15px !important; }
       h4[style*="Novo Lançamento"] { font-size: 20px !important; margin-bottom: 25px !important; }
       h4[style*="Últimos Lançamentos"] { font-size: 20px !important; margin-bottom: 25px !important; }
+
+      /* Ajuste Parceiro Desktop */
+      #parceiro-img-grande { min-height: 400px; height: auto; max-height: 600px; }
+      #parceiro-img-grande img { object-fit: contain; }
     }
   </style>
 </head>
@@ -524,14 +529,29 @@
 
       <div id="tela-produto" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div id="produto-img-grande">🛍️</div>
+        
+        <!-- GALERIA DE FOTOS DO PRODUTO -->
+        <div id="produto-galeria" class="product-gallery">
+           <!-- Injetado via JS -->
+        </div>
+
         <h1 id="produto-nome" style="font-family:'Playfair Display',serif; color:var(--cor-principal); font-size:28px; margin-bottom:8px; text-align:center;"></h1>
-        <p id="produto-preco" style="font-size:26px; font-weight:700; color:var(--cor-dourada); text-align:center; margin-bottom:16px;"></p>
+        
+        <!-- ÁREA DE PREÇO -->
+        <div id="produto-precificacao" style="text-align: center; margin-bottom: 16px;">
+          <!-- Injetado via JS -->
+        </div>
+
         <div class="mural-box" style="text-align:left;">
           <p id="produto-desc" class="mural-texto" style="margin-bottom:0; text-align:center; font-size: 16px;">Produto exclusivo da nossa loja.</p>
         </div>
+        
+        <!-- BOTÕES DE COMPRA -->
         <button class="btn-cta-grande" id="btn-comprar-produto">
-          <i class="fa-brands fa-whatsapp"></i> Comprar pelo WhatsApp
+          <i class="fa-brands fa-whatsapp"></i> Comprar Normal
+        </button>
+        <button class="btn-cta-grande" id="btn-comprar-vip" style="background:linear-gradient(135deg, #D4AF37, #B8852E); display:none;">
+          <i class="fa-solid fa-gem"></i> Comprar com Desconto VIP
         </button>
         <button class="btn-cta-grande" id="btn-pagar-online" style="background:#3B82F6; display:none;">
           <i class="fa-solid fa-credit-card"></i> Pagar Online (Cartão/Pix)
@@ -550,7 +570,7 @@
 
       <div id="tela-parceiro" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 250px;">🤝</div>
+        <div id="parceiro-img-grande" style="background: #fff; border-radius: 22px; padding: 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center;">🤝</div>
         <h1 class="produto-nome" id="parceiro-nome" style="text-align:center; color:var(--cor-principal); margin-bottom:8px; font-family:'Playfair Display', serif; font-size:28px;"></h1>
         <p class="produto-preco" id="parceiro-desc" style="text-align:center; font-size: 16px; font-weight: 600; margin-bottom: 16px;"></p>
         <div class="section-title-nova">Sobre a Parceria</div>
@@ -979,8 +999,8 @@
       colorMuted: '#777777', colorCardBg: '#FFFFFF', colorHeader: '#9D174D', colorWhatsapp: '#25D366', colorInstagram: '#E4405F', colorCanal: '#128C7E', colorEmail: '#333333', colorNav: '#9D174D', colorChat: '#9D174D',
       gradVitrineStart: '#B91C1C', gradVitrineEnd: '#4C0519', gradPlanosStart: '#FFFCF2', gradPlanosEnd: '#FFF2F6', gradCtaStart: '#9D174D', gradCtaEnd: '#560021', gradIndiqueStart: '#FFD700', gradIndiqueEnd: '#FFA500',
       boutiqueProdutos: [
-        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagem: null, dropship: false, linkPagamento: '' }, 
-        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagem: null, dropship: true, linkPagamento: '' }
+        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagens: [], dropship: false, linkPagamento: '' }, 
+        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagens: [], dropship: true, linkPagamento: '' }
       ],
       produtosClube: [],
       publicidades: [{ id: 1, titulo: 'Parceiro Exemplo', descricao: 'Confira as novidades!', sobre: 'Somos parceiros oficiais.', imagem: null, video: null }],
@@ -1110,7 +1130,41 @@
     }
 
     function mascaraPreco(input) { let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; } v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v; }
-    function lerArquivoComprimido(inputId, cb) { const i = document.getElementById(inputId); if (!i || !i.files[0]) return cb(null); const file = i.files[0]; if (file.size > 10 * 1024 * 1024) { alert('⚠️ Arquivo muito pesado! Máx 10MB.'); i.value = ''; return cb(null); } if (!file.type.startsWith('image/')) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); return; } const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let w = img.width, h = img.height; const MAX = 600; if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); cb(canvas.toDataURL('image/jpeg', 0.5)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+    
+    // Função para ler múltiplas imagens
+    function lerMultiplasImagens(inputId, cb) { 
+      const i = document.getElementById(inputId); 
+      if (!i || !i.files.length) return cb(null); 
+      const files = Array.from(i.files).slice(0, 5); // Limita a 5 fotos
+      let resultados = [];
+      let processados = 0;
+
+      files.forEach(file => {
+        if (file.size > 10 * 1024 * 1024) { 
+           alert('⚠️ Alguma imagem é muito pesada! Máx 10MB cada.'); 
+           processados++;
+           if(processados === files.length) cb(resultados);
+           return; 
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas'); 
+            let w = img.width, h = img.height; 
+            const MAX = 600; 
+            if (w > MAX) { h = Math.round((h * MAX) / w); w = MAX; } 
+            canvas.width = w; canvas.height = h; 
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h); 
+            resultados.push(canvas.toDataURL('image/jpeg', 0.5));
+            processados++;
+            if(processados === files.length) cb(resultados);
+          }; 
+          img.src = e.target.result; 
+        }; 
+        reader.readAsDataURL(file); 
+      });
+    }
 
     function ehMembroClube() { return localStorage.getItem('clienteClube') === 'true'; }
     function sairClube() { if (!confirm('Deseja sair do Clube?')) return; localStorage.removeItem('clienteClube'); localStorage.removeItem('codigoClube'); mostrarToast('Você saiu do Clube.'); atualizarStatusClube(); renderizarHome(); }
@@ -1176,6 +1230,7 @@
             const membro = ehMembroClube();
             const temClube = p.precoClube && p.precoClube !== '';
             const precoMostrar = (membro && temClube) ? p.precoClube : p.preco;
+            const imgCapa = (p.imagens && p.imagens.length > 0) ? p.imagens[0] : p.imagem;
             
             let stockHtml = '';
             let btnDisabled = false;
@@ -1191,7 +1246,7 @@
                 ${!membro && temClube ? '<span class="tag-clube">🌟 PREÇO CLUBE</span>' : ''}
                 ${stockHtml}
                 <div class="product-img-box-nova" onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">
-                  ${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}
+                  ${imgCapa ? `<img src="${esc(safeImgSrc(imgCapa))}" loading="lazy">` : '🛍️'}
                 </div>
                 <h4 onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">${esc(p.nome)}</h4>
                 <p style="font-size:11px; color:#999; margin-bottom:6px;">Cód: ${esc(p.codigo || '---')}</p>
@@ -1295,7 +1350,6 @@
         const textoMsg = `Olá! Acabei de fazer um pedido no app:\n\n🛍️ *${_produtoCheckout.nome}*\n💰 *R$ ${precoStr}*\n📦 *${tipoEntrega}*\n💳 *${pgt}*\n👤 *${nome}* (${tel})\n\nEstou no checkout, como prosseguir com o pagamento?`;
         const linkWhats = `https://wa.me/${waClinica}?text=${encodeURIComponent(textoMsg)}`;
 
-        // SE TIVER LINK DE PAGAMENTO DIRETO (KIWIFY, ETC), MOSTRA O BOTÃO
         const linkPagamento = _produtoCheckout.linkPagamento ? safeHref(_produtoCheckout.linkPagamento) : null;
 
         const modalContent = document.querySelector('#modal-checkout .cartao-cadastro');
@@ -1329,9 +1383,6 @@
           </div>
         `;
 
-        // REMOVIDO O LANÇAMENTO AUTOMÁTICO NO FINANCEIRO PARA EVITAR COMPRAS ABANDONADAS
-        // O ADMIN DEVE APROVAR NO PAINEL DE VENDAS PRIMEIRO
-
       } catch(e) {
         console.error(e);
         alert('Erro ao gerar pedido. Tente novamente.');
@@ -1344,7 +1395,12 @@
     function abrirDetalhesParceiro(id) {
       const pub = appState.publicidades.find(p => Number(p.id) === Number(id));
       if (!pub) return;
-      document.getElementById('parceiro-img-grande').innerHTML = pub.video ? gerarHTMLVideo(pub.video) : (pub.imagem ? `<img src="${esc(safeImgSrc(pub.imagem))}" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">` : '🤝');
+      
+      // CORREÇÃO DA IMAGEM DO PARCEIRO
+      document.getElementById('parceiro-img-grande').innerHTML = pub.video 
+        ? gerarHTMLVideo(pub.video) 
+        : (pub.imagem ? `<img src="${esc(safeImgSrc(pub.imagem))}" style="width:100%;height:100%;object-fit:contain;border-radius:22px;">` : '🤝');
+        
       document.getElementById('parceiro-nome').textContent = pub.titulo;
       document.getElementById('parceiro-desc').textContent = pub.descricao;
       document.getElementById('parceiro-conteudo').textContent = pub.sobre || 'Nenhuma informação adicional.';
@@ -1372,7 +1428,7 @@
 
     function abrirLinkRenovase() {
       const link = appState.renovaseLink;
-      if (!link || link.trim() === '') { mostrarToast('O link do Renova-se ainda não foi configurado.'); return; }
+      if (!link || link.trim() === '') { mostrarToast('O link do Renovase ainda não foi configurado.'); return; }
       if (link.startsWith('http')) { window.open(link, '_blank'); } else { window.location.href = link; }
     }
 
@@ -1423,26 +1479,39 @@
       const idD = 'dig-' + Date.now(), body = document.getElementById('chat-body'); body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot" id="${idD}">Digitando...</div>`); body.scrollTop = body.scrollHeight;
       
       try { 
+        // Limita o histórico para evitar erro de tamanho de payload
+        if (historicoChatIA.length > 10) historicoChatIA = historicoChatIA.slice(-10);
+        
         historicoChatIA.push({ role: 'user', parts: [{ text: txt }] }); 
         const proxyUrl = appState.iaProxyUrl || GEMINI_PROXY_URL, sys = appState.iaSystemPrompt || `Você é a ${appState.iaName}.`; 
-        const resp = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: historicoChatIA, systemInstruction: { parts: [{ text: sys }] } }) }); 
         
-        if (!resp.ok) throw new Error('HTTP ' + resp.status); 
+        const resp = await fetch(proxyUrl, { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' }, 
+          body: JSON.stringify({ contents: historicoChatIA, systemInstruction: { parts: [{ text: sys }] } }) 
+        }); 
+        
+        if (!resp.ok) {
+           if (resp.status === 429) throw new Error('Muitas mensagens. Aguarde.');
+           throw new Error('Erro no servidor'); 
+        }
         
         const dados = await resp.json(), partes = dados.candidates?.[0]?.content?.parts || []; 
         document.getElementById(idD)?.remove(); 
-        const t = partes[0]?.text || 'Desculpe.'; 
+        const t = partes[0]?.text || 'Desculpe, não entendi.'; 
         adicionarMsgAoChat('bot', t); 
         historicoChatIA.push({ role: 'model', parts: [{ text: t }] }); 
       } catch (e) { 
         document.getElementById(idD)?.remove(); 
         let msg = e.message;
         
-        if (msg.includes('429') || msg.includes('Too Many Requests')) {
+        if (msg.includes('429') || msg.includes('Muitas mensagens')) {
           iaCooldown = Date.now() + 30000; // Bloqueia por 30 segundos
-          msg = 'Muitas mensagens em pouco tempo. Aguarde 30 segundos e tente novamente.';
+          msg = 'A IA está sobrecarregada. Aguarde 30 segundos e tente novamente.';
         } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
           msg = 'Não consegui conectar ao servidor da IA. Verifique sua internet.';
+        } else {
+          msg = 'Ocorreu um erro. Tente novamente mais tarde.';
         }
         adicionarMsgAoChat('bot', '⚠️ ' + msg); 
       }
@@ -1572,13 +1641,12 @@
       else if (id === 'gradientes') { titulo.textContent = 'Gradientes'; html = `<label style="font-size:13px;font-weight:700;">🌸 Vitrine</label><div style="display:flex;gap:10px;"><input type="color" id="grad-vitrine-start" value="${esc(appState.gradVitrineStart)}" style="flex:1;height:50px;"><input type="color" id="grad-vitrine-end" value="${esc(appState.gradVitrineEnd)}" style="flex:1;height:50px;"></div><label style="font-size:13px;font-weight:700;display:block;margin-top:12px;">🎯 CTA</label><div style="display:flex;gap:10px;"><input type="color" id="grad-cta-start" value="${esc(appState.gradCtaStart)}" style="flex:1;height:50px;"><input type="color" id="grad-cta-end" value="${esc(appState.gradCtaEnd)}" style="flex:1;height:50px;"></div>`; }
       else if (id === 'fundo') { titulo.textContent = 'Fundo'; html = `<label style="font-size:13px;font-weight:700;">🎨 Cor</label><input type="color" id="edit-bg-color" value="${esc(appState.bgColor || '#FFF2F6')}" style="height:50px;"><label style="font-size:13px;font-weight:700;">🖼️ Imagem</label><input type="file" id="edit-bg-file" accept="image/*" style="padding:15px;">`; }
       else if (id === 'contato') { titulo.textContent = 'Redes & Contato'; const c = appState.contato || {}; const redes = (c.redesSociais || []).map(r => `<div class="config-item-row" style="margin-bottom:10px;"><input type="text" class="rede-nome" value="${esc(r.nome)}" placeholder="Nome"><input type="url" class="rede-link" value="${esc(r.link)}" placeholder="Link"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Endereço</label><input type="text" id="edit-endereco" value="${esc(c.endereco || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Horário</label><input type="text" id="edit-horario" value="${esc(c.horario || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Telefone</label><input type="text" id="edit-telefone" value="${esc(c.telefone || '')}"><h4 style="font-size:14px;color:#9D174D;margin-top:20px;margin-bottom:10px;">Redes</h4><div id="redes-container">${redes}</div><button type="button" class="btn-add-item" onclick="addRedeConfig()">+ Rede</button>`; }
-      else if (id === 'boutique') { titulo.textContent = 'Produtos da Vitrine'; const prods = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : []; const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Nome Banner</label><input type="text" id="edit-boutique-name" value="${esc(appState.boutiqueName)}" style="padding:15px;"><div style="margin-top:20px;">${lista}</div><button onclick="abrirEditorProduto(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:15px;">+ Produto</button>`; }
+      else if (id === 'boutique') { titulo.textContent = 'Produtos da Vitrine'; const prods = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : []; const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)} <br><span style="font-size:11px; color:#777;">Estoque: ${p.estoque !== undefined ? p.estoque : 0}</span></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Nome Banner</label><input type="text" id="edit-boutique-name" value="${esc(appState.boutiqueName)}" style="padding:15px;"><div style="margin-top:20px;">${lista}</div><button onclick="abrirEditorProduto(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:15px;">+ Produto</button>`; }
       
-      // ATUALIZAÇÃO: LOJA DO CLUBE COM CATEGORIAS E ESTOQUE
       else if (id === 'loja-clube') { 
         titulo.textContent = 'Loja do Clube'; 
         const prods = Array.isArray(appState.produtosClube) ? appState.produtosClube : []; 
-        const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="font-size:11px;color:#777;">Cat: ${esc(p.categoria || 'Geral')} | Estoque: ${p.estoque || 0}</div></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProdutoClube(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoClube(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); 
+        const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="font-size:11px;color:#777;">Cat: ${esc(p.categoria || 'Geral')} | Estoque: ${p.estoque !== undefined ? p.estoque : 0}</div></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProdutoClube(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoClube(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); 
         html = `<div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#E65100;">💎 Produtos exclusivos. Crie categorias para organizar (Ex: Perfumes, Cremes).</p></div><div style="margin-bottom:20px;">${lista}</div><button onclick="abrirEditorProdutoClube(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">+ Produto do Clube</button>`; 
       }
 
@@ -1586,10 +1654,20 @@
       else if (id === 'clube') { titulo.textContent = 'Planos e Preços'; let htmlPlanos = ''; ['essencial', 'inteligente', 'master'].forEach(tipo => { const p = appState.planos[tipo] || estadoPadrao.planos[tipo]; let featuresHtml = (p.features || []).map(f => `<div class="config-item-row feat-row" style="margin-bottom:6px;"><input type="text" class="feat-input" value="${esc(f)}" style="padding:10px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); htmlPlanos += `<div style="background:#f9f9f9;padding:20px;border-radius:12px;margin-bottom:20px;border:1px solid #ddd;"><h4 style="text-transform:uppercase;font-size:15px;margin-bottom:15px;color:var(--cor-principal);">Plano ${esc(p.titulo)}</h4><label style="font-size:13px;font-weight:700;">Preço</label><input type="number" id="preco-${tipo}" value="${esc(appState.precos[tipo])}" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Subtítulo</label><input type="text" id="sub-${tipo}" value="${esc(p.subtitulo)}" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Itens:</label><div id="features-${tipo}">${featuresHtml}</div><button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')">+ Item</button></div>`; }); html = htmlPlanos; }
       else if (id === 'tela-inicial') { titulo.textContent = 'Nomes do App'; html = `<label style="font-size:13px;font-weight:700;">Nome Clube</label><input type="text" id="edit-clube-name" value="${esc(appState.clubeName)}" style="padding:15px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Nome Vitrine</label><input type="text" id="edit-vitrine-title" value="${esc(appState.vitrineTitle)}" style="padding:15px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Nome Evento</label><input type="text" id="edit-renovase-name" value="${esc(appState.renovaseName)}" style="padding:15px;">`; }
       
-      // ATUALIZAÇÃO: BUSCA NO GERENCIAR CLUBE VIP
+      // ATUALIZAÇÃO: GERADOR DE CÓDIGO VIP + BUSCA
       else if (id === 'vip') { 
         titulo.textContent = 'Clube VIP'; 
-        html = `<div style="margin-bottom:20px;"><input type="text" id="busca-cliente-vip" placeholder="🔍 Buscar cliente por nome ou telefone..." oninput="filtrarClientesVIP(this.value)" style="width:100%;padding:15px;border:2px solid var(--cor-principal);border-radius:10px;font-size:15px;box-sizing:border-box;"></div><div id="lista-clientes-vip"><p style="text-align:center;font-size:14px;">Carregando...</p></div>`;
+        
+        // Verifica se já existe um código salvo para copiar
+        let linkGerador = `<button onclick="gerarCodigoVipAvulso()" style="width:100%; padding:15px; background:linear-gradient(135deg, #D4AF37, #B8852E); color:#fff; border:none; border-radius:10px; font-weight:700; font-size:15px; margin-bottom:20px; cursor:pointer;"><i class="fa-solid fa-key"></i> Gerar Novo Código de Convite</button>
+        <div id="codigo-vip-gerado" style="display:none; text-align:center; background:#e8f5e9; border:1px solid #10A37F; border-radius:8px; padding:15px; margin-bottom:20px;">
+           <p style="font-size:12px; color:#2e7d32; margin-bottom:5px;">Código Gerado:</p>
+           <h3 id="texto-codigo-vip" style="font-size:24px; color:#2e7d32; letter-spacing:2px;"></h3>
+           <button onclick="copiarCodigoVip()" style="margin-top:10px; background:#10A37F; color:#fff; border:none; padding:8px 15px; border-radius:6px; font-weight:700; cursor:pointer;">Copiar</button>
+        </div>`;
+
+        html = linkGerador + `<div style="margin-bottom:20px;"><input type="text" id="busca-cliente-vip" placeholder="🔍 Buscar cliente por nome ou telefone..." oninput="filtrarClientesVIP(this.value)" style="width:100%;padding:15px;border:2px solid var(--cor-principal);border-radius:10px;font-size:15px;box-sizing:border-box;"></div><div id="lista-clientes-vip"><p style="text-align:center;font-size:14px;">Carregando...</p></div>`;
+        
         setTimeout(() => {
           db.collection("clientes").get().then(snap => { 
             if (snap.empty) { document.getElementById('lista-clientes-vip').innerHTML = '<p style="text-align:center;font-size:14px;color:#777;">Nenhum cliente.</p>'; return; } 
@@ -1597,7 +1675,7 @@
             snap.forEach(doc => { 
               const cl = doc.data(); 
               const tem = cl.codigoAcesso; 
-              const btn = `<div style="display:flex;gap:8px;margin-top:15px;">${tem ? '<button disabled style="flex:1;background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;padding:10px;border-radius:6px;font-size:12px;font-weight:700;">✅ Liberado</button>' : `<button onclick="liberarAcessoVIP('${esc(doc.id)}')" style="flex:1;background:#9D174D;color:#fff;border:none;padding:10px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Liberar</button>`}<button onclick="deletarClienteVIP('${esc(doc.id)}')" style="background:#ffebee;color:#c62828;border:1px solid #ffcdd2;padding:10px 15px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Apagar</button></div>${tem ? `<p style="font-size:12px;text-align:center;margin-top:8px;">Código: <b>${esc(cl.codigoAcesso)}</b></p>` : ''}`; 
+              const btn = `<div style="display:flex;gap:8px;margin-top:15px;">${tem ? '<button disabled style="flex:1;background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;padding:10px;border-radius:6px;font-size:12px;font-weight:700;">✅ Liberado</button>' : `<button onclick="liberarAcessoVIP('${esc(doc.id)}')" style="flex:1;background:#9D174D;color:#fff;border:none;padding:10px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Liberar p/ Cliente</button>`}<button onclick="deletarClienteVIP('${esc(doc.id)}')" style="background:#ffebee;color:#c62828;border:1px solid #ffcdd2;padding:10px 15px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Apagar</button></div>${tem ? `<p style="font-size:12px;text-align:center;margin-top:8px;">Código: <b>${esc(cl.codigoAcesso)}</b></p>` : ''}`; 
               h += `<div class="vip-cliente-card" data-nome="${esc(cl.nome).toLowerCase()}" data-tel="${esc(cl.telefone)}" style="background:#f9f9f9;padding:15px;border-radius:10px;margin-bottom:15px;border:1px solid #ddd;"><div><strong style="font-size:15px;color:var(--cor-principal);">${esc(cl.nome)}</strong><br><span style="font-size:13px;color:#666;">${esc(cl.telefone)}</span></div>${btn}</div>`; 
             }); 
             document.getElementById('lista-clientes-vip').innerHTML = h; 
@@ -1630,6 +1708,21 @@
     }
 
     // NOVAS FUNÇÕES ADICIONADAS
+    async function gerarCodigoVipAvulso() {
+      const codigo = 'VIP-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+      try {
+        await db.collection('codigos_clube').doc(codigo).set({ liberadoPara: 'Geral', dataCriacao: new Date().toISOString() });
+        document.getElementById('codigo-vip-gerado').style.display = 'block';
+        document.getElementById('texto-codigo-vip').textContent = codigo;
+      } catch(e) {
+        alert('Erro ao gerar código: ' + e.message);
+      }
+    }
+    function copiarCodigoVip() {
+      const txt = document.getElementById('texto-codigo-vip').textContent;
+      navigator.clipboard.writeText(txt).then(() => mostrarToast('✅ Código copiado!'));
+    }
+
     function filtrarClientesVIP(val) {
       const termo = val.toLowerCase();
       document.querySelectorAll('.vip-cliente-card').forEach(card => {
@@ -1703,15 +1796,24 @@
 
     function abrirEditorProduto(index) { 
       indexProdEditando = index; configAtualAberta = 'boutique-edit'; 
-      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagem: null, dropship: false, linkPagamento: '' } : appState.boutiqueProdutos[index]; 
+      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagens: [], dropship: false, linkPagamento: '' } : appState.boutiqueProdutos[index]; 
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar'; 
+      
+      // Renderiza prévia das imagens existentes
+      let previewHtml = '';
+      if (prod.imagens && prod.imagens.length > 0) {
+        previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;">${prod.imagens.map(img => `<img src="${esc(safeImgSrc(img))}" style="height:50px; border-radius:4px;">`).join('')}</div>`;
+      } else if (prod.imagem) {
+        previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;"><img src="${esc(safeImgSrc(prod.imagem))}" style="height:50px; border-radius:4px;"></div>`;
+      }
+
       document.getElementById('editor-content').innerHTML = `
         <label style="font-size:13px;font-weight:700;">Nome</label>
         <input type="text" id="prod-nome" value="${esc(prod.nome || '')}">
         
         <div style="display:flex; gap:10px; margin-top:10px;">
           <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Preço Normal (R$)</label><input type="text" id="prod-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"></div>
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700; color:var(--cor-dourada);">Preço Clube (R$)</label><input type="text" id="prod-preco-clube" value="${esc(prod.precoClube || '')}" oninput="mascaraPreco(this)" style="border-color:var(--cor-dourada);"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700; color:var(--cor-dourada);">Preço Clube (R$)</label><input type="text" id="prod-preco-clube" value="${esc(prod.precoClube || '')}" oninput="mascaraPreco(this)" style="border-color:var(--cor-dourada);" placeholder="Opcional"></div>
         </div>
 
         <div style="display:flex; gap:10px; margin-top:10px;">
@@ -1722,8 +1824,9 @@
         <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Link de Pagamento (Kiwify, Hotmart, etc.)</label>
         <input type="url" id="prod-link-pagamento" value="${esc(prod.linkPagamento || '')}" placeholder="https://pay.kiwify.com.br/...">
 
-        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label>
-        <input type="file" id="prod-imagem" accept="image/*" style="padding:15px;">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Fotos (Até 5 fotos)</label>
+        ${previewHtml}
+        <input type="file" id="prod-imagens" accept="image/*" multiple style="padding:15px; border:1px dashed #ccc; width:100%;">
         
         <label style="font-size:13px;font-weight:700;margin-top:15px;display:flex;align-items:center;gap:10px;background:#E0F7FA;padding:12px;border-radius:8px;cursor:pointer;">
           <input type="checkbox" id="prod-dropship" ${prod.dropship ? 'checked' : ''} style="width:auto;"> 🚚 Dropship
@@ -1755,7 +1858,8 @@
       novo.linkPagamento = linkPagamento;
       novo.dropship = document.getElementById('prod-dropship').checked; 
       
-      const img = document.getElementById('prod-imagem'); 
+      const inputFile = document.getElementById('prod-imagens'); 
+      
       const fin = () => { 
         if (indexProdEditando === -1) appState.boutiqueProdutos.push(novo); 
         salvarEstado(); 
@@ -1763,36 +1867,53 @@
         renderizarClubeEVitrine();
         abrirConfiguracao('boutique'); 
       }; 
-      if (img.files.length) lerArquivoComprimido('prod-imagem', v => { novo.imagem = v; fin(); }); 
-      else fin(); 
+
+      if (inputFile.files.length > 0) {
+        lerMultiplasImagens('prod-imagens', (imgsBase64) => { 
+          if(imgsBase64) novo.imagens = imgsBase64; 
+          fin(); 
+        }); 
+      } else {
+        fin();
+      }
     }
     
     function removerProdutoBoutique(i) { if (confirm('Excluir?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
 
-    // ATUALIZAÇÃO: NOVO EDITOR DE PRODUTO DO CLUBE COM CATEGORIA, ESTOQUE E LINK
     function abrirEditorProdutoClube(index) { 
       indexProdClubeEditando = index; configAtualAberta = 'clube-edit'; 
       if (!Array.isArray(appState.produtosClube)) appState.produtosClube = []; 
-      const prod = index === -1 ? { nome: '', preco: '', categoria: 'Geral', estoque: 10, linkPagamento: '', imagem: null } : appState.produtosClube[index]; 
+      const prod = index === -1 ? { nome: '', preco: '', categoria: 'Geral', estoque: 10, linkPagamento: '', imagens: [] } : appState.produtosClube[index]; 
       
+      // Renderiza prévia das imagens existentes
+      let previewHtml = '';
+      if (prod.imagens && prod.imagens.length > 0) {
+        previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;">${prod.imagens.map(img => `<img src="${esc(safeImgSrc(img))}" style="height:50px; border-radius:4px;">`).join('')}</div>`;
+      } else if (prod.imagem) {
+        previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;"><img src="${esc(safeImgSrc(prod.imagem))}" style="height:50px; border-radius:4px;"></div>`;
+      }
+
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto Clube' : 'Editar'; 
       document.getElementById('editor-content').innerHTML = `
         <label style="font-size:13px;font-weight:700;">Nome</label>
         <input type="text" id="prod-clube-nome" value="${esc(prod.nome || '')}">
         
         <div style="display:flex; gap:10px; margin-top:10px;">
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Preço (R$)</label><input type="text" id="prod-clube-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"></div>
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Estoque</label><input type="number" id="prod-clube-estoque" value="${prod.estoque !== undefined ? prod.estoque : 10}"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Preço Normal (R$)</label><input type="text" id="prod-clube-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700; color:var(--cor-dourada);">Preço VIP (R$)</label><input type="text" id="prod-clube-preco-vip" value="${esc(prod.precoClube || '')}" oninput="mascaraPreco(this)" style="border-color:var(--cor-dourada);" placeholder="Opcional"></div>
         </div>
 
-        <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Categoria (Ex: Perfumes, Cremes, Roupas)</label>
-        <input type="text" id="prod-clube-categoria" value="${esc(prod.categoria || 'Geral')}" placeholder="Geral">
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Estoque</label><input type="number" id="prod-clube-estoque" value="${prod.estoque !== undefined ? prod.estoque : 10}"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Categoria</label><input type="text" id="prod-clube-categoria" value="${esc(prod.categoria || 'Geral')}" placeholder="Ex: Perfumes"></div>
+        </div>
 
         <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Link de Pagamento (Opcional)</label>
         <input type="url" id="prod-clube-link" value="${esc(prod.linkPagamento || '')}" placeholder="https://pay.kiwify.com.br/...">
 
-        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label>
-        <input type="file" id="prod-clube-imagem" accept="image/*" style="padding:15px;">
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Fotos (Até 5 fotos)</label>
+        ${previewHtml}
+        <input type="file" id="prod-clube-imagens" accept="image/*" multiple style="padding:15px; border:1px dashed #ccc; width:100%;">
       `; 
       document.getElementById('modal-editor').style.display = 'flex'; 
       document.getElementById('btn-salvar-editor').style.display = 'block'; 
@@ -1804,6 +1925,7 @@
     function salvarProdutoClube() { 
       const nome = document.getElementById('prod-clube-nome').value; 
       const preco = document.getElementById('prod-clube-preco').value; 
+      const precoVip = document.getElementById('prod-clube-preco-vip').value; 
       const estoque = parseInt(document.getElementById('prod-clube-estoque').value) || 0;
       const categoria = document.getElementById('prod-clube-categoria').value.trim() || 'Geral';
       const linkPagamento = document.getElementById('prod-clube-link').value.trim();
@@ -1813,11 +1935,13 @@
       const novo = indexProdClubeEditando === -1 ? { id: Date.now() } : appState.produtosClube[indexProdClubeEditando]; 
       novo.nome = nome; 
       novo.preco = preco; 
+      novo.precoClube = precoVip;
       novo.estoque = estoque;
       novo.categoria = categoria;
       novo.linkPagamento = linkPagamento;
 
-      const img = document.getElementById('prod-clube-imagem'); 
+      const inputFile = document.getElementById('prod-clube-imagens'); 
+      
       const fin = () => { 
         if (indexProdClubeEditando === -1) appState.produtosClube.push(novo); 
         salvarEstado(); 
@@ -1825,8 +1949,15 @@
         renderizarClubeEVitrine(); 
         abrirConfiguracao('loja-clube'); 
       }; 
-      if (img.files.length) lerArquivoComprimido('prod-clube-imagem', v => { novo.imagem = v; fin(); }); 
-      else fin(); 
+
+      if (inputFile.files.length > 0) {
+        lerMultiplasImagens('prod-clube-imagens', (imgsBase64) => { 
+          if(imgsBase64) novo.imagens = imgsBase64; 
+          fin(); 
+        }); 
+      } else {
+        fin();
+      }
     }
 
     function removerProdutoClube(i) { if (confirm('Excluir?')) { appState.produtosClube.splice(i, 1); salvarEstado(); renderizarHome(); renderizarClubeEVitrine(); abrirConfiguracao('loja-clube'); } }
@@ -1852,7 +1983,7 @@
     function restaurarCoresExtras() { document.getElementById('edit-c-nav').value = '#9D174D'; document.getElementById('edit-c-chat').value = '#9D174D'; document.getElementById('edit-c-whats').value = '#25D366'; document.getElementById('edit-c-instagram').value = '#E4405F'; document.getElementById('edit-c-canal').value = '#128C7E'; document.getElementById('edit-c-email').value = '#333333'; }
     function restaurarGradientes() { document.getElementById('grad-vitrine-start').value = '#B91C1C'; document.getElementById('grad-vitrine-end').value = '#4C0519'; document.getElementById('grad-cta-start').value = '#9D174D'; document.getElementById('grad-cta-end').value = '#560021'; }
 
-    // ATUALIZAÇÃO: RENDERIZAR LOJA DO CLUBE (COM BLOQUEIO DE PREÇO E CATEGORIAS)
+    // ATUALIZAÇÃO: RENDERIZAR LOJA DO CLUBE (PREÇO ATRAENTE)
     function renderizarClubeEVitrine() { 
       document.getElementById('titulo-clube-tela').textContent = appState.clubeName; 
       document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle; 
@@ -1865,10 +1996,8 @@
       
       const membro = ehMembroClube();
 
-      // Botão de inserir código só aparece se não for membro
       document.getElementById('btn-inserir-codigo-clube').style.display = membro ? 'none' : 'flex';
 
-      // Agrupar por categoria
       const categorias = {};
       prods.forEach((p, i) => {
         const cat = p.categoria || 'Geral';
@@ -1883,26 +2012,48 @@
         htmlFinal += `<div class="boutique-grid-nova">`;
         
         htmlFinal += items.map(p => {
-          let priceHtml = membro 
-            ? `<p class="price" style="color:var(--cor-dourada); font-size:20px; font-weight:800; text-decoration:none;">R$ ${esc(p.preco)}</p>` 
-            : `<p class="price locked-price" style="color:var(--cor-dourada); font-size:20px; font-weight:800; text-decoration:none;">R$ ${esc(p.preco)}</p><p style="font-size:10px;color:var(--cor-principal);font-weight:700;">Insira o código VIP</p>`;
+          const imgCapa = (p.imagens && p.imagens.length > 0) ? p.imagens[0] : p.imagem;
           
-          let btnHtml = membro 
-            ? `<button class="btn-comprar-direto" onclick="abrirProduto(${p.originalIndex}, '${orig}')"><i class="fa-solid fa-cart-shopping"></i> Comprar</button>`
-            : `<button class="btn-comprar-direto" onclick="pedirCodigoClube()" style="background:#9D174D;"><i class="fa-solid fa-lock"></i> Desbloquear</button>`;
+          // Calcula o preço VIP (se não tiver, assume 50% de desconto)
+          let precoNormalNum = parseFloat(String(p.preco).replace(/\./g, '').replace(',', '.'));
+          let precoVipNum = p.precoClube ? parseFloat(String(p.precoClube).replace(/\./g, '').replace(',', '.')) : (precoNormalNum / 2);
+          
+          let precoNormalTxt = `R$ ${esc(p.preco)}`;
+          let precoVipTxt = `R$ ${p.precoClube ? esc(p.precoClube) : (precoNormalNum / 2).toFixed(2).replace('.', ',')}`;
 
-          // Controle de estoque
+          let priceHtml = `
+            <div style="margin: 8px 0;">
+              <span style="text-decoration: line-through; color: #999; font-size: 13px;">De: ${precoNormalTxt}</span>
+              <div style="font-size: 22px; font-weight: 800; color: var(--cor-dourada); line-height: 1.1;">Por: ${precoVipTxt} <br><small style="font-size:10px; color:var(--cor-principal); letter-spacing:1px;">NO CLUBE VIP</small></div>
+            </div>
+          `;
+          
+          let btnHtml = '';
+          if (membro) {
+            btnHtml = `<button class="btn-comprar-direto" onclick="abrirProduto(${p.originalIndex}, '${orig}')"><i class="fa-solid fa-cart-shopping"></i> Comprar VIP</button>`;
+          } else {
+             // Se não for membro, mostra o preço desfocado e botão para desbloquear
+             priceHtml = `<div style="margin: 8px 0;">
+              <span style="text-decoration: line-through; color: #999; font-size: 13px;">De: ${precoNormalTxt}</span>
+              <div class="locked-price" style="font-size: 22px; font-weight: 800; color: var(--cor-dourada); line-height: 1.1;">Por: ${precoVipTxt}</div>
+              <small style="font-size:10px; color:var(--cor-principal); font-weight:700;">Insira o código VIP</small>
+            </div>`;
+             btnHtml = `<button class="btn-comprar-direto" onclick="pedirCodigoClube()" style="background:#9D174D;"><i class="fa-solid fa-lock"></i> Desbloquear VIP</button>
+             <button class="btn-comprar-direto" onclick="abrirProduto(${p.originalIndex}, '${orig}')" style="background:#ccc; margin-top:4px; font-size:10px; color:#333;">Comprar Normal (${precoNormalTxt})</button>`;
+          }
+
           let stockBadge = '';
-          if (membro && p.estoque !== undefined) {
+          if (p.estoque !== undefined) {
             if (p.estoque <= 0) stockBadge = `<span class="stock-badge out">ESGOTADO</span>`;
             else if (p.estoque <= 5) stockBadge = `<span class="stock-badge low">Últimas ${p.estoque}</span>`;
+            else stockBadge = `<span class="stock-badge ok">${p.estoque} un.</span>`;
           }
 
           return `
             <div class="product-card-nova" style="position:relative;">
               ${stockBadge}
-              <div class="product-img-box-nova" style="cursor:pointer;" onclick="${membro ? `abrirProduto(${p.originalIndex}, '${orig}')` : `pedirCodigoClube()`}">
-                ${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}
+              <div class="product-img-box-nova" style="cursor:pointer;" onclick="abrirProduto(${p.originalIndex}, '${orig}')">
+                ${imgCapa ? `<img src="${esc(safeImgSrc(imgCapa))}" loading="lazy">` : '🛍️'}
               </div>
               <h4>${esc(p.nome)}</h4>
               ${priceHtml}
@@ -1939,20 +2090,53 @@
       if (!p) return;
       
       const membro = ehMembroClube();
-      const precoFinal = (membro && p.precoClube) ? p.precoClube : p.preco;
+      
+      let precoNormalNum = parseFloat(String(p.preco).replace(/\./g, '').replace(',', '.'));
+      let precoVipNum = p.precoClube ? parseFloat(String(p.precoClube).replace(/\./g, '').replace(',', '.')) : (precoNormalNum / 2);
+      
+      let precoNormalTxt = `R$ ${esc(p.preco)}`;
+      let precoVipTxt = `R$ ${p.precoClube ? esc(p.precoClube) : (precoNormalNum / 2).toFixed(2).replace('.', ',')}`;
 
-      // Correção do Tamanho da Imagem (object-fit: contain)
-      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" style="width:100%;height:100%;object-fit:contain;border-radius:22px;">` : '🛍️';
+      // GALERIA DE FOTOS
+      const imgs = p.imagens || (p.imagem ? [p.imagem] : []);
+      let galeriaHtml = '';
+      if (imgs.length > 0) {
+        galeriaHtml = imgs.map(img => `<img src="${esc(safeImgSrc(img))}" alt="${esc(p.nome)}">`).join('');
+      } else {
+        galeriaHtml = `<div style="width:100%; height:300px; display:flex; align-items:center; justify-content:center; font-size:80px;">🛍️</div>`;
+      }
+      document.getElementById('produto-galeria').innerHTML = galeriaHtml;
       
       document.getElementById('produto-nome').textContent = p.nome;
-      document.getElementById('produto-preco').textContent = `R$ ${esc(precoFinal)}`;
+      
+      // ÁREA DE PREÇO (Atraente)
+      document.getElementById('produto-precificacao').innerHTML = `
+         <div style="font-size: 16px; text-decoration: line-through; color: #999;">De: ${precoNormalTxt}</div>
+         <div style="font-size: 28px; font-weight: 800; color: var(--cor-dourada); margin-bottom: 5px;">Por: ${precoVipTxt} <small style="font-size:12px; color:var(--cor-principal); letter-spacing:1px;">NO CLUBE</small></div>
+      `;
+
       document.getElementById('produto-desc').textContent = p.descricao || 'Produto exclusivo da nossa loja.';
       
-      // Botão WhatsApp
+      // Botão Comprar Normal
       document.getElementById('btn-comprar-produto').onclick = () => {
-         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} (R$ ${precoFinal}).`);
+         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} (${precoNormalTxt}).`);
          window.open(`https://wa.me/${appState.whatsapp}?text=${msg}`, '_blank');
       };
+      
+      // Botão Comprar VIP
+      const btnVip = document.getElementById('btn-comprar-vip');
+      if (membro) {
+         btnVip.style.display = 'flex';
+         btnVip.onclick = () => {
+           const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto VIP: ${p.nome} (${precoVipTxt}).`);
+           window.open(`https://wa.me/${appState.whatsapp}?text=${msg}`, '_blank');
+         };
+      } else {
+         btnVip.style.display = 'flex';
+         btnVip.style.background = '#ccc';
+         btnVip.innerHTML = '<i class="fa-solid fa-lock"></i> Desbloquear Preço VIP';
+         btnVip.onclick = pedirCodigoClube;
+      }
 
       // Botão Pagar Online (Link Kiwify)
       const btnPagarOnline = document.getElementById('btn-pagar-online');
