@@ -34,6 +34,7 @@
       --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
       --cor-whatsapp: #25D366; --cor-instagram: #E4405F; --cor-canal: #128C7E; --cor-email: #333333;
       --cor-header: #9D174D; --cor-nav: #9D174D; --cor-chat: #9D174D; --cor-sidebar: #1e293b;
+      --cor-vip-destaque: #DC2626; /* Vermelho vibrante para o preço VIP */
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
@@ -128,7 +129,7 @@
     .dropship-badge { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, #10A37F, #0d8a6c); color: #fff; font-size: 9px; padding: 4px 9px; border-radius: 999px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 2; }
 
     /* --- PREÇOS E ESTOQUE --- */
-    .product-card-nova .price { font-size: 12px; color: var(--cor-texto-mutado); font-weight: 600; margin-top: auto; text-decoration: line-through; }
+    .product-card-nova .price { font-size: 12px; color: var(--cor-texto-mutado); font-weight: 600; margin-top: auto; }
     .product-card-nova .price-clube { font-size: 20px; color: var(--cor-dourada); font-weight: 800; display: block; margin-top: 4px; }
     .product-card-nova .price-clube small { font-size: 10px; color: var(--cor-principal); font-weight: 700; display: block; letter-spacing: 0.5px; }
     .tag-clube { background: linear-gradient(135deg, var(--cor-dourada), #B8852E); color: #fff; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 999px; position: absolute; top: 8px; left: 8px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
@@ -270,6 +271,10 @@
     .product-gallery { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
     .product-gallery::-webkit-scrollbar { display: none; }
     .product-gallery img { width: 100%; flex-shrink: 0; scroll-snap-align: start; object-fit: contain; min-height: 300px; max-height: 500px; border-radius: 16px; background: #f9f9f9; }
+
+    .tab-estoque { display: flex; gap: 5px; margin-bottom: 15px; background: #eee; padding: 5px; border-radius: 10px; }
+    .tab-estoque button { flex: 1; padding: 10px; border: none; background: transparent; font-weight: bold; color: #666; cursor: pointer; border-radius: 8px; font-size: 12px; }
+    .tab-estoque button.active { background: #fff; color: var(--cor-principal); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
     @media (min-width: 768px) {
       body { background-color: #eef2f5; display: flex; align-items: stretch; }
@@ -500,17 +505,27 @@
           <h1 class="pagina-titulo" id="titulo-clube-tela">Clube da Ale</h1>
           <p class="pagina-subtitulo">Vantagens exclusivas e produtos selecionados</p>
         </div>
+        
+        <!-- Banner de Chamada para assinar o clube -->
+        <div id="banner-assinar-clube" style="background: linear-gradient(135deg, #9D174D, #D4AF37); border-radius: 16px; padding: 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 6px 15px rgba(157,23,77,0.3);">
+           <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 8px;">Seja Membro VIP 🌟</h3>
+           <p style="font-size: 13px; margin-bottom: 15px; opacity: 0.95;">Tenha acesso a preços exclusivos e ofertas secretas!</p>
+           <button onclick="contratarClubeWhatsApp()" style="background: #fff; color: var(--cor-principal); border: none; padding: 12px 25px; border-radius: 999px; font-weight: 800; font-size: 14px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"><i class="fa-solid fa-crown"></i> QUERO SER VIP AGORA</button>
+        </div>
+
         <div class="mural-box" style="margin-bottom: 15px;">
           <h3>Benefícios VIP</h3>
           <p class="mural-texto" id="texto-clube-beneficios"></p>
         </div>
+        
         <button class="btn-cta-grande" onclick="pedirCodigoClube()" style="margin-bottom: 20px;" id="btn-inserir-codigo-clube">
           <i class="fa-solid fa-gem"></i> Já sou membro - Inserir código
         </button>
+        
         <div id="vitrine-admin-bar" style="display: none; text-align: right; margin-bottom: 8px;">
-          <button onclick="abrirConfiguracao('loja-clube')" style="background: var(--cor-principal); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">⚙️ Gerenciar Vitrine</button>
+          <button onclick="abrirConfiguracao('estoque')" style="background: var(--cor-principal); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">⚙️ Gerenciar Estoque</button>
         </div>
-        <div class="section-title-nova" id="titulo-vitrine-clube">Vitrine da Alê</div>
+        <div class="section-title-nova" id="titulo-vitrine-clube">Produtos Exclusivos</div>
         <div id="vitrine-produtos-grid-clube" class="boutique-grid-nova"></div>
       </div>
 
@@ -537,20 +552,20 @@
 
         <h1 id="produto-nome" style="font-family:'Playfair Display',serif; color:var(--cor-principal); font-size:28px; margin-bottom:8px; text-align:center;"></h1>
         
-        <!-- ÁREA DE PREÇO -->
-        <div id="produto-precificacao" style="text-align: center; margin-bottom: 16px;">
+        <!-- ÁREA DE PREÇO (Ajustada para sem risco e com destaque VIP) -->
+        <div id="produto-precificacao" style="text-align: center; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
           <!-- Injetado via JS -->
         </div>
 
-        <div class="mural-box" style="text-align:left;">
-          <p id="produto-desc" class="mural-texto" style="margin-bottom:0; text-align:center; font-size: 16px;">Produto exclusivo da nossa loja.</p>
+        <div class="mural-box" style="text-align:left; background: transparent; border: none; box-shadow: none; padding: 0;">
+          <p id="produto-desc" class="mural-texto" style="text-align:center; font-size: 15px; color: #555;">Produto exclusivo da nossa loja.</p>
         </div>
         
         <!-- BOTÕES DE COMPRA -->
-        <button class="btn-cta-grande" id="btn-comprar-produto">
+        <button class="btn-cta-grande" id="btn-comprar-produto" style="margin-top: 10px;">
           <i class="fa-brands fa-whatsapp"></i> Comprar Normal
         </button>
-        <button class="btn-cta-grande" id="btn-comprar-vip" style="background:linear-gradient(135deg, #D4AF37, #B8852E); display:none;">
+        <button class="btn-cta-grande" id="btn-comprar-vip" style="background:linear-gradient(135deg, #DC2626, #9D174D); display:none;">
           <i class="fa-solid fa-gem"></i> Comprar com Desconto VIP
         </button>
         <button class="btn-cta-grande" id="btn-pagar-online" style="background:#3B82F6; display:none;">
@@ -704,12 +719,12 @@
       </div>
     </div>
 
-    <!-- MODAL DE COMPRA DIRETA -->
+    <!-- MODAL DE COMPRA DIRETA / CHECKOUT -->
     <div id="modal-checkout" class="modal-cadastro-fixo">
       <div class="cartao-cadastro" style="text-align:center;">
         <h3 style="font-size:22px;">Finalizar Compra 🛍️</h3>
         <p id="checkout-produto-nome" style="font-size:16px; color:var(--cor-principal); font-weight:700; margin:10px 0;"></p>
-        <p id="checkout-produto-preco" style="font-size:24px; font-weight:800; color:var(--cor-dourada); margin-bottom:20px;"></p>
+        <p id="checkout-produto-preco" style="font-size:24px; font-weight:800; color:var(--cor-vip-destaque); margin-bottom:20px;"></p>
         
         <input type="text" id="checkout-nome" placeholder="Seu nome completo" required>
         <input type="tel" id="checkout-tel" placeholder="WhatsApp (com DDD)" required>
@@ -972,13 +987,24 @@
 
     const GEMINI_PROXY_URL = 'https://ale-gemini-proxy.progovcomercial.workers.dev';
     let historicoChatIA = [];
-    let iaCooldown = 0; // Controle de erro 429
+    let iaCooldown = 0; 
 
+    // Organização do Perfil (Painel Master)
     const categoriasConfig = [
       { nome: '📊 Dashboard', icone: 'fa-chart-pie', itens: [{ id: 'dashboard-kpi', nome: 'Ver Métricas do Negócio' }]},
       { nome: 'Aparência & Design', icone: 'fa-palette', itens: [{ id: 'cores', nome: 'Cores Base' }, { id: 'cores-extra', nome: 'Cores Redes' }, { id: 'gradientes', nome: 'Gradientes' }, { id: 'logo', nome: 'Logo' }, { id: 'fundo', nome: 'Fundo' }]},
-      { nome: 'Conteúdo do App', icone: 'fa-image', itens: [{ id: 'boutique', nome: 'Produtos da Vitrine' }, { id: 'videos', nome: 'Vídeos' }, { id: 'publicidade', nome: 'Parceiros' }, { id: 'layout', nome: 'Organizar Tela' }]},
-      { nome: 'Gestão VIP & Clube', icone: 'fa-gem', itens: [{ id: 'vip', nome: 'Gerenciar Clube VIP' }, { id: 'loja-clube', nome: 'Loja do Clube' }, { id: 'clube', nome: 'Planos e Preços' }, { id: 'clube-beneficios', nome: 'Textos do Clube 📝' }, { id: 'tela-inicial', nome: 'Nomes (Clube/Vitrine)' }]},
+      { nome: 'Conteúdo do App', icone: 'fa-image', itens: [
+        { id: 'estoque', nome: 'Estoque de Produtos' }, // NOVO NOME
+        { id: 'videos', nome: 'Vídeos' }, 
+        { id: 'publicidade', nome: 'Parceiros' }, 
+        { id: 'layout', nome: 'Organizar Tela' }
+      ]},
+      { nome: 'Gestão VIP & Clube', icone: 'fa-gem', itens: [
+        { id: 'vip', nome: 'Gerenciar Clube VIP' }, 
+        { id: 'clube', nome: 'Planos e Preços' }, 
+        { id: 'clube-beneficios', nome: 'Textos do Clube 📝' }, 
+        { id: 'tela-inicial', nome: 'Nomes (Clube/Vitrine)' }
+      ]},
       { nome: 'Cursos & Serviços', icone: 'fa-graduation-cap', itens: [{ id: 'cursos-admin', nome: 'Gerenciar Cursos 🎓' }, { id: 'servicos-admin', nome: 'Gerenciar Serviços 💆' }, { id: 'liberar-acesso', nome: 'Liberar Acesso 🔑' }]},
       { nome: 'Depoimentos & Prova Social', icone: 'fa-quote-left', itens: [{ id: 'depoimentos-admin', nome: 'Gerenciar Depoimentos 💬' }]},
       { nome: 'Agenda & Contato', icone: 'fa-calendar', itens: [{ id: 'agenda-config', nome: 'Configurar Agenda' }, { id: 'msg-confirmacao', nome: 'Msg Confirmação 💬' }, { id: 'mural', nome: 'Mural da Agenda' }, { id: 'equipe', nome: 'Gerenciar Equipe 👥' }, { id: 'lista-clientes', nome: 'Lista de Clientes 👥' }, { id: 'busca-proposta', nome: '🔎 Buscar Proposta' }, { id: 'migracao', nome: 'Importar Clientes 📥' }, { id: 'contato', nome: 'Redes & Contato' }, { id: 'links', nome: 'Links Ambientes' }]},
@@ -999,10 +1025,9 @@
       colorMuted: '#777777', colorCardBg: '#FFFFFF', colorHeader: '#9D174D', colorWhatsapp: '#25D366', colorInstagram: '#E4405F', colorCanal: '#128C7E', colorEmail: '#333333', colorNav: '#9D174D', colorChat: '#9D174D',
       gradVitrineStart: '#B91C1C', gradVitrineEnd: '#4C0519', gradPlanosStart: '#FFFCF2', gradPlanosEnd: '#FFF2F6', gradCtaStart: '#9D174D', gradCtaEnd: '#560021', gradIndiqueStart: '#FFD700', gradIndiqueEnd: '#FFA500',
       boutiqueProdutos: [
-        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagens: [], dropship: false, linkPagamento: '' }, 
-        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagens: [], dropship: true, linkPagamento: '' }
+        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagens: [], dropship: false, linkPagamento: '', tipoEstoque: 'loja', destaque: true }, 
+        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagens: [], dropship: true, linkPagamento: '', tipoEstoque: 'loja', destaque: true }
       ],
-      produtosClube: [],
       publicidades: [{ id: 1, titulo: 'Parceiro Exemplo', descricao: 'Confira as novidades!', sobre: 'Somos parceiros oficiais.', imagem: null, video: null }],
       iaName: 'Assistente Alexandra', iaWelcome: 'Olá, seja bem-vinda! 🌸 Sou a assistente virtual da Alexandra Barros. Posso tirar dúvidas sobre nossos protocolos para mulheres 40+ ou ajudar você a agendar um horário.', iaSystemPrompt: 'Você é a Assistente Ale, assistente virtual da clínica de estética Alexandra Barros. Seu tom é acolhedor. Foco em mulheres 40+. Tire dúvidas sobre tratamentos e pós-procedimentos. Nunca invente preços.', iaEnabled: true, iaProxyUrl: null,
       planoAtual: 'diamond',
@@ -1028,12 +1053,12 @@
     };
 
     const LIMITES_PLANO = { glow: { tratamentos: 5, integracoes: 1, clube: false, ia: false, carrossel: false, video: false }, prime: { tratamentos: 20, integracoes: 2, clube: true, ia: 'basica', carrossel: true, video: false }, diamond: { tratamentos: 999, integracoes: 999, clube: true, ia: 'completa', carrossel: true, video: true } };
-    const TRATAMENTOS_ALEXANDRA = [{ nome: 'Limpeza de Pele Profunda', preco: '180,00', precoClube: '90,00', icone: 'fa-spa' }, { nome: 'Microagulhamento Facial', preco: '350,00', precoClube: '175,00', icone: 'fa-syringe' }, { nome: 'Peeling de Diamante', preco: '220,00', precoClube: '110,00', icone: 'fa-gem' }, { nome: 'Radiofrequência Facial', preco: '280,00', precoClube: '140,00', icone: 'fa-wave-square' }, { nome: 'Protocolo Olhos 40+', preco: '260,00', precoClube: '130,00', icone: 'fa-eye' }, { nome: 'Massagem Relaxante', preco: '150,00', precoClube: '75,00', icone: 'fa-hands' }];
-
+    
     let appState = JSON.parse(JSON.stringify(estadoPadrao));
-    let backupState = null, configAtualAberta = '', indexPubEditando = -1, indexProdEditando = -1, indexProdClubeEditando = -1, indexCursoEditando = -1, indexServicoEditando = -1, indexDepoimentoEditando = -1;
+    let backupState = null, configAtualAberta = '', indexPubEditando = -1, indexProdEditando = -1, indexCursoEditando = -1, indexServicoEditando = -1, indexDepoimentoEditando = -1;
     let currentDate = new Date(), diaSelecionado = null, idAgendamentoRemarcando = null, dadosRemarcando = null, filtroFinanceiroAtual = 'todas', planoSelecionadoId = null;
     let _produtoCheckout = null; 
+    let filtroEstoqueAtual = 'loja'; // Filtro para a tela de estoque no painel
     window._agsCache = {}; window._prontuarioClienteAtual = null; window._acessoFinanceiroLiberado = false; window._agendamentoParaConfirmar = null; window._listaFinanceiroCache = []; window._agsJaEnviados = new Set(); window._verifConfirmando = false; window._listaClientesCache = []; window._listaAgendamentosCache = []; window._cursoAtual = null;
     let pilhaTelas = ['inicio'];
 
@@ -1131,11 +1156,10 @@
 
     function mascaraPreco(input) { let v = input.value.replace(/\D/g, ''); if (v === '') { input.value = ''; return; } v = (v / 100).toFixed(2) + ''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = v; }
     
-    // Função para ler múltiplas imagens
     function lerMultiplasImagens(inputId, cb) { 
       const i = document.getElementById(inputId); 
       if (!i || !i.files.length) return cb(null); 
-      const files = Array.from(i.files).slice(0, 5); // Limita a 5 fotos
+      const files = Array.from(i.files).slice(0, 5); 
       let resultados = [];
       let processados = 0;
 
@@ -1223,10 +1247,14 @@
         else if (secao === 'clinica') { html = `<div class="section-title-nova">Clínica</div><button class="espaco-card" style="background:linear-gradient(135deg,#9D174D 0%,#560021 100%);" onclick="abrirTela('clinica')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">💆‍♀️</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Protocolos</span><h3 class="espaco-titulo">Clínica Estética</h3><p class="espaco-sub">Para mulheres 40+</p></div></div><p class="espaco-desc">Tratamentos com preços especiais no Clube.</p><span class="espaco-cta">Conhecer <i class="fa-solid fa-arrow-right"></i></span></button>`; }
         else if (secao === 'cursos') { const cursos = appState.cursos || []; if (cursos.length > 0) { html = `<div class="section-title-nova">Cursos Online</div><button class="espaco-card" style="background:linear-gradient(135deg,#7C3AED 0%,#4C1D95 100%);" onclick="abrirTela('cursos')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">🎓</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Bio Renovadora</span><h3 class="espaco-titulo">Cursos Online</h3><p class="espaco-sub">${cursos.length} curso(s) disponível(is)</p></div></div><p class="espaco-desc">Aprenda técnicas. Membros têm desconto.</p><span class="espaco-cta">Ver cursos <i class="fa-solid fa-arrow-right"></i></span></button>`; } }
         else if (secao === 'pontos') { html = `<div class="section-title-nova">Fidelidade</div><button class="espaco-card" style="background:linear-gradient(135deg,#D4AF37 0%,#9D174D 100%);" onclick="abrirTela('pontos')"><div class="espaco-overlay"></div><div class="espaco-header"><div class="espaco-icon">⭐</div><div class="espaco-titulo-wrap"><span class="espaco-selo">✦ Recompensa</span><h3 class="espaco-titulo">Pontos XP</h3><p class="espaco-sub">Cada visita vale</p></div></div><p class="espaco-desc">Acumule e troque por tratamentos.</p><span class="espaco-cta">Saber mais <i class="fa-solid fa-arrow-right"></i></span></button>`; }
+        
+        // ATUALIZAÇÃO: DESTAQUES E VITRINE (10 PRODUTOS)
         else if (secao === 'boutique') { 
-          const filtrados = (appState.boutiqueProdutos || []).filter(p => { const lim = String(p.preco || '').replace(/[^\d]/g, ''); return lim !== '' && parseInt(lim) > 0; }); 
-          let pH = filtrados.map(p => { 
-            const idx = (appState.boutiqueProdutos || []).indexOf(p); 
+          const todosProdutos = (appState.boutiqueProdutos || []).filter(p => p.tipoEstoque === 'loja' || !p.tipoEstoque);
+          const destaques = todosProdutos.filter(p => p.destaque);
+          const vitrineNormal = todosProdutos.filter(p => !p.destaque).slice(0, 10); // Limita a 10
+
+          const renderCard = (p, idx) => {
             const membro = ehMembroClube();
             const temClube = p.precoClube && p.precoClube !== '';
             const precoMostrar = (membro && temClube) ? p.precoClube : p.preco;
@@ -1251,15 +1279,25 @@
                 <h4 onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">${esc(p.nome)}</h4>
                 <p style="font-size:11px; color:#999; margin-bottom:6px;">Cód: ${esc(p.codigo || '---')}</p>
                 
-                ${(!membro && temClube) ? `<p class="price" style="font-size:12px;">De: R$ ${esc(p.preco)}</p>` : ''}
                 <p class="price-clube">R$ ${esc(precoMostrar)} ${membro ? '<small>Preço VIP Ativo</small>' : (temClube ? '<small>Seja VIP e economize</small>' : '')}</p>
                 
                 <button class="btn-comprar-direto" onclick="abrirCheckout(${idx})" ${btnDisabled ? 'disabled' : ''}>
                   <i class="fa-solid fa-cart-shopping"></i> ${btnDisabled ? 'Esgotado' : 'Comprar Agora'}
                 </button>
               </div>`; 
-          }).join(''); 
-          if (filtrados.length > 0) html = `<div class="section-title-nova">Destaques</div><div class="boutique-grid-nova">${pH}</div>`; 
+          };
+
+          let htmlDestaques = '';
+          if (destaques.length > 0) {
+            htmlDestaques = `<div class="section-title-nova" style="color: #D4AF37;">⭐ Produtos em Destaque</div><div class="boutique-grid-nova">${destaques.map(p => renderCard(p, appState.boutiqueProdutos.indexOf(p))).join('')}</div>`;
+          }
+
+          let htmlVitrine = '';
+          if (vitrineNormal.length > 0) {
+            htmlVitrine = `<div class="section-title-nova">Destaques da Loja</div><div class="boutique-grid-nova">${vitrineNormal.map(p => renderCard(p, appState.boutiqueProdutos.indexOf(p))).join('')}</div>`;
+          }
+
+          if (htmlDestaques || htmlVitrine) html = htmlDestaques + htmlVitrine; 
         }
         else if (secao === 'contato') { const c = appState.contato || {}; let rH = (c.redesSociais || []).map(r => { const ico = r.icone || 'fa-link'; const marcas = ['fa-whatsapp','fa-instagram','fa-telegram','fa-facebook','fa-tiktok','fa-youtube']; const ehM = marcas.some(m => ico === m); return `<a href="${esc(safeHref(r.link))}" target="_blank" rel="noopener" class="rede-btn ${esc(r.classe || 'custom')}"><i class="${ehM ? 'fa-brands' : 'fa-solid'} ${esc(ico)}"></i> ${esc(r.nome)}</a>`; }).join(''); if (c.canais?.length) rH += `<button onclick="abrirTelaCanais()" class="rede-btn canal"><i class="fa-solid fa-bullhorn"></i> Canais (${c.canais.length})</button>`; html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${esc(c.endereco)}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${esc(c.horario)}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${esc(c.telefone)}</div><button class="btn-maps" onclick="abrirGoogleMaps()"><i class="fa-solid fa-map-location-dot"></i> Como Chegar (Google Maps)</button><div class="contato-redes">${rH}</div></div><div style="text-align:center;margin:30px 0 20px;padding:20px;background:linear-gradient(135deg,#FFF8FA,#FFFBF8);border-radius:16px;border:1px dashed rgba(157,23,77,0.2);"><p style="font-size:12px;color:#777;margin-bottom:10px;">💼 Você tem uma clínica, salão ou loja?</p><a href="landing.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,var(--cor-principal),var(--cor-dourada));color:#fff;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none;"><i class="fa-solid fa-rocket"></i> Conheça a Plataforma</a></div>`; }
         if (html) homeSections.innerHTML += html;
@@ -1396,7 +1434,6 @@
       const pub = appState.publicidades.find(p => Number(p.id) === Number(id));
       if (!pub) return;
       
-      // CORREÇÃO DA IMAGEM DO PARCEIRO
       document.getElementById('parceiro-img-grande').innerHTML = pub.video 
         ? gerarHTMLVideo(pub.video) 
         : (pub.imagem ? `<img src="${esc(safeImgSrc(pub.imagem))}" style="width:100%;height:100%;object-fit:contain;border-radius:22px;">` : '🤝');
@@ -1425,6 +1462,13 @@
       window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
       document.getElementById('modal-plano-detalhes').style.display = 'none';
     }
+    
+    // NOVO: Chamada para contratar o clube
+    function contratarClubeWhatsApp() {
+      const wa = appState.whatsapp || '5511997450293';
+      const msg = encodeURIComponent(`Olá! Quero me tornar membro do Clube da Ale e ter acesso aos preços exclusivos VIP! 🌟`);
+      window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
+    }
 
     function abrirLinkRenovase() {
       const link = appState.renovaseLink;
@@ -1434,7 +1478,7 @@
 
     function abrirGoogleMaps() { const end = (appState.contato && appState.contato.endereco) || 'Rua Silvio Donini 223 - Centro, Diadema'; window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end), '_blank'); }
     
-    function renderizarServicosClinica() { const c = document.getElementById('lista-tratamentos-clinica'); if (!c) return; const servicos = appState.servicos || []; if (servicos.length === 0) { c.innerHTML = '<p style="text-align:center;color:#777;grid-column:1/-1;">Nenhum serviço cadastrado.</p>'; return; } const membro = ehMembroClube(); c.innerHTML = servicos.map(s => { const precoFinal = (membro && s.precoClube) ? s.precoClube : s.preco; const temD = membro && s.precoClube && s.precoClube !== s.preco; return `<div class="product-card-nova" style="cursor:default;"><div class="product-img-box-nova">${s.imagem ? `<img src="${esc(safeImgSrc(s.imagem))}">` : '💆‍♀️'}</div><h4>${esc(s.nome)}</h4>${s.descricao ? `<p style="font-size:11px;color:#888;margin-bottom:6px;">${esc(s.descricao)}</p>` : ''}${temD ? `<p style="font-size:11px;color:#999;text-decoration:line-through;">R$ ${esc(s.preco)}</p>` : ''}<p class="price" style="color:${temD ? 'var(--cor-dourada)' : 'var(--cor-principal)'};">R$ ${esc(precoFinal)} ${temD ? '<small style="color:var(--cor-principal);">no Clube 🌸</small>' : ''}</p>${!membro && s.precoClube ? `<p style="font-size:10px;color:var(--cor-dourada);margin-top:4px;font-weight:700;">Clube: R$ ${esc(s.precoClube)}</p>` : ''}</div>`; }).join(''); }
+    function renderizarServicosClinica() { const c = document.getElementById('lista-tratamentos-clinica'); if (!c) return; const servicos = appState.servicos || []; if (servicos.length === 0) { c.innerHTML = '<p style="text-align:center;color:#777;grid-column:1/-1;">Nenhum serviço cadastrado.</p>'; return; } const membro = ehMembroClube(); c.innerHTML = servicos.map(s => { const precoFinal = (membro && s.precoClube) ? s.precoClube : s.preco; const temD = membro && s.precoClube && s.precoClube !== s.preco; return `<div class="product-card-nova" style="cursor:default;"><div class="product-img-box-nova">${s.imagem ? `<img src="${esc(safeImgSrc(s.imagem))}">` : '💆‍♀️'}</div><h4>${esc(s.nome)}</h4>${s.descricao ? `<p style="font-size:11px;color:#888;margin-bottom:6px;">${esc(s.descricao)}</p>` : ''}${temD ? `<p style="font-size:11px;color:#999;">R$ ${esc(s.preco)}</p>` : ''}<p class="price" style="color:${temD ? 'var(--cor-dourada)' : 'var(--cor-principal)'};">R$ ${esc(precoFinal)} ${temD ? '<small style="color:var(--cor-principal);">no Clube 🌸</small>' : ''}</p>${!membro && s.precoClube ? `<p style="font-size:10px;color:var(--cor-dourada);margin-top:4px;font-weight:700;">Clube: R$ ${esc(s.precoClube)}</p>` : ''}</div>`; }).join(''); }
     
     function verificarClienteLogado() { const n = localStorage.getItem('clienteNome'); const b = document.getElementById('welcome-banner'); if (n && b && !modoAdminAtivo) { b.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--cor-dourada);margin-right:5px;"></i> Olá, ${esc(n)}! Seja bem-vinda.`; b.style.display = 'block'; } else if (b) { b.style.display = 'none'; } }
     
@@ -1479,7 +1523,6 @@
       const idD = 'dig-' + Date.now(), body = document.getElementById('chat-body'); body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot" id="${idD}">Digitando...</div>`); body.scrollTop = body.scrollHeight;
       
       try { 
-        // Limita o histórico para evitar erro de tamanho de payload
         if (historicoChatIA.length > 10) historicoChatIA = historicoChatIA.slice(-10);
         
         historicoChatIA.push({ role: 'user', parts: [{ text: txt }] }); 
@@ -1506,7 +1549,7 @@
         let msg = e.message;
         
         if (msg.includes('429') || msg.includes('Muitas mensagens')) {
-          iaCooldown = Date.now() + 30000; // Bloqueia por 30 segundos
+          iaCooldown = Date.now() + 30000; 
           msg = 'A IA está sobrecarregada. Aguarde 30 segundos e tente novamente.';
         } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
           msg = 'Não consegui conectar ao servidor da IA. Verifique sua internet.';
@@ -1641,24 +1684,56 @@
       else if (id === 'gradientes') { titulo.textContent = 'Gradientes'; html = `<label style="font-size:13px;font-weight:700;">🌸 Vitrine</label><div style="display:flex;gap:10px;"><input type="color" id="grad-vitrine-start" value="${esc(appState.gradVitrineStart)}" style="flex:1;height:50px;"><input type="color" id="grad-vitrine-end" value="${esc(appState.gradVitrineEnd)}" style="flex:1;height:50px;"></div><label style="font-size:13px;font-weight:700;display:block;margin-top:12px;">🎯 CTA</label><div style="display:flex;gap:10px;"><input type="color" id="grad-cta-start" value="${esc(appState.gradCtaStart)}" style="flex:1;height:50px;"><input type="color" id="grad-cta-end" value="${esc(appState.gradCtaEnd)}" style="flex:1;height:50px;"></div>`; }
       else if (id === 'fundo') { titulo.textContent = 'Fundo'; html = `<label style="font-size:13px;font-weight:700;">🎨 Cor</label><input type="color" id="edit-bg-color" value="${esc(appState.bgColor || '#FFF2F6')}" style="height:50px;"><label style="font-size:13px;font-weight:700;">🖼️ Imagem</label><input type="file" id="edit-bg-file" accept="image/*" style="padding:15px;">`; }
       else if (id === 'contato') { titulo.textContent = 'Redes & Contato'; const c = appState.contato || {}; const redes = (c.redesSociais || []).map(r => `<div class="config-item-row" style="margin-bottom:10px;"><input type="text" class="rede-nome" value="${esc(r.nome)}" placeholder="Nome"><input type="url" class="rede-link" value="${esc(r.link)}" placeholder="Link"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Endereço</label><input type="text" id="edit-endereco" value="${esc(c.endereco || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Horário</label><input type="text" id="edit-horario" value="${esc(c.horario || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Telefone</label><input type="text" id="edit-telefone" value="${esc(c.telefone || '')}"><h4 style="font-size:14px;color:#9D174D;margin-top:20px;margin-bottom:10px;">Redes</h4><div id="redes-container">${redes}</div><button type="button" class="btn-add-item" onclick="addRedeConfig()">+ Rede</button>`; }
-      else if (id === 'boutique') { titulo.textContent = 'Produtos da Vitrine'; const prods = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : []; const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)} <br><span style="font-size:11px; color:#777;">Estoque: ${p.estoque !== undefined ? p.estoque : 0}</span></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Nome Banner</label><input type="text" id="edit-boutique-name" value="${esc(appState.boutiqueName)}" style="padding:15px;"><div style="margin-top:20px;">${lista}</div><button onclick="abrirEditorProduto(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:15px;">+ Produto</button>`; }
       
-      else if (id === 'loja-clube') { 
-        titulo.textContent = 'Loja do Clube'; 
-        const prods = Array.isArray(appState.produtosClube) ? appState.produtosClube : []; 
-        const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="font-size:11px;color:#777;">Cat: ${esc(p.categoria || 'Geral')} | Estoque: ${p.estoque !== undefined ? p.estoque : 0}</div></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProdutoClube(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoClube(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); 
-        html = `<div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#E65100;">💎 Produtos exclusivos. Crie categorias para organizar (Ex: Perfumes, Cremes).</p></div><div style="margin-bottom:20px;">${lista}</div><button onclick="abrirEditorProdutoClube(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">+ Produto do Clube</button>`; 
+      // ATUALIZAÇÃO: NOVO GERENCIADOR DE ESTOQUE UNIFICADO (Loja, Clube, Drop)
+      else if (id === 'estoque') { 
+        titulo.textContent = 'Estoque de Produtos'; 
+        const prods = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : [];
+        
+        let listaFiltrada = prods.filter(p => {
+            if (filtroEstoqueAtual === 'loja') return p.tipoEstoque === 'loja' || !p.tipoEstoque;
+            if (filtroEstoqueAtual === 'clube') return p.tipoEstoque === 'clube';
+            if (filtroEstoqueAtual === 'drop') return p.tipoEstoque === 'drop';
+            return true;
+        });
+
+        const lista = listaFiltrada.map((p) => {
+          const i = prods.indexOf(p);
+          return `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;">${esc(p.nome)} ${p.destaque ? '⭐' : ''}</div>
+              <div style="font-size:11px;color:#777;">Estoque: ${p.estoque !== undefined ? p.estoque : 0} | Preço: R$ ${p.preco}</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="abrirEditorProduto(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button>
+              <button onclick="removerProdutoBoutique(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button>
+            </div>
+          </div>`;
+        }).join(''); 
+        
+        html = `
+          <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:15px;margin-bottom:20px;">
+            <p style="font-size:13px;color:#E65100;">💎 Gerencie aqui todos os seus produtos. Use as abas para separar a Loja, o Clube e o Drop.</p>
+          </div>
+          
+          <div class="tab-estoque">
+             <button class="${filtroEstoqueAtual === 'loja' ? 'active' : ''}" onclick="mudarAbaEstoque('loja')">Loja</button>
+             <button class="${filtroEstoqueAtual === 'clube' ? 'active' : ''}" onclick="mudarAbaEstoque('clube')">Clube VIP</button>
+             <button class="${filtroEstoqueAtual === 'drop' ? 'active' : ''}" onclick="mudarAbaEstoque('drop')">Drop</button>
+          </div>
+
+          <div style="margin-bottom:20px;">${lista || '<p style="text-align:center;color:#777;padding:10px;">Nenhum produto nesta aba.</p>'}</div>
+          <button onclick="abrirEditorProduto(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">+ Adicionar Produto</button>
+        `; 
       }
 
       else if (id === 'links') { titulo.textContent = 'Links Ambientes'; html = `<label style="font-size:13px;font-weight:700;">Link Renova-se</label><input type="url" id="edit-link-renovase" value="${esc(appState.renovaseLink || '')}" style="padding:15px;">`; }
       else if (id === 'clube') { titulo.textContent = 'Planos e Preços'; let htmlPlanos = ''; ['essencial', 'inteligente', 'master'].forEach(tipo => { const p = appState.planos[tipo] || estadoPadrao.planos[tipo]; let featuresHtml = (p.features || []).map(f => `<div class="config-item-row feat-row" style="margin-bottom:6px;"><input type="text" class="feat-input" value="${esc(f)}" style="padding:10px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); htmlPlanos += `<div style="background:#f9f9f9;padding:20px;border-radius:12px;margin-bottom:20px;border:1px solid #ddd;"><h4 style="text-transform:uppercase;font-size:15px;margin-bottom:15px;color:var(--cor-principal);">Plano ${esc(p.titulo)}</h4><label style="font-size:13px;font-weight:700;">Preço</label><input type="number" id="preco-${tipo}" value="${esc(appState.precos[tipo])}" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Subtítulo</label><input type="text" id="sub-${tipo}" value="${esc(p.subtitulo)}" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Itens:</label><div id="features-${tipo}">${featuresHtml}</div><button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')">+ Item</button></div>`; }); html = htmlPlanos; }
       else if (id === 'tela-inicial') { titulo.textContent = 'Nomes do App'; html = `<label style="font-size:13px;font-weight:700;">Nome Clube</label><input type="text" id="edit-clube-name" value="${esc(appState.clubeName)}" style="padding:15px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Nome Vitrine</label><input type="text" id="edit-vitrine-title" value="${esc(appState.vitrineTitle)}" style="padding:15px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Nome Evento</label><input type="text" id="edit-renovase-name" value="${esc(appState.renovaseName)}" style="padding:15px;">`; }
       
-      // ATUALIZAÇÃO: GERADOR DE CÓDIGO VIP + BUSCA
       else if (id === 'vip') { 
         titulo.textContent = 'Clube VIP'; 
         
-        // Verifica se já existe um código salvo para copiar
         let linkGerador = `<button onclick="gerarCodigoVipAvulso()" style="width:100%; padding:15px; background:linear-gradient(135deg, #D4AF37, #B8852E); color:#fff; border:none; border-radius:10px; font-weight:700; font-size:15px; margin-bottom:20px; cursor:pointer;"><i class="fa-solid fa-key"></i> Gerar Novo Código de Convite</button>
         <div id="codigo-vip-gerado" style="display:none; text-align:center; background:#e8f5e9; border:1px solid #10A37F; border-radius:8px; padding:15px; margin-bottom:20px;">
            <p style="font-size:12px; color:#2e7d32; margin-bottom:5px;">Código Gerado:</p>
@@ -1705,6 +1780,12 @@
       }
       if (id === 'lista-clientes') { window._listaClientesCache = []; window._listaAgendamentosCache = []; Promise.all([db.collection("clientes").get(), db.collection("agendamentos").get().catch(() => ({ forEach: () => {} }))]).then(([sc, sa]) => { sc.forEach(doc => window._listaClientesCache.push({ id: doc.id, ...doc.data() })); sa.forEach(doc => window._listaAgendamentosCache.push({ id: doc.id, ...doc.data() })); renderizarListaClientes(); }).catch(err => { document.getElementById('lista-clientes-container').innerHTML = '<p style="color:red;text-align:center;">Erro.</p>'; }); }
       if (id === 'financeiro' && window._acessoFinanceiroLiberado) { document.getElementById('fin-data').value = new Date().toLocaleDateString('en-CA'); carregarDadosFinanceiros(); }
+    }
+
+    // Função para alternar as abas de estoque no painel
+    function mudarAbaEstoque(aba) {
+      filtroEstoqueAtual = aba;
+      abrirConfiguracao('estoque');
     }
 
     // NOVAS FUNÇÕES ADICIONADAS
@@ -1796,10 +1877,8 @@
 
     function abrirEditorProduto(index) { 
       indexProdEditando = index; configAtualAberta = 'boutique-edit'; 
-      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagens: [], dropship: false, linkPagamento: '' } : appState.boutiqueProdutos[index]; 
-      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar'; 
+      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagens: [], dropship: false, linkPagamento: '', tipoEstoque: filtroEstoqueAtual, destaque: false } : appState.boutiqueProdutos[index]; 
       
-      // Renderiza prévia das imagens existentes
       let previewHtml = '';
       if (prod.imagens && prod.imagens.length > 0) {
         previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;">${prod.imagens.map(img => `<img src="${esc(safeImgSrc(img))}" style="height:50px; border-radius:4px;">`).join('')}</div>`;
@@ -1807,6 +1886,7 @@
         previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;"><img src="${esc(safeImgSrc(prod.imagem))}" style="height:50px; border-radius:4px;"></div>`;
       }
 
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar'; 
       document.getElementById('editor-content').innerHTML = `
         <label style="font-size:13px;font-weight:700;">Nome</label>
         <input type="text" id="prod-nome" value="${esc(prod.nome || '')}">
@@ -1831,12 +1911,16 @@
         <label style="font-size:13px;font-weight:700;margin-top:15px;display:flex;align-items:center;gap:10px;background:#E0F7FA;padding:12px;border-radius:8px;cursor:pointer;">
           <input type="checkbox" id="prod-dropship" ${prod.dropship ? 'checked' : ''} style="width:auto;"> 🚚 Dropship
         </label>
+
+        <label style="font-size:13px;font-weight:700;margin-top:10px;display:flex;align-items:center;gap:10px;background:#FFF3E0;padding:12px;border-radius:8px;cursor:pointer;">
+          <input type="checkbox" id="prod-destaque" ${prod.destaque ? 'checked' : ''} style="width:auto;"> ⭐ Produto em Destaque
+        </label>
       `; 
       document.getElementById('modal-editor').style.display = 'flex'; 
       document.getElementById('btn-salvar-editor').style.display = 'block'; 
       document.getElementById('btn-salvar-editor').textContent = 'Salvar'; 
       document.getElementById('btn-salvar-editor').onclick = salvarProdutoBoutique; 
-      document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('boutique'); 
+      document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('estoque'); 
     }
 
     function salvarProdutoBoutique() { 
@@ -1849,7 +1933,7 @@
       
       if (!nome || !preco) return alert('Preencha o nome e o preço normal.'); 
       
-      const novo = indexProdEditando === -1 ? { id: Date.now() } : appState.boutiqueProdutos[indexProdEditando]; 
+      const novo = indexProdEditando === -1 ? { id: Date.now(), tipoEstoque: filtroEstoqueAtual } : appState.boutiqueProdutos[indexProdEditando]; 
       novo.nome = nome; 
       novo.preco = preco; 
       novo.precoClube = precoClube;
@@ -1857,6 +1941,7 @@
       novo.estoque = estoque;
       novo.linkPagamento = linkPagamento;
       novo.dropship = document.getElementById('prod-dropship').checked; 
+      novo.destaque = document.getElementById('prod-destaque').checked;
       
       const inputFile = document.getElementById('prod-imagens'); 
       
@@ -1865,7 +1950,7 @@
         salvarEstado(); 
         renderizarHome(); 
         renderizarClubeEVitrine();
-        abrirConfiguracao('boutique'); 
+        abrirConfiguracao('estoque'); 
       }; 
 
       if (inputFile.files.length > 0) {
@@ -1878,89 +1963,7 @@
       }
     }
     
-    function removerProdutoBoutique(i) { if (confirm('Excluir?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
-
-    function abrirEditorProdutoClube(index) { 
-      indexProdClubeEditando = index; configAtualAberta = 'clube-edit'; 
-      if (!Array.isArray(appState.produtosClube)) appState.produtosClube = []; 
-      const prod = index === -1 ? { nome: '', preco: '', categoria: 'Geral', estoque: 10, linkPagamento: '', imagens: [] } : appState.produtosClube[index]; 
-      
-      // Renderiza prévia das imagens existentes
-      let previewHtml = '';
-      if (prod.imagens && prod.imagens.length > 0) {
-        previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;">${prod.imagens.map(img => `<img src="${esc(safeImgSrc(img))}" style="height:50px; border-radius:4px;">`).join('')}</div>`;
-      } else if (prod.imagem) {
-        previewHtml = `<div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px;"><img src="${esc(safeImgSrc(prod.imagem))}" style="height:50px; border-radius:4px;"></div>`;
-      }
-
-      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto Clube' : 'Editar'; 
-      document.getElementById('editor-content').innerHTML = `
-        <label style="font-size:13px;font-weight:700;">Nome</label>
-        <input type="text" id="prod-clube-nome" value="${esc(prod.nome || '')}">
-        
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Preço Normal (R$)</label><input type="text" id="prod-clube-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"></div>
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700; color:var(--cor-dourada);">Preço VIP (R$)</label><input type="text" id="prod-clube-preco-vip" value="${esc(prod.precoClube || '')}" oninput="mascaraPreco(this)" style="border-color:var(--cor-dourada);" placeholder="Opcional"></div>
-        </div>
-
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Estoque</label><input type="number" id="prod-clube-estoque" value="${prod.estoque !== undefined ? prod.estoque : 10}"></div>
-          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Categoria</label><input type="text" id="prod-clube-categoria" value="${esc(prod.categoria || 'Geral')}" placeholder="Ex: Perfumes"></div>
-        </div>
-
-        <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Link de Pagamento (Opcional)</label>
-        <input type="url" id="prod-clube-link" value="${esc(prod.linkPagamento || '')}" placeholder="https://pay.kiwify.com.br/...">
-
-        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Fotos (Até 5 fotos)</label>
-        ${previewHtml}
-        <input type="file" id="prod-clube-imagens" accept="image/*" multiple style="padding:15px; border:1px dashed #ccc; width:100%;">
-      `; 
-      document.getElementById('modal-editor').style.display = 'flex'; 
-      document.getElementById('btn-salvar-editor').style.display = 'block'; 
-      document.getElementById('btn-salvar-editor').textContent = 'Salvar'; 
-      document.getElementById('btn-salvar-editor').onclick = salvarProdutoClube; 
-      document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('loja-clube'); 
-    }
-
-    function salvarProdutoClube() { 
-      const nome = document.getElementById('prod-clube-nome').value; 
-      const preco = document.getElementById('prod-clube-preco').value; 
-      const precoVip = document.getElementById('prod-clube-preco-vip').value; 
-      const estoque = parseInt(document.getElementById('prod-clube-estoque').value) || 0;
-      const categoria = document.getElementById('prod-clube-categoria').value.trim() || 'Geral';
-      const linkPagamento = document.getElementById('prod-clube-link').value.trim();
-
-      if (!nome || !preco) return alert('Preencha o nome e o preço.'); 
-      
-      const novo = indexProdClubeEditando === -1 ? { id: Date.now() } : appState.produtosClube[indexProdClubeEditando]; 
-      novo.nome = nome; 
-      novo.preco = preco; 
-      novo.precoClube = precoVip;
-      novo.estoque = estoque;
-      novo.categoria = categoria;
-      novo.linkPagamento = linkPagamento;
-
-      const inputFile = document.getElementById('prod-clube-imagens'); 
-      
-      const fin = () => { 
-        if (indexProdClubeEditando === -1) appState.produtosClube.push(novo); 
-        salvarEstado(); 
-        renderizarHome(); 
-        renderizarClubeEVitrine(); 
-        abrirConfiguracao('loja-clube'); 
-      }; 
-
-      if (inputFile.files.length > 0) {
-        lerMultiplasImagens('prod-clube-imagens', (imgsBase64) => { 
-          if(imgsBase64) novo.imagens = imgsBase64; 
-          fin(); 
-        }); 
-      } else {
-        fin();
-      }
-    }
-
-    function removerProdutoClube(i) { if (confirm('Excluir?')) { appState.produtosClube.splice(i, 1); salvarEstado(); renderizarHome(); renderizarClubeEVitrine(); abrirConfiguracao('loja-clube'); } }
+    function removerProdutoBoutique(i) { if (confirm('Excluir?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('estoque'); } }
 
     function abrirEditorCurso(index) { indexCursoEditando = index; configAtualAberta = 'curso-edit'; if (!Array.isArray(appState.cursos)) appState.cursos = []; const c = index === -1 ? { nome: '', descricao: '', video: '', imagem: null, preco: '', precoClube: '', modulos: [], linkAcesso: '' } : appState.cursos[index]; document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Curso' : 'Editar'; document.getElementById('editor-content').innerHTML = `<label style="font-size:13px;font-weight:700;">Nome</label><input type="text" id="curso-nome-input" value="${esc(c.nome||'')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Descrição</label><textarea id="curso-desc-input" rows="3">${esc(c.descricao||'')}</textarea><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Vídeo</label><input type="url" id="curso-video-input" value="${esc(c.video||'')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Capa</label><input type="file" id="curso-img-input" accept="image/*" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Público</label><input type="text" id="curso-preco-input" value="${esc(c.preco||'')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Clube</label><input type="text" id="curso-preco-clube-input" value="${esc(c.precoClube||'')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Módulos (1 por linha)</label><textarea id="curso-modulos-input" rows="4">${(c.modulos||[]).join('\n')}</textarea><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Link Acesso</label><input type="url" id="curso-link-input" value="${esc(c.linkAcesso||'')}">`; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'block'; document.getElementById('btn-salvar-editor').textContent = 'Salvar'; document.getElementById('btn-salvar-editor').onclick = salvarCurso; document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('cursos-admin'); }
     function salvarCurso() { const nome = document.getElementById('curso-nome-input').value.trim(); const preco = document.getElementById('curso-preco-input').value.trim(); if (!nome || !preco) return alert('Preencha tudo.'); if (!Array.isArray(appState.cursos)) appState.cursos = []; const novo = indexCursoEditando === -1 ? { id: Date.now() } : appState.cursos[indexCursoEditando]; novo.nome = nome; novo.descricao = document.getElementById('curso-desc-input').value.trim(); novo.video = document.getElementById('curso-video-input').value.trim(); novo.preco = preco; novo.precoClube = document.getElementById('curso-preco-clube-input').value.trim(); novo.modulos = document.getElementById('curso-modulos-input').value.split('\n').map(s => s.trim()).filter(Boolean); novo.linkAcesso = document.getElementById('curso-link-input').value.trim(); const img = document.getElementById('curso-img-input'); const fin = () => { if (indexCursoEditando === -1) appState.cursos.push(novo); salvarEstado(); renderizarHome(); abrirConfiguracao('cursos-admin'); }; if (img.files.length) lerArquivoComprimido('curso-img-input', v => { novo.imagem = v; fin(); }); else fin(); }
@@ -1976,96 +1979,84 @@
     
     async function gerarCodigoCurso() { const cursoId = document.getElementById('lib-curso-id').value; const nome = document.getElementById('lib-nome').value.trim(); const tel = document.getElementById('lib-tel').value.trim(); if (!cursoId || !nome || !tel) return alert('Preencha tudo.'); const codigo = 'CURSO-' + Math.random().toString(36).substring(2, 8).toUpperCase(); try { await db.collection('codigos_curso').doc(codigo).set({ cursoId, liberadoPara: nome, telefone: tel, dataCriacao: new Date().toISOString() }); const telLimpo = tel.replace(/\D/g, ''); document.getElementById('codigo-gerado-resultado').innerHTML = `<div style="background:#e8f5e9;border:2px solid #10A37F;border-radius:12px;padding:20px;text-align:center;"><p style="font-size:22px;font-weight:800;color:#2e7d32;margin:10px 0;">${codigo}</p><a href="https://wa.me/${telLimpo}?text=${encodeURIComponent('Seu código: '+codigo)}" target="_blank" style="background:#25D366;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;">Enviar WhatsApp</a></div>`; } catch(e) { alert('Erro.'); } }
 
-    function salvarConfigAtual() { const id = configAtualAberta; if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; } else if (id === 'cores') { appState.colorPrimary = document.getElementById('edit-c-primary').value; appState.colorGold = document.getElementById('edit-c-gold').value; appState.colorHeader = document.getElementById('edit-c-header').value; appState.colorText = document.getElementById('edit-c-text').value; appState.colorMuted = document.getElementById('edit-c-muted').value; appState.colorCardBg = document.getElementById('edit-c-card').value; appState.bgColor = document.getElementById('edit-c-bg').value; } else if (id === 'cores-extra') { appState.colorNav = document.getElementById('edit-c-nav').value; appState.colorChat = document.getElementById('edit-c-chat').value; appState.colorWhatsapp = document.getElementById('edit-c-whats').value; appState.colorInstagram = document.getElementById('edit-c-instagram').value; appState.colorCanal = document.getElementById('edit-c-canal').value; appState.colorEmail = document.getElementById('edit-c-email').value; } else if (id === 'gradientes') { appState.gradVitrineStart = document.getElementById('grad-vitrine-start').value; appState.gradVitrineEnd = document.getElementById('grad-vitrine-end').value; appState.gradCtaStart = document.getElementById('grad-cta-start').value; appState.gradCtaEnd = document.getElementById('grad-cta-end').value; } else if (id === 'ia') { appState.iaName = document.getElementById('edit-ia-name').value; appState.iaWelcome = document.getElementById('edit-ia-welcome').value; appState.iaSystemPrompt = document.getElementById('edit-ia-prompt').value; appState.iaProxyUrl = document.getElementById('edit-ia-proxy').value.trim() || null; appState.iaEnabled = document.getElementById('edit-ia-enabled').checked; } else if (id === 'equipe') { const novosFuncs = []; document.querySelectorAll('#funcionarios-container .config-item-row').forEach((row, index) => { const nome = (row.querySelector('.func-nome').value || '').trim(); const cor = row.querySelector('.func-cor').value; if (nome) { const idAntigo = appState.funcionarios[index]?.id || 'f' + Date.now() + index; novosFuncs.push({ id: idAntigo, nome: nome, cor: cor }); } }); appState.funcionarios = novosFuncs; } else if (id === 'msg-confirmacao') { appState.mensagemConfirmacao = document.getElementById('edit-msg-confirmacao').value; } else if (id === 'clube-beneficios') { appState.clubeBeneficios = document.getElementById('edit-clube-beneficios').value; } else if (id === 'mural') { appState.muralAgenda = document.getElementById('edit-mural').value; if (!modoAdminAtivo) atualizarViewAgenda(); } else if (id === 'agenda-config') { appState.diasDisponiveis = []; for (let i = 0; i <= 6; i++) { const cb = document.getElementById(`dia-${i}`); if (cb && cb.checked) appState.diasDisponiveis.push(i); } appState.agendaInicio = document.getElementById('agenda-inicio').value; appState.agendaFim = document.getElementById('agenda-fim').value; appState.agendaIntervalo = document.getElementById('agenda-intervalo').value; if (modoAdminAtivo) atualizarViewAgenda(); } else if (id === 'logo') { appState.logo = document.getElementById('edit-logo-text').value; const f = document.getElementById('edit-logo-file'); if (f.files.length) { lerArquivoComprimido('edit-logo-file', v => { appState.logoImage = v; salvarEstado(); renderizarHome(); fecharEditor(); }); return; } } else if (id === 'fundo') { const c = document.getElementById('edit-bg-color').value; const f = document.getElementById('edit-bg-file'); if (f.files.length) { lerArquivoComprimido('edit-bg-file', v => { appState.bgImage = v; appState.bgGradient = null; salvarEstado(); renderizarHome(); fecharEditor(); }); return; } else { appState.bgColor = c; appState.bgImage = null; appState.bgGradient = null; } } else if (id === 'videos') { appState.video = document.getElementById('edit-video-link').value; } else if (id === 'links') { appState.renovaseLink = document.getElementById('edit-link-renovase').value; } else if (id === 'contato') { appState.contato.endereco = document.getElementById('edit-endereco').value; appState.contato.horario = document.getElementById('edit-horario').value; appState.contato.telefone = document.getElementById('edit-telefone').value; const redes = []; document.querySelectorAll('#redes-container .config-item-row').forEach(row => { const n = (row.querySelector('.rede-nome').value || '').trim(); const l = (row.querySelector('.rede-link').value || '').trim(); if (!n || !l) return; const nl = n.toLowerCase(); const ll = l.toLowerCase(); let icone = 'fa-link', classe = 'custom'; if (ll.includes('wa.me') || ll.includes('api.whatsapp') || ll.includes('whatsapp') || nl.includes('whatsapp') || nl.includes('zap')) { icone = 'fa-whatsapp'; classe = 'wa'; } else if (ll.includes('instagram.com') || nl.includes('instagram') || nl.includes('insta')) { icone = 'fa-instagram'; classe = 'ig'; } else if (ll.startsWith('mailto:') || nl.includes('email') || nl.includes('e-mail')) { icone = 'fa-envelope'; classe = 'em'; } redes.push({ nome: n, link: l, icone, classe }); }); appState.contato.redesSociais = redes; } else if (id === 'boutique') { appState.boutiqueName = document.getElementById('edit-boutique-name').value; } else if (id === 'tela-inicial') { appState.clubeName = document.getElementById('edit-clube-name').value; appState.vitrineTitle = document.getElementById('edit-vitrine-title').value; appState.renovaseName = document.getElementById('edit-renovase-name').value; } else if (id === 'clube') { ['essencial', 'inteligente', 'master'].forEach(tipo => { appState.precos[tipo] = document.getElementById(`preco-${tipo}`).value; appState.planos[tipo].subtitulo = document.getElementById(`sub-${tipo}`).value; const feats = []; document.querySelectorAll(`#features-${tipo} .feat-input`).forEach(inp => { if (inp.value.trim() !== '') feats.push(inp.value.trim()); }); appState.planos[tipo].features = feats; }); } salvarEstado(); renderizarHome(); fecharEditor(); }
+    function salvarConfigAtual() { const id = configAtualAberta; if (id === 'identidade') { appState.appName = document.getElementById('edit-val').value; } else if (id === 'cores') { appState.colorPrimary = document.getElementById('edit-c-primary').value; appState.colorGold = document.getElementById('edit-c-gold').value; appState.colorHeader = document.getElementById('edit-c-header').value; appState.colorText = document.getElementById('edit-c-text').value; appState.colorMuted = document.getElementById('edit-c-muted').value; appState.colorCardBg = document.getElementById('edit-c-card').value; appState.bgColor = document.getElementById('edit-c-bg').value; } else if (id === 'cores-extra') { appState.colorNav = document.getElementById('edit-c-nav').value; appState.colorChat = document.getElementById('edit-c-chat').value; appState.colorWhatsapp = document.getElementById('edit-c-whats').value; appState.colorInstagram = document.getElementById('edit-c-instagram').value; appState.colorCanal = document.getElementById('edit-c-canal').value; appState.colorEmail = document.getElementById('edit-c-email').value; } else if (id === 'gradientes') { appState.gradVitrineStart = document.getElementById('grad-vitrine-start').value; appState.gradVitrineEnd = document.getElementById('grad-vitrine-end').value; appState.gradCtaStart = document.getElementById('grad-cta-start').value; appState.gradCtaEnd = document.getElementById('grad-cta-end').value; } else if (id === 'ia') { appState.iaName = document.getElementById('edit-ia-name').value; appState.iaWelcome = document.getElementById('edit-ia-welcome').value; appState.iaSystemPrompt = document.getElementById('edit-ia-prompt').value; appState.iaProxyUrl = document.getElementById('edit-ia-proxy').value.trim() || null; appState.iaEnabled = document.getElementById('edit-ia-enabled').checked; } else if (id === 'equipe') { const novosFuncs = []; document.querySelectorAll('#funcionarios-container .config-item-row').forEach((row, index) => { const nome = (row.querySelector('.func-nome').value || '').trim(); const cor = row.querySelector('.func-cor').value; if (nome) { const idAntigo = appState.funcionarios[index]?.id || 'f' + Date.now() + index; novosFuncs.push({ id: idAntigo, nome: nome, cor: cor }); } }); appState.funcionarios = novosFuncs; } else if (id === 'msg-confirmacao') { appState.mensagemConfirmacao = document.getElementById('edit-msg-confirmacao').value; } else if (id === 'clube-beneficios') { appState.clubeBeneficios = document.getElementById('edit-clube-beneficios').value; } else if (id === 'mural') { appState.muralAgenda = document.getElementById('edit-mural').value; if (!modoAdminAtivo) atualizarViewAgenda(); } else if (id === 'agenda-config') { appState.diasDisponiveis = []; for (let i = 0; i <= 6; i++) { const cb = document.getElementById(`dia-${i}`); if (cb && cb.checked) appState.diasDisponiveis.push(i); } appState.agendaInicio = document.getElementById('agenda-inicio').value; appState.agendaFim = document.getElementById('agenda-fim').value; appState.agendaIntervalo = document.getElementById('agenda-intervalo').value; if (modoAdminAtivo) atualizarViewAgenda(); } else if (id === 'logo') { appState.logo = document.getElementById('edit-logo-text').value; const f = document.getElementById('edit-logo-file'); if (f.files.length) { lerArquivoComprimido('edit-logo-file', v => { appState.logoImage = v; salvarEstado(); renderizarHome(); fecharEditor(); }); return; } } else if (id === 'fundo') { const c = document.getElementById('edit-bg-color').value; const f = document.getElementById('edit-bg-file'); if (f.files.length) { lerArquivoComprimido('edit-bg-file', v => { appState.bgImage = v; appState.bgGradient = null; salvarEstado(); renderizarHome(); fecharEditor(); }); return; } else { appState.bgColor = c; appState.bgImage = null; appState.bgGradient = null; } } else if (id === 'videos') { appState.video = document.getElementById('edit-video-link').value; } else if (id === 'links') { appState.renovaseLink = document.getElementById('edit-link-renovase').value; } else if (id === 'contato') { appState.contato.endereco = document.getElementById('edit-endereco').value; appState.contato.horario = document.getElementById('edit-horario').value; appState.contato.telefone = document.getElementById('edit-telefone').value; const redes = []; document.querySelectorAll('#redes-container .config-item-row').forEach(row => { const n = (row.querySelector('.rede-nome').value || '').trim(); const l = (row.querySelector('.rede-link').value || '').trim(); if (!n || !l) return; const nl = n.toLowerCase(); const ll = l.toLowerCase(); let icone = 'fa-link', classe = 'custom'; if (ll.includes('wa.me') || ll.includes('api.whatsapp') || ll.includes('whatsapp') || nl.includes('whatsapp') || nl.includes('zap')) { icone = 'fa-whatsapp'; classe = 'wa'; } else if (ll.includes('instagram.com') || nl.includes('instagram') || nl.includes('insta')) { icone = 'fa-instagram'; classe = 'ig'; } else if (ll.startsWith('mailto:') || nl.includes('email') || nl.includes('e-mail')) { icone = 'fa-envelope'; classe = 'em'; } redes.push({ nome: n, link: l, icone, classe }); }); appState.contato.redesSociais = redes; } else if (id === 'tela-inicial') { appState.clubeName = document.getElementById('edit-clube-name').value; appState.vitrineTitle = document.getElementById('edit-vitrine-title').value; appState.renovaseName = document.getElementById('edit-renovase-name').value; } else if (id === 'clube') { ['essencial', 'inteligente', 'master'].forEach(tipo => { appState.precos[tipo] = document.getElementById(`preco-${tipo}`).value; appState.planos[tipo].subtitulo = document.getElementById(`sub-${tipo}`).value; const feats = []; document.querySelectorAll(`#features-${tipo} .feat-input`).forEach(inp => { if (inp.value.trim() !== '') feats.push(inp.value.trim()); }); appState.planos[tipo].features = feats; }); } salvarEstado(); renderizarHome(); fecharEditor(); }
     function fecharEditor() { document.getElementById('modal-editor').style.display = 'none'; }
     function desfazerConfig() { fecharEditor(); }
     function restaurarCoresPadrao() { document.getElementById('edit-c-primary').value = '#9D174D'; document.getElementById('edit-c-gold').value = '#D4AF37'; document.getElementById('edit-c-header').value = '#9D174D'; document.getElementById('edit-c-text').value = '#333333'; document.getElementById('edit-c-muted').value = '#777777'; document.getElementById('edit-c-card').value = '#FFFFFF'; document.getElementById('edit-c-bg').value = '#FFF2F6'; }
     function restaurarCoresExtras() { document.getElementById('edit-c-nav').value = '#9D174D'; document.getElementById('edit-c-chat').value = '#9D174D'; document.getElementById('edit-c-whats').value = '#25D366'; document.getElementById('edit-c-instagram').value = '#E4405F'; document.getElementById('edit-c-canal').value = '#128C7E'; document.getElementById('edit-c-email').value = '#333333'; }
     function restaurarGradientes() { document.getElementById('grad-vitrine-start').value = '#B91C1C'; document.getElementById('grad-vitrine-end').value = '#4C0519'; document.getElementById('grad-cta-start').value = '#9D174D'; document.getElementById('grad-cta-end').value = '#560021'; }
 
-    // ATUALIZAÇÃO: RENDERIZAR LOJA DO CLUBE (PREÇO ATRAENTE)
+    // ATUALIZAÇÃO: RENDERIZAR LOJA DO CLUBE (Focado apenas em produtos do Clube e Drop se houver)
     function renderizarClubeEVitrine() { 
       document.getElementById('titulo-clube-tela').textContent = appState.clubeName; 
-      document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle; 
+      document.getElementById('titulo-vitrine-clube').textContent = 'Produtos Exclusivos VIP'; 
       document.getElementById('texto-clube-beneficios').textContent = appState.clubeBeneficios || ''; 
       document.getElementById('vitrine-admin-bar').style.display = modoAdminAtivo ? 'block' : 'none'; 
       
       const c = document.getElementById('vitrine-produtos-grid-clube'); 
-      const prods = (appState.produtosClube && appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos; 
-      const orig = (appState.produtosClube && appState.produtosClube.length > 0) ? 'clube' : 'boutique'; 
-      
+      const prods = appState.boutiqueProdutos.filter(p => p.tipoEstoque === 'clube' || p.tipoEstoque === 'drop');
       const membro = ehMembroClube();
 
+      // Mostra o banner de "Assine" apenas para quem não é membro
+      document.getElementById('banner-assinar-clube').style.display = membro ? 'none' : 'block';
+      
+      // Mostra o botão de inserir código apenas se não for membro
       document.getElementById('btn-inserir-codigo-clube').style.display = membro ? 'none' : 'flex';
 
-      const categorias = {};
-      prods.forEach((p, i) => {
-        const cat = p.categoria || 'Geral';
-        if (!categorias[cat]) categorias[cat] = [];
-        categorias[cat].push({ ...p, originalIndex: i });
-      });
-
-      let htmlFinal = '';
-
-      for (const [cat, items] of Object.entries(categorias)) {
-        htmlFinal += `<div class="section-title-nova" style="margin-top: 20px;">${esc(cat)}</div>`;
-        htmlFinal += `<div class="boutique-grid-nova">`;
-        
-        htmlFinal += items.map(p => {
-          const imgCapa = (p.imagens && p.imagens.length > 0) ? p.imagens[0] : p.imagem;
-          
-          // Calcula o preço VIP (se não tiver, assume 50% de desconto)
-          let precoNormalNum = parseFloat(String(p.preco).replace(/\./g, '').replace(',', '.'));
-          let precoVipNum = p.precoClube ? parseFloat(String(p.precoClube).replace(/\./g, '').replace(',', '.')) : (precoNormalNum / 2);
-          
-          let precoNormalTxt = `R$ ${esc(p.preco)}`;
-          let precoVipTxt = `R$ ${p.precoClube ? esc(p.precoClube) : (precoNormalNum / 2).toFixed(2).replace('.', ',')}`;
-
-          let priceHtml = `
-            <div style="margin: 8px 0;">
-              <span style="text-decoration: line-through; color: #999; font-size: 13px;">De: ${precoNormalTxt}</span>
-              <div style="font-size: 22px; font-weight: 800; color: var(--cor-dourada); line-height: 1.1;">Por: ${precoVipTxt} <br><small style="font-size:10px; color:var(--cor-principal); letter-spacing:1px;">NO CLUBE VIP</small></div>
-            </div>
-          `;
-          
-          let btnHtml = '';
-          if (membro) {
-            btnHtml = `<button class="btn-comprar-direto" onclick="abrirProduto(${p.originalIndex}, '${orig}')"><i class="fa-solid fa-cart-shopping"></i> Comprar VIP</button>`;
-          } else {
-             // Se não for membro, mostra o preço desfocado e botão para desbloquear
-             priceHtml = `<div style="margin: 8px 0;">
-              <span style="text-decoration: line-through; color: #999; font-size: 13px;">De: ${precoNormalTxt}</span>
-              <div class="locked-price" style="font-size: 22px; font-weight: 800; color: var(--cor-dourada); line-height: 1.1;">Por: ${precoVipTxt}</div>
-              <small style="font-size:10px; color:var(--cor-principal); font-weight:700;">Insira o código VIP</small>
-            </div>`;
-             btnHtml = `<button class="btn-comprar-direto" onclick="pedirCodigoClube()" style="background:#9D174D;"><i class="fa-solid fa-lock"></i> Desbloquear VIP</button>
-             <button class="btn-comprar-direto" onclick="abrirProduto(${p.originalIndex}, '${orig}')" style="background:#ccc; margin-top:4px; font-size:10px; color:#333;">Comprar Normal (${precoNormalTxt})</button>`;
-          }
-
-          let stockBadge = '';
-          if (p.estoque !== undefined) {
-            if (p.estoque <= 0) stockBadge = `<span class="stock-badge out">ESGOTADO</span>`;
-            else if (p.estoque <= 5) stockBadge = `<span class="stock-badge low">Últimas ${p.estoque}</span>`;
-            else stockBadge = `<span class="stock-badge ok">${p.estoque} un.</span>`;
-          }
-
-          return `
-            <div class="product-card-nova" style="position:relative;">
-              ${stockBadge}
-              <div class="product-img-box-nova" style="cursor:pointer;" onclick="abrirProduto(${p.originalIndex}, '${orig}')">
-                ${imgCapa ? `<img src="${esc(safeImgSrc(imgCapa))}" loading="lazy">` : '🛍️'}
-              </div>
-              <h4>${esc(p.nome)}</h4>
-              ${priceHtml}
-              ${btnHtml}
-            </div>
-          `;
-        }).join('');
-        
-        htmlFinal += `</div>`;
+      if (prods.length === 0) {
+         c.innerHTML = '<p style="text-align:center; color:#777; grid-column:1/-1;">Nenhum produto VIP disponível no momento.</p>';
+         return;
       }
 
-      c.innerHTML = htmlFinal; 
+      c.innerHTML = prods.map((p) => {
+        const idx = appState.boutiqueProdutos.indexOf(p);
+        const imgCapa = (p.imagens && p.imagens.length > 0) ? p.imagens[0] : p.imagem;
+        
+        let precoNormalNum = parseFloat(String(p.preco).replace(/\./g, '').replace(',', '.'));
+        let precoVipNum = p.precoClube ? parseFloat(String(p.precoClube).replace(/\./g, '').replace(',', '.')) : (precoNormalNum / 2);
+        
+        let precoNormalTxt = `R$ ${esc(p.preco)}`;
+        let precoVipTxt = `R$ ${p.precoClube ? esc(p.precoClube) : (precoNormalNum / 2).toFixed(2).replace('.', ',')}`;
+
+        let priceHtml = `
+          <div style="margin: 8px 0;">
+            <span style="color: #666; font-size: 13px; font-weight:600;">De: ${precoNormalTxt}</span>
+            <div style="font-size: 22px; font-weight: 800; color: var(--cor-vip-destaque); line-height: 1.1;">Por: ${precoVipTxt} <br><small style="font-size:10px; color:var(--cor-principal); letter-spacing:1px;">NO CLUBE VIP</small></div>
+          </div>
+        `;
+        
+        let btnHtml = '';
+        if (membro) {
+          btnHtml = `<button class="btn-comprar-direto" onclick="abrirProduto(${idx}, 'boutique')"><i class="fa-solid fa-cart-shopping"></i> Comprar VIP</button>`;
+        } else {
+           priceHtml = `<div style="margin: 8px 0;">
+            <span style="color: #666; font-size: 13px; font-weight:600;">De: ${precoNormalTxt}</span>
+            <div class="locked-price" style="font-size: 22px; font-weight: 800; color: var(--cor-vip-destaque); line-height: 1.1;">Por: ${precoVipTxt}</div>
+            <small style="font-size:10px; color:var(--cor-principal); font-weight:700;">Insira o código VIP</small>
+          </div>`;
+           btnHtml = `<button class="btn-comprar-direto" onclick="pedirCodigoClube()" style="background:#9D174D;"><i class="fa-solid fa-lock"></i> Desbloquear VIP</button>
+           <button class="btn-comprar-direto" onclick="abrirProduto(${idx}, 'boutique')" style="background:#ccc; margin-top:4px; font-size:10px; color:#333;">Comprar Normal (${precoNormalTxt})</button>`;
+        }
+
+        let stockBadge = '';
+        if (p.estoque !== undefined) {
+          if (p.estoque <= 0) stockBadge = `<span class="stock-badge out">ESGOTADO</span>`;
+          else if (p.estoque <= 5) stockBadge = `<span class="stock-badge low">Últimas ${p.estoque}</span>`;
+          else stockBadge = `<span class="stock-badge ok">${p.estoque} un.</span>`;
+        }
+
+        return `
+          <div class="product-card-nova" style="position:relative;">
+            ${stockBadge}
+            <div class="product-img-box-nova" style="cursor:pointer;" onclick="abrirProduto(${idx}, 'boutique')">
+              ${imgCapa ? `<img src="${esc(safeImgSrc(imgCapa))}" loading="lazy">` : '🛍️'}
+            </div>
+            <h4>${esc(p.nome)}</h4>
+            ${priceHtml}
+            ${btnHtml}
+          </div>
+        `;
+      }).join(''); 
     }
     
     function abrirCurso(id) { const c = appState.cursos.find(x => String(x.id) === String(id)); if (!c) return; window._cursoAtual = c; document.getElementById('curso-video-container').innerHTML = c.video ? gerarHTMLVideo(c.video) : ''; document.getElementById('curso-nome').textContent = c.nome; document.getElementById('curso-descricao').textContent = c.descricao || ''; document.getElementById('curso-precos').innerHTML = `<div style="font-size:26px;font-weight:700;color:var(--cor-principal);">R$ ${esc(c.preco)}</div>`; document.getElementById('curso-modulos').innerHTML = (c.modulos || []).map(m => `<li>${esc(m)}</li>`).join(''); const comprado = localStorage.getItem('cursoLiberado_' + c.id) === 'true'; document.getElementById('btn-acessar-curso').style.display = comprado ? 'flex' : 'none'; document.getElementById('btn-codigo-curso').style.display = comprado ? 'none' : 'flex'; document.getElementById('btn-comprar-curso').onclick = () => window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Quero o curso '+c.nome)}`, '_blank'); document.getElementById('btn-codigo-curso').onclick = () => document.getElementById('modal-codigo-curso').style.display = 'flex'; document.getElementById('btn-acessar-curso').onclick = () => window.open(safeHref(c.linkAcesso), '_blank'); abrirTela('curso'); }
@@ -2085,7 +2076,7 @@
     }
 
     function abrirProduto(index, origem) {
-      const prods = (origem === 'clube' && appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos;
+      const prods = appState.boutiqueProdutos;
       const p = prods[index];
       if (!p) return;
       
@@ -2109,17 +2100,26 @@
       
       document.getElementById('produto-nome').textContent = p.nome;
       
-      // ÁREA DE PREÇO (Atraente)
+      // ÁREA DE PREÇO (Sem risco, com destaque vermelho no VIP)
       document.getElementById('produto-precificacao').innerHTML = `
-         <div style="font-size: 16px; text-decoration: line-through; color: #999;">De: ${precoNormalTxt}</div>
-         <div style="font-size: 28px; font-weight: 800; color: var(--cor-dourada); margin-bottom: 5px;">Por: ${precoVipTxt} <small style="font-size:12px; color:var(--cor-principal); letter-spacing:1px;">NO CLUBE</small></div>
+         <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+               <div style="font-size: 12px; color: #666; font-weight:600; text-transform:uppercase;">Preço Normal</div>
+               <div style="font-size: 22px; font-weight: 700; color: #333;">${precoNormalTxt}</div>
+            </div>
+            <div style="width: 1px; height: 40px; background: #eee;"></div>
+            <div>
+               <div style="font-size: 12px; color: var(--cor-principal); font-weight:800; text-transform:uppercase; letter-spacing:1px;">Preço Clube VIP 🌟</div>
+               <div style="font-size: 26px; font-weight: 800; color: var(--cor-vip-destaque);">${precoVipTxt}</div>
+            </div>
+         </div>
       `;
 
       document.getElementById('produto-desc').textContent = p.descricao || 'Produto exclusivo da nossa loja.';
       
       // Botão Comprar Normal
       document.getElementById('btn-comprar-produto').onclick = () => {
-         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} (${precoNormalTxt}).`);
+         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} pelo preço normal (${precoNormalTxt}).`);
          window.open(`https://wa.me/${appState.whatsapp}?text=${msg}`, '_blank');
       };
       
