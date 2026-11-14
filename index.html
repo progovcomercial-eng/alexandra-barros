@@ -127,7 +127,7 @@
     .product-card-nova h4 { font-size: 13px; color: var(--cor-texto-escuro); margin-bottom: 4px; font-weight: 600; }
     .dropship-badge { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, #10A37F, #0d8a6c); color: #fff; font-size: 9px; padding: 4px 9px; border-radius: 999px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 2; }
 
-    /* --- NOVOS ESTILOS DE PREÇO E ESTOQUE --- */
+    /* --- PREÇOS E ESTOQUE --- */
     .product-card-nova .price { font-size: 12px; color: var(--cor-texto-mutado); font-weight: 600; margin-top: auto; text-decoration: line-through; }
     .product-card-nova .price-clube { font-size: 20px; color: var(--cor-dourada); font-weight: 800; display: block; margin-top: 4px; }
     .product-card-nova .price-clube small { font-size: 10px; color: var(--cor-principal); font-weight: 700; display: block; letter-spacing: 0.5px; }
@@ -138,6 +138,11 @@
     .stock-badge.ok { background: #10A37F; }
     .stock-badge.low { background: #F59E0B; }
     .stock-badge.out { background: #EF4444; }
+
+    /* --- LOJA VIP (BLOQUEIO) --- */
+    .locked-price { filter: blur(5px); user-select: none; opacity: 0.7; }
+    .lock-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 18px; z-index: 5; }
+    .lock-overlay i { font-size: 30px; color: var(--cor-principal); margin-bottom: 10px; }
 
     .contato-compacto { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
     .contato-info-mini { font-size: 12px; color: var(--cor-texto-mutado); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -261,6 +266,10 @@
     .btn-conectar.on { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .btn-conectar.limit { background: #eee; color: #999; cursor: not-allowed; }
 
+    /* --- AJUSTE DA IMAGEM DO PRODUTO ABERTO --- */
+    #produto-img-grande { background: #f9f9f9; border-radius: 22px; padding: 20px; text-align: center; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; min-height: 300px; max-height: 500px; }
+    #produto-img-grande img { width: 100%; height: 100%; object-fit: contain; border-radius: 22px; }
+
     @media (min-width: 768px) {
       body { background-color: #eef2f5; display: flex; align-items: stretch; }
       .app-container { flex-direction: row; max-width: 100vw; background-color: transparent; }
@@ -321,7 +330,6 @@
       .product-card-nova h4 { font-size: 18px; margin-top: 15px; margin-bottom: 8px; }
       .section-title-nova { font-size: 20px; margin: 45px 0 28px 0; letter-spacing: 1px; }
       
-      /* AJUSTE DOS PLANOS NO DESKTOP */
       .planos-scroll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; overflow: visible; padding: 0; margin: 0; }
       .plano-card { width: auto; flex-shrink: 1; scroll-snap-align: none; padding: 38px 30px; border-radius: 22px; transition: transform 0.2s, box-shadow 0.2s; }
       .plano-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(157,23,77,0.15); }
@@ -491,7 +499,7 @@
           <h3>Benefícios VIP</h3>
           <p class="mural-texto" id="texto-clube-beneficios"></p>
         </div>
-        <button class="btn-cta-grande" onclick="pedirCodigoClube()" style="margin-bottom: 20px;">
+        <button class="btn-cta-grande" onclick="pedirCodigoClube()" style="margin-bottom: 20px;" id="btn-inserir-codigo-clube">
           <i class="fa-solid fa-gem"></i> Já sou membro - Inserir código
         </button>
         <div id="vitrine-admin-bar" style="display: none; text-align: right; margin-bottom: 8px;">
@@ -516,14 +524,17 @@
 
       <div id="tela-produto" class="tela">
         <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div id="produto-img-grande" style="background: #f9f9f9; border-radius: 22px; padding: 40px 20px; text-align: center; font-size: 100px; margin-bottom: 20px; overflow: hidden; display:flex; justify-content:center; align-items:center; height: 300px;">🛍️</div>
+        <div id="produto-img-grande">🛍️</div>
         <h1 id="produto-nome" style="font-family:'Playfair Display',serif; color:var(--cor-principal); font-size:28px; margin-bottom:8px; text-align:center;"></h1>
         <p id="produto-preco" style="font-size:26px; font-weight:700; color:var(--cor-dourada); text-align:center; margin-bottom:16px;"></p>
         <div class="mural-box" style="text-align:left;">
           <p id="produto-desc" class="mural-texto" style="margin-bottom:0; text-align:center; font-size: 16px;">Produto exclusivo da nossa loja.</p>
         </div>
-        <button class="btn-cta-grande" id="btn-comprar-produto" onclick="comprarProduto()">
+        <button class="btn-cta-grande" id="btn-comprar-produto">
           <i class="fa-brands fa-whatsapp"></i> Comprar pelo WhatsApp
+        </button>
+        <button class="btn-cta-grande" id="btn-pagar-online" style="background:#3B82F6; display:none;">
+          <i class="fa-solid fa-credit-card"></i> Pagar Online (Cartão/Pix)
         </button>
       </div>
 
@@ -657,7 +668,7 @@
         <div class="chat-body" id="chat-body"></div>
         <div class="chat-input-area">
           <input type="text" id="chat-input" placeholder="Digite sua dúvida aqui..." onkeypress="if(event.key==='Enter') enviarMsgIA()">
-          <button type="button" onclick="enviarMsgIA()"><i class="fa-solid fa-paper-plane"></i></button>
+          <button type="button" onclick="enviarMsgIA()" id="btn-enviar-ia"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
       </div>
     </div>
@@ -815,7 +826,7 @@
     </nav>
 
   </div>
-    <script>
+  <script>
     function esc(s) { if (s === null || s === undefined) return ''; return String(s).replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
     function safeImgSrc(url) { if (!url) return ''; var s = String(url).trim(); if (/^(javascript|vbscript):/i.test(s)) return ''; return s; }
     function safeHref(url) { if (!url) return '#'; var s = String(url).trim(); if (/^(javascript|data|vbscript|file):/i.test(s)) return '#'; return s; }
@@ -941,6 +952,7 @@
 
     const GEMINI_PROXY_URL = 'https://ale-gemini-proxy.progovcomercial.workers.dev';
     let historicoChatIA = [];
+    let iaCooldown = 0; // Controle de erro 429
 
     const categoriasConfig = [
       { nome: '📊 Dashboard', icone: 'fa-chart-pie', itens: [{ id: 'dashboard-kpi', nome: 'Ver Métricas do Negócio' }]},
@@ -967,8 +979,8 @@
       colorMuted: '#777777', colorCardBg: '#FFFFFF', colorHeader: '#9D174D', colorWhatsapp: '#25D366', colorInstagram: '#E4405F', colorCanal: '#128C7E', colorEmail: '#333333', colorNav: '#9D174D', colorChat: '#9D174D',
       gradVitrineStart: '#B91C1C', gradVitrineEnd: '#4C0519', gradPlanosStart: '#FFFCF2', gradPlanosEnd: '#FFF2F6', gradCtaStart: '#9D174D', gradCtaEnd: '#560021', gradIndiqueStart: '#FFD700', gradIndiqueEnd: '#FFA500',
       boutiqueProdutos: [
-        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagem: null, dropship: false }, 
-        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagem: null, dropship: true }
+        { id: 1, nome: 'Calcinhas AleClube', preco: '49,90', precoClube: '29,90', estoque: 10, codigo: 'CALC-01', imagem: null, dropship: false, linkPagamento: '' }, 
+        { id: 2, nome: 'Brincos AleClube', preco: '99,90', precoClube: '59,90', estoque: 5, codigo: 'BRIN-02', imagem: null, dropship: true, linkPagamento: '' }
       ],
       produtosClube: [],
       publicidades: [{ id: 1, titulo: 'Parceiro Exemplo', descricao: 'Confira as novidades!', sobre: 'Somos parceiros oficiais.', imagem: null, video: null }],
@@ -1066,7 +1078,6 @@
           if (!appState.funcionarios) appState.funcionarios = estadoPadrao.funcionarios; if (!appState.senhaFinanceiro) appState.senhaFinanceiro = '1234'; if (!appState.propostaContador) appState.propostaContador = { ano: new Date().getFullYear(), ultimo: 0 }; if (!Array.isArray(appState.extensoes)) appState.extensoes = JSON.parse(JSON.stringify(estadoPadrao.extensoes));
           if (!Array.isArray(appState.cursos)) appState.cursos = []; if (!Array.isArray(appState.servicos)) appState.servicos = JSON.parse(JSON.stringify(estadoPadrao.servicos)); if (!Array.isArray(appState.depoimentos)) appState.depoimentos = JSON.parse(JSON.stringify(estadoPadrao.depoimentos));
 
-          // ===== WHITE-LABEL OVERRIDE (dados da clínica sobrescrevem o padrão) =====
           if (window.CLINICA_CONFIG) {
             const cc = window.CLINICA_CONFIG;
             if (cc.corPrimaria) appState.colorPrimary = cc.corPrimaria;
@@ -1199,7 +1210,6 @@
         if (html) homeSections.innerHTML += html;
       });
 
-      // ===== Aplicar travas de módulos e meta após render =====
       aplicarTravasModulos();
       aplicarWhiteLabelMeta();
     }
@@ -1234,7 +1244,6 @@
       if (nomeSalvo) document.getElementById('checkout-nome').value = nomeSalvo;
       if (telSalvo) document.getElementById('checkout-tel').value = telSalvo;
       
-      // Reset checkout fields
       document.getElementById('checkout-entrega').value = 'Retirada na Loja';
       document.getElementById('checkout-endereco').value = '';
       document.getElementById('checkout-endereco').style.display = 'none';
@@ -1286,6 +1295,9 @@
         const textoMsg = `Olá! Acabei de fazer um pedido no app:\n\n🛍️ *${_produtoCheckout.nome}*\n💰 *R$ ${precoStr}*\n📦 *${tipoEntrega}*\n💳 *${pgt}*\n👤 *${nome}* (${tel})\n\nEstou no checkout, como prosseguir com o pagamento?`;
         const linkWhats = `https://wa.me/${waClinica}?text=${encodeURIComponent(textoMsg)}`;
 
+        // SE TIVER LINK DE PAGAMENTO DIRETO (KIWIFY, ETC), MOSTRA O BOTÃO
+        const linkPagamento = _produtoCheckout.linkPagamento ? safeHref(_produtoCheckout.linkPagamento) : null;
+
         const modalContent = document.querySelector('#modal-checkout .cartao-cadastro');
         modalContent.innerHTML = `
           <div style="text-align:center;">
@@ -1301,24 +1313,24 @@
             </div>
 
             <p style="font-size:13px; color:#555; margin-bottom:20px; line-height:1.5;">
-              Clique abaixo para ser redirecionado ao ambiente de pagamento do <b>${pgt}</b>.
+              Clique abaixo para ser redirecionado ao ambiente de pagamento.
             </p>
 
-            <!-- BOTÃO DE PAGAMENTO REAL -->
-            <a href="${linkWhats}" target="_blank" class="btn-enviar-cadastro" style="background:${pgt === 'Pix' ? '#10A37F' : (pgt === 'Cartão de Crédito' ? '#3B82F6' : '#F59E0B')}; display:flex; align-items:center; justify-content:center; text-decoration:none; margin-bottom:10px;">
-              <i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:8px;"></i> Pagar com ${pgt}
+            ${linkPagamento ? `
+            <a href="${linkPagamento}" target="_blank" class="btn-enviar-cadastro" style="background:#3B82F6; display:flex; align-items:center; justify-content:center; text-decoration:none; margin-bottom:10px;">
+              <i class="fa-solid fa-credit-card" style="margin-right:8px;"></i> Pagar Online (Cartão/Pix)
             </a>
+            ` : `
+            <a href="${linkWhats}" target="_blank" class="btn-enviar-cadastro" style="background:#10A37F; display:flex; align-items:center; justify-content:center; text-decoration:none; margin-bottom:10px;">
+              <i class="fa-brands fa-whatsapp" style="margin-right:8px;"></i> Enviar Pedido no WhatsApp
+            </a>
+            `}
             <button onclick="location.reload()" class="btn-undo">Voltar para a Loja</button>
           </div>
         `;
 
-        await db.collection('financeiro').add({
-          caixa: 'boutique',
-          tipo: 'entrada',
-          data: new Date().toLocaleDateString('en-CA'),
-          descricao: `Pedido Pendente: ${_produtoCheckout.nome} (${nome})`,
-          valor: valorNumerico
-        });
+        // REMOVIDO O LANÇAMENTO AUTOMÁTICO NO FINANCEIRO PARA EVITAR COMPRAS ABANDONADAS
+        // O ADMIN DEVE APROVAR NO PAINEL DE VENDAS PRIMEIRO
 
       } catch(e) {
         console.error(e);
@@ -1403,14 +1415,31 @@
     function adicionarMsgAoChat(rem, txt) { const body = document.getElementById('chat-body'); const cls = rem === 'user' ? 'msg-user' : 'msg-bot'; body.insertAdjacentHTML('beforeend', `<div class="msg ${cls}">${esc(txt)}</div>`); body.scrollTop = body.scrollHeight; }
     
     async function enviarMsgIA() {
+      if (Date.now() < iaCooldown) {
+        return mostrarToast(`⏳ Aguarde ${Math.ceil((iaCooldown - Date.now())/1000)}s para enviar outra mensagem.`);
+      }
+
       const inp = document.getElementById('chat-input'), txt = inp.value.trim(); if (!txt) return; adicionarMsgAoChat('user', txt); inp.value = '';
       const idD = 'dig-' + Date.now(), body = document.getElementById('chat-body'); body.insertAdjacentHTML('beforeend', `<div class="msg msg-bot" id="${idD}">Digitando...</div>`); body.scrollTop = body.scrollHeight;
+      
       try { 
-        historicoChatIA.push({ role: 'user', parts: [{ text: txt }] }); const proxyUrl = appState.iaProxyUrl || GEMINI_PROXY_URL, sys = appState.iaSystemPrompt || `Você é a ${appState.iaName}.`; const resp = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: historicoChatIA, systemInstruction: { parts: [{ text: sys }] } }) }); if (!resp.ok) throw new Error('HTTP ' + resp.status); const dados = await resp.json(), partes = dados.candidates?.[0]?.content?.parts || []; document.getElementById(idD)?.remove(); const t = partes[0]?.text || 'Desculpe.'; adicionarMsgAoChat('bot', t); historicoChatIA.push({ role: 'model', parts: [{ text: t }] }); 
+        historicoChatIA.push({ role: 'user', parts: [{ text: txt }] }); 
+        const proxyUrl = appState.iaProxyUrl || GEMINI_PROXY_URL, sys = appState.iaSystemPrompt || `Você é a ${appState.iaName}.`; 
+        const resp = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: historicoChatIA, systemInstruction: { parts: [{ text: sys }] } }) }); 
+        
+        if (!resp.ok) throw new Error('HTTP ' + resp.status); 
+        
+        const dados = await resp.json(), partes = dados.candidates?.[0]?.content?.parts || []; 
+        document.getElementById(idD)?.remove(); 
+        const t = partes[0]?.text || 'Desculpe.'; 
+        adicionarMsgAoChat('bot', t); 
+        historicoChatIA.push({ role: 'model', parts: [{ text: t }] }); 
       } catch (e) { 
         document.getElementById(idD)?.remove(); 
         let msg = e.message;
+        
         if (msg.includes('429') || msg.includes('Too Many Requests')) {
+          iaCooldown = Date.now() + 30000; // Bloqueia por 30 segundos
           msg = 'Muitas mensagens em pouco tempo. Aguarde 30 segundos e tente novamente.';
         } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
           msg = 'Não consegui conectar ao servidor da IA. Verifique sua internet.';
@@ -1456,7 +1485,11 @@
                   <div style="font-size:13px; color:#444; margin-bottom:4px;"><i class="fa-solid fa-box" style="width:15px;"></i> ${esc(v.tipoEntrega || 'Retirada')} ${v.endereco && v.tipoEntrega === 'Entrega' ? '- ' + esc(v.endereco) : ''}</div>
                   <div style="font-size:13px; color:#444; margin-bottom:4px;"><i class="fa-brands fa-whatsapp" style="width:15px;"></i> ${esc(v.clienteTelefone)}</div>
                   <div style="font-size:14px; font-weight:700; color:#2e7d32; margin-top:8px;"><i class="fa-solid fa-money-bill" style="width:15px;"></i> R$ ${Number(v.valor).toFixed(2)}</div>
-                  <div style="font-size:11px; color:#888; margin-top:10px; border-top:1px dashed #eee; padding-top:8px;">📅 ${dataStr} | Cód: ${esc(v.produtoCodigo || 'S/N')}</div>
+                  
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed #eee; padding-top:10px;">
+                    <span style="font-size:11px; color:#888;">📅 ${dataStr}</span>
+                    <button onclick="deletarVenda('${doc.id}')" style="background:#ffebee; color:#c62828; border:none; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-trash"></i> Apagar Pedido</button>
+                  </div>
                 </div>
               `;
             });
@@ -1540,11 +1573,38 @@
       else if (id === 'fundo') { titulo.textContent = 'Fundo'; html = `<label style="font-size:13px;font-weight:700;">🎨 Cor</label><input type="color" id="edit-bg-color" value="${esc(appState.bgColor || '#FFF2F6')}" style="height:50px;"><label style="font-size:13px;font-weight:700;">🖼️ Imagem</label><input type="file" id="edit-bg-file" accept="image/*" style="padding:15px;">`; }
       else if (id === 'contato') { titulo.textContent = 'Redes & Contato'; const c = appState.contato || {}; const redes = (c.redesSociais || []).map(r => `<div class="config-item-row" style="margin-bottom:10px;"><input type="text" class="rede-nome" value="${esc(r.nome)}" placeholder="Nome"><input type="url" class="rede-link" value="${esc(r.link)}" placeholder="Link"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Endereço</label><input type="text" id="edit-endereco" value="${esc(c.endereco || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Horário</label><input type="text" id="edit-horario" value="${esc(c.horario || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Telefone</label><input type="text" id="edit-telefone" value="${esc(c.telefone || '')}"><h4 style="font-size:14px;color:#9D174D;margin-top:20px;margin-bottom:10px;">Redes</h4><div id="redes-container">${redes}</div><button type="button" class="btn-add-item" onclick="addRedeConfig()">+ Rede</button>`; }
       else if (id === 'boutique') { titulo.textContent = 'Produtos da Vitrine'; const prods = Array.isArray(appState.boutiqueProdutos) ? appState.boutiqueProdutos : []; const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProduto(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoBoutique(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<label style="font-size:13px;font-weight:700;">Nome Banner</label><input type="text" id="edit-boutique-name" value="${esc(appState.boutiqueName)}" style="padding:15px;"><div style="margin-top:20px;">${lista}</div><button onclick="abrirEditorProduto(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:15px;">+ Produto</button>`; }
-      else if (id === 'loja-clube') { titulo.textContent = 'Loja do Clube'; const prods = Array.isArray(appState.produtosClube) ? appState.produtosClube : []; const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProdutoClube(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoClube(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#E65100;">💎 Produtos exclusivos.</p></div><div style="margin-bottom:20px;">${lista}</div><button onclick="abrirEditorProdutoClube(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">+ Produto do Clube</button>`; }
+      
+      // ATUALIZAÇÃO: LOJA DO CLUBE COM CATEGORIAS E ESTOQUE
+      else if (id === 'loja-clube') { 
+        titulo.textContent = 'Loja do Clube'; 
+        const prods = Array.isArray(appState.produtosClube) ? appState.produtosClube : []; 
+        const lista = prods.map((p, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;"><div style="font-size:14px;font-weight:600;">${esc(p.nome)}</div><div style="font-size:11px;color:#777;">Cat: ${esc(p.categoria || 'Geral')} | Estoque: ${p.estoque || 0}</div></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorProdutoClube(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Editar</button><button onclick="removerProdutoClube(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); 
+        html = `<div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#E65100;">💎 Produtos exclusivos. Crie categorias para organizar (Ex: Perfumes, Cremes).</p></div><div style="margin-bottom:20px;">${lista}</div><button onclick="abrirEditorProdutoClube(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">+ Produto do Clube</button>`; 
+      }
+
       else if (id === 'links') { titulo.textContent = 'Links Ambientes'; html = `<label style="font-size:13px;font-weight:700;">Link Renova-se</label><input type="url" id="edit-link-renovase" value="${esc(appState.renovaseLink || '')}" style="padding:15px;">`; }
       else if (id === 'clube') { titulo.textContent = 'Planos e Preços'; let htmlPlanos = ''; ['essencial', 'inteligente', 'master'].forEach(tipo => { const p = appState.planos[tipo] || estadoPadrao.planos[tipo]; let featuresHtml = (p.features || []).map(f => `<div class="config-item-row feat-row" style="margin-bottom:6px;"><input type="text" class="feat-input" value="${esc(f)}" style="padding:10px;"><button type="button" class="btn-del" onclick="this.parentElement.remove()">X</button></div>`).join(''); htmlPlanos += `<div style="background:#f9f9f9;padding:20px;border-radius:12px;margin-bottom:20px;border:1px solid #ddd;"><h4 style="text-transform:uppercase;font-size:15px;margin-bottom:15px;color:var(--cor-principal);">Plano ${esc(p.titulo)}</h4><label style="font-size:13px;font-weight:700;">Preço</label><input type="number" id="preco-${tipo}" value="${esc(appState.precos[tipo])}" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Subtítulo</label><input type="text" id="sub-${tipo}" value="${esc(p.subtitulo)}" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Itens:</label><div id="features-${tipo}">${featuresHtml}</div><button type="button" class="btn-add-item" onclick="addFeatureRow('${tipo}')">+ Item</button></div>`; }); html = htmlPlanos; }
       else if (id === 'tela-inicial') { titulo.textContent = 'Nomes do App'; html = `<label style="font-size:13px;font-weight:700;">Nome Clube</label><input type="text" id="edit-clube-name" value="${esc(appState.clubeName)}" style="padding:15px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Nome Vitrine</label><input type="text" id="edit-vitrine-title" value="${esc(appState.vitrineTitle)}" style="padding:15px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Nome Evento</label><input type="text" id="edit-renovase-name" value="${esc(appState.renovaseName)}" style="padding:15px;">`; }
-      else if (id === 'vip') { titulo.textContent = 'Clube VIP'; content.innerHTML = '<div id="lista-clientes-vip"><p style="text-align:center;font-size:14px;">Carregando...</p></div>'; db.collection("clientes").get().then(snap => { if (snap.empty) { document.getElementById('lista-clientes-vip').innerHTML = '<p style="text-align:center;font-size:14px;color:#777;">Nenhum cliente.</p>'; return; } let h = ''; snap.forEach(doc => { const cl = doc.data(); const tem = cl.codigoAcesso; const btn = `<div style="display:flex;gap:8px;margin-top:15px;">${tem ? '<button disabled style="flex:1;background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;padding:10px;border-radius:6px;font-size:12px;font-weight:700;">✅ Liberado</button>' : `<button onclick="liberarAcessoVIP('${esc(doc.id)}')" style="flex:1;background:#9D174D;color:#fff;border:none;padding:10px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Liberar</button>`}<button onclick="deletarClienteVIP('${esc(doc.id)}')" style="background:#ffebee;color:#c62828;border:1px solid #ffcdd2;padding:10px 15px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Apagar</button></div>${tem ? `<p style="font-size:12px;text-align:center;margin-top:8px;">Código: <b>${esc(cl.codigoAcesso)}</b></p>` : ''}`; h += `<div style="background:#f9f9f9;padding:15px;border-radius:10px;margin-bottom:15px;border:1px solid #ddd;"><div><strong style="font-size:15px;color:var(--cor-principal);">${esc(cl.nome)}</strong><br><span style="font-size:13px;color:#666;">${esc(cl.telefone)}</span></div>${btn}</div>`; }); document.getElementById('lista-clientes-vip').innerHTML = h; }); }
+      
+      // ATUALIZAÇÃO: BUSCA NO GERENCIAR CLUBE VIP
+      else if (id === 'vip') { 
+        titulo.textContent = 'Clube VIP'; 
+        html = `<div style="margin-bottom:20px;"><input type="text" id="busca-cliente-vip" placeholder="🔍 Buscar cliente por nome ou telefone..." oninput="filtrarClientesVIP(this.value)" style="width:100%;padding:15px;border:2px solid var(--cor-principal);border-radius:10px;font-size:15px;box-sizing:border-box;"></div><div id="lista-clientes-vip"><p style="text-align:center;font-size:14px;">Carregando...</p></div>`;
+        setTimeout(() => {
+          db.collection("clientes").get().then(snap => { 
+            if (snap.empty) { document.getElementById('lista-clientes-vip').innerHTML = '<p style="text-align:center;font-size:14px;color:#777;">Nenhum cliente.</p>'; return; } 
+            let h = ''; 
+            snap.forEach(doc => { 
+              const cl = doc.data(); 
+              const tem = cl.codigoAcesso; 
+              const btn = `<div style="display:flex;gap:8px;margin-top:15px;">${tem ? '<button disabled style="flex:1;background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;padding:10px;border-radius:6px;font-size:12px;font-weight:700;">✅ Liberado</button>' : `<button onclick="liberarAcessoVIP('${esc(doc.id)}')" style="flex:1;background:#9D174D;color:#fff;border:none;padding:10px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Liberar</button>`}<button onclick="deletarClienteVIP('${esc(doc.id)}')" style="background:#ffebee;color:#c62828;border:1px solid #ffcdd2;padding:10px 15px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Apagar</button></div>${tem ? `<p style="font-size:12px;text-align:center;margin-top:8px;">Código: <b>${esc(cl.codigoAcesso)}</b></p>` : ''}`; 
+              h += `<div class="vip-cliente-card" data-nome="${esc(cl.nome).toLowerCase()}" data-tel="${esc(cl.telefone)}" style="background:#f9f9f9;padding:15px;border-radius:10px;margin-bottom:15px;border:1px solid #ddd;"><div><strong style="font-size:15px;color:var(--cor-principal);">${esc(cl.nome)}</strong><br><span style="font-size:13px;color:#666;">${esc(cl.telefone)}</span></div>${btn}</div>`; 
+            }); 
+            document.getElementById('lista-clientes-vip').innerHTML = h; 
+          }); 
+        }, 100);
+      }
+
       else if (id === 'cursos-admin') { titulo.textContent = 'Gerenciar Cursos'; const cursos = appState.cursos || []; const lista = cursos.length === 0 ? '<p style="text-align:center;color:#777;padding:20px;">Nenhum curso.</p>' : cursos.map((c, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;"><div style="flex:1;"><div style="font-size:14px;font-weight:700;">${esc(c.nome)}</div><div style="font-size:11px;color:#666;">R$ ${esc(c.preco)}</div></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorCurso(${i})" style="background:#7C3AED;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">Editar</button><button onclick="removerCurso(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<div style="background:#F3E5F5;border:1px solid #CE93D8;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#6A1B9A;">🎓 Cadastre cursos, vídeos e links.</p></div>${lista}<button onclick="abrirEditorCurso(-1)" style="width:100%;padding:15px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:15px;">+ Curso</button>`; }
       else if (id === 'servicos-admin') { titulo.textContent = 'Gerenciar Serviços'; const servs = appState.servicos || []; const lista = servs.length === 0 ? '<p style="text-align:center;color:#777;padding:20px;">Nenhum serviço.</p>' : servs.map((s, i) => `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;"><div style="flex:1;"><div style="font-size:14px;font-weight:700;">${esc(s.nome)}</div><div style="font-size:11px;color:#666;">R$ ${esc(s.preco)}</div></div><div style="display:flex;gap:8px;"><button onclick="abrirEditorServico(${i})" style="background:#9D174D;color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">Editar</button><button onclick="removerServico(${i})" style="background:#ffebee;color:#c62828;border:none;padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;">X</button></div></div>`).join(''); html = `<div style="background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:15px;margin-bottom:20px;"><p style="font-size:13px;color:#E65100;">💆 Serviços da clínica.</p></div>${lista}<button onclick="abrirEditorServico(-1)" style="width:100%;padding:15px;background:#9D174D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:15px;">+ Serviço</button>`; }
       else if (id === 'liberar-acesso') { titulo.textContent = 'Liberar Acesso'; html = `<label style="font-size:13px;font-weight:700;">Curso:</label><select id="lib-curso-id" style="width:100%;padding:14px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;">${(appState.cursos||[]).map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('') || '<option value="">Nenhum curso</option>'}</select><label style="font-size:13px;font-weight:700;">Nome:</label><input type="text" id="lib-nome" style="width:100%;padding:14px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;"><label style="font-size:13px;font-weight:700;">WhatsApp:</label><input type="tel" id="lib-tel" style="width:100%;padding:14px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;"><button onclick="gerarCodigoCurso()" style="width:100%;padding:16px;background:#10A37F;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">🔑 Gerar Código</button><div id="codigo-gerado-resultado" style="margin-top:20px;"></div>`; }
@@ -1567,6 +1627,31 @@
       }
       if (id === 'lista-clientes') { window._listaClientesCache = []; window._listaAgendamentosCache = []; Promise.all([db.collection("clientes").get(), db.collection("agendamentos").get().catch(() => ({ forEach: () => {} }))]).then(([sc, sa]) => { sc.forEach(doc => window._listaClientesCache.push({ id: doc.id, ...doc.data() })); sa.forEach(doc => window._listaAgendamentosCache.push({ id: doc.id, ...doc.data() })); renderizarListaClientes(); }).catch(err => { document.getElementById('lista-clientes-container').innerHTML = '<p style="color:red;text-align:center;">Erro.</p>'; }); }
       if (id === 'financeiro' && window._acessoFinanceiroLiberado) { document.getElementById('fin-data').value = new Date().toLocaleDateString('en-CA'); carregarDadosFinanceiros(); }
+    }
+
+    // NOVAS FUNÇÕES ADICIONADAS
+    function filtrarClientesVIP(val) {
+      const termo = val.toLowerCase();
+      document.querySelectorAll('.vip-cliente-card').forEach(card => {
+        const nome = card.getAttribute('data-nome');
+        const tel = card.getAttribute('data-tel');
+        if (nome.includes(termo) || tel.includes(termo)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    async function deletarVenda(id) {
+      if (!confirm('Deseja apagar este pedido permanentemente? (Use isso para compras abandonadas)')) return;
+      try {
+        await db.collection('vendas').doc(id).delete();
+        mostrarToast('Pedido apagado!');
+        abrirConfiguracao('painel-vendas'); // Recarrega a lista
+      } catch(e) {
+        alert('Erro ao apagar pedido.');
+      }
     }
 
     function toggleExtensao(id) { if (!Array.isArray(appState.extensoes)) appState.extensoes = JSON.parse(JSON.stringify(estadoPadrao.extensoes)); document.querySelectorAll('.ext-link').forEach(inp => { const ext = appState.extensoes.find(e => e.id === inp.dataset.id); if (ext) ext.link = inp.value.trim(); }); const ext = appState.extensoes.find(e => e.id === id); if (!ext) return; if (!ext.conectada && !ext.link) { alert('Cole o link antes.'); return; } ext.conectada = !ext.conectada; salvarEstado(); abrirConfiguracao('extensoes'); }
@@ -1618,7 +1703,7 @@
 
     function abrirEditorProduto(index) { 
       indexProdEditando = index; configAtualAberta = 'boutique-edit'; 
-      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagem: null, dropship: false } : appState.boutiqueProdutos[index]; 
+      const prod = index === -1 ? { nome: '', preco: '', precoClube: '', estoque: 10, codigo: 'PROD-'+Math.floor(Math.random()*1000), imagem: null, dropship: false, linkPagamento: '' } : appState.boutiqueProdutos[index]; 
       document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto' : 'Editar'; 
       document.getElementById('editor-content').innerHTML = `
         <label style="font-size:13px;font-weight:700;">Nome</label>
@@ -1633,6 +1718,9 @@
           <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Código do Produto</label><input type="text" id="prod-codigo" value="${esc(prod.codigo || '')}"></div>
           <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Estoque (Qtd)</label><input type="number" id="prod-estoque" value="${prod.estoque !== undefined ? prod.estoque : 10}"></div>
         </div>
+
+        <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Link de Pagamento (Kiwify, Hotmart, etc.)</label>
+        <input type="url" id="prod-link-pagamento" value="${esc(prod.linkPagamento || '')}" placeholder="https://pay.kiwify.com.br/...">
 
         <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label>
         <input type="file" id="prod-imagem" accept="image/*" style="padding:15px;">
@@ -1654,6 +1742,7 @@
       const precoClube = document.getElementById('prod-preco-clube').value;
       const codigo = document.getElementById('prod-codigo').value;
       const estoque = parseInt(document.getElementById('prod-estoque').value) || 0;
+      const linkPagamento = document.getElementById('prod-link-pagamento').value.trim();
       
       if (!nome || !preco) return alert('Preencha o nome e o preço normal.'); 
       
@@ -1663,6 +1752,7 @@
       novo.precoClube = precoClube;
       novo.codigo = codigo;
       novo.estoque = estoque;
+      novo.linkPagamento = linkPagamento;
       novo.dropship = document.getElementById('prod-dropship').checked; 
       
       const img = document.getElementById('prod-imagem'); 
@@ -1679,8 +1769,66 @@
     
     function removerProdutoBoutique(i) { if (confirm('Excluir?')) { appState.boutiqueProdutos.splice(i, 1); salvarEstado(); renderizarHome(); abrirConfiguracao('boutique'); } }
 
-    function abrirEditorProdutoClube(index) { indexProdClubeEditando = index; configAtualAberta = 'clube-edit'; if (!Array.isArray(appState.produtosClube)) appState.produtosClube = []; const prod = index === -1 ? { nome: '', preco: '', imagem: null } : appState.produtosClube[index]; document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto Clube' : 'Editar'; document.getElementById('editor-content').innerHTML = `<label style="font-size:13px;font-weight:700;">Nome</label><input type="text" id="prod-clube-nome" value="${esc(prod.nome || '')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço</label><input type="text" id="prod-clube-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label><input type="file" id="prod-clube-imagem" accept="image/*" style="padding:15px;">`; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'block'; document.getElementById('btn-salvar-editor').textContent = 'Salvar'; document.getElementById('btn-salvar-editor').onclick = salvarProdutoClube; document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('loja-clube'); }
-    function salvarProdutoClube() { const nome = document.getElementById('prod-clube-nome').value; const preco = document.getElementById('prod-clube-preco').value; if (!nome || !preco) return alert('Preencha tudo.'); const novo = indexProdClubeEditando === -1 ? { id: Date.now() } : appState.produtosClube[indexProdClubeEditando]; novo.nome = nome; novo.preco = preco; const img = document.getElementById('prod-clube-imagem'); const fin = () => { if (indexProdClubeEditando === -1) appState.produtosClube.push(novo); salvarEstado(); renderizarHome(); renderizarClubeEVitrine(); abrirConfiguracao('loja-clube'); }; if (img.files.length) lerArquivoComprimido('prod-clube-imagem', v => { novo.imagem = v; fin(); }); else fin(); }
+    // ATUALIZAÇÃO: NOVO EDITOR DE PRODUTO DO CLUBE COM CATEGORIA, ESTOQUE E LINK
+    function abrirEditorProdutoClube(index) { 
+      indexProdClubeEditando = index; configAtualAberta = 'clube-edit'; 
+      if (!Array.isArray(appState.produtosClube)) appState.produtosClube = []; 
+      const prod = index === -1 ? { nome: '', preco: '', categoria: 'Geral', estoque: 10, linkPagamento: '', imagem: null } : appState.produtosClube[index]; 
+      
+      document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Produto Clube' : 'Editar'; 
+      document.getElementById('editor-content').innerHTML = `
+        <label style="font-size:13px;font-weight:700;">Nome</label>
+        <input type="text" id="prod-clube-nome" value="${esc(prod.nome || '')}">
+        
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Preço (R$)</label><input type="text" id="prod-clube-preco" value="${esc(prod.preco || '')}" oninput="mascaraPreco(this)"></div>
+          <div style="flex:1;"><label style="font-size:12px;font-weight:700;">Estoque</label><input type="number" id="prod-clube-estoque" value="${prod.estoque !== undefined ? prod.estoque : 10}"></div>
+        </div>
+
+        <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Categoria (Ex: Perfumes, Cremes, Roupas)</label>
+        <input type="text" id="prod-clube-categoria" value="${esc(prod.categoria || 'Geral')}" placeholder="Geral">
+
+        <label style="font-size:12px;font-weight:700; display:block; margin-top:10px;">Link de Pagamento (Opcional)</label>
+        <input type="url" id="prod-clube-link" value="${esc(prod.linkPagamento || '')}" placeholder="https://pay.kiwify.com.br/...">
+
+        <label style="font-size:13px;font-weight:700;display:block;margin-top:15px;">Foto</label>
+        <input type="file" id="prod-clube-imagem" accept="image/*" style="padding:15px;">
+      `; 
+      document.getElementById('modal-editor').style.display = 'flex'; 
+      document.getElementById('btn-salvar-editor').style.display = 'block'; 
+      document.getElementById('btn-salvar-editor').textContent = 'Salvar'; 
+      document.getElementById('btn-salvar-editor').onclick = salvarProdutoClube; 
+      document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('loja-clube'); 
+    }
+
+    function salvarProdutoClube() { 
+      const nome = document.getElementById('prod-clube-nome').value; 
+      const preco = document.getElementById('prod-clube-preco').value; 
+      const estoque = parseInt(document.getElementById('prod-clube-estoque').value) || 0;
+      const categoria = document.getElementById('prod-clube-categoria').value.trim() || 'Geral';
+      const linkPagamento = document.getElementById('prod-clube-link').value.trim();
+
+      if (!nome || !preco) return alert('Preencha o nome e o preço.'); 
+      
+      const novo = indexProdClubeEditando === -1 ? { id: Date.now() } : appState.produtosClube[indexProdClubeEditando]; 
+      novo.nome = nome; 
+      novo.preco = preco; 
+      novo.estoque = estoque;
+      novo.categoria = categoria;
+      novo.linkPagamento = linkPagamento;
+
+      const img = document.getElementById('prod-clube-imagem'); 
+      const fin = () => { 
+        if (indexProdClubeEditando === -1) appState.produtosClube.push(novo); 
+        salvarEstado(); 
+        renderizarHome(); 
+        renderizarClubeEVitrine(); 
+        abrirConfiguracao('loja-clube'); 
+      }; 
+      if (img.files.length) lerArquivoComprimido('prod-clube-imagem', v => { novo.imagem = v; fin(); }); 
+      else fin(); 
+    }
+
     function removerProdutoClube(i) { if (confirm('Excluir?')) { appState.produtosClube.splice(i, 1); salvarEstado(); renderizarHome(); renderizarClubeEVitrine(); abrirConfiguracao('loja-clube'); } }
 
     function abrirEditorCurso(index) { indexCursoEditando = index; configAtualAberta = 'curso-edit'; if (!Array.isArray(appState.cursos)) appState.cursos = []; const c = index === -1 ? { nome: '', descricao: '', video: '', imagem: null, preco: '', precoClube: '', modulos: [], linkAcesso: '' } : appState.cursos[index]; document.getElementById('editor-titulo').textContent = index === -1 ? 'Novo Curso' : 'Editar'; document.getElementById('editor-content').innerHTML = `<label style="font-size:13px;font-weight:700;">Nome</label><input type="text" id="curso-nome-input" value="${esc(c.nome||'')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Descrição</label><textarea id="curso-desc-input" rows="3">${esc(c.descricao||'')}</textarea><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Vídeo</label><input type="url" id="curso-video-input" value="${esc(c.video||'')}"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Capa</label><input type="file" id="curso-img-input" accept="image/*" style="padding:12px;"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Público</label><input type="text" id="curso-preco-input" value="${esc(c.preco||'')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Preço Clube</label><input type="text" id="curso-preco-clube-input" value="${esc(c.precoClube||'')}" oninput="mascaraPreco(this)"><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Módulos (1 por linha)</label><textarea id="curso-modulos-input" rows="4">${(c.modulos||[]).join('\n')}</textarea><label style="font-size:13px;font-weight:700;display:block;margin-top:10px;">Link Acesso</label><input type="url" id="curso-link-input" value="${esc(c.linkAcesso||'')}">`; document.getElementById('modal-editor').style.display = 'flex'; document.getElementById('btn-salvar-editor').style.display = 'block'; document.getElementById('btn-salvar-editor').textContent = 'Salvar'; document.getElementById('btn-salvar-editor').onclick = salvarCurso; document.getElementById('btn-voltar-editor').onclick = () => abrirConfiguracao('cursos-admin'); }
@@ -1704,7 +1852,71 @@
     function restaurarCoresExtras() { document.getElementById('edit-c-nav').value = '#9D174D'; document.getElementById('edit-c-chat').value = '#9D174D'; document.getElementById('edit-c-whats').value = '#25D366'; document.getElementById('edit-c-instagram').value = '#E4405F'; document.getElementById('edit-c-canal').value = '#128C7E'; document.getElementById('edit-c-email').value = '#333333'; }
     function restaurarGradientes() { document.getElementById('grad-vitrine-start').value = '#B91C1C'; document.getElementById('grad-vitrine-end').value = '#4C0519'; document.getElementById('grad-cta-start').value = '#9D174D'; document.getElementById('grad-cta-end').value = '#560021'; }
 
-    function renderizarClubeEVitrine() { document.getElementById('titulo-clube-tela').textContent = appState.clubeName; document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle; document.getElementById('texto-clube-beneficios').textContent = appState.clubeBeneficios || ''; document.getElementById('vitrine-admin-bar').style.display = modoAdminAtivo ? 'block' : 'none'; const c = document.getElementById('vitrine-produtos-grid-clube'); const prods = (appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos; const orig = (appState.produtosClube.length > 0) ? 'clube' : 'boutique'; c.innerHTML = prods.map((p, i) => `<button class="product-card-nova" onclick="abrirProduto(${i}, '${orig}')"><div class="product-img-box-nova">${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}">` : '🛍️'}</div><h4>${esc(p.nome)}</h4><p class="price">R$ ${esc(p.preco)}</p></button>`).join(''); }
+    // ATUALIZAÇÃO: RENDERIZAR LOJA DO CLUBE (COM BLOQUEIO DE PREÇO E CATEGORIAS)
+    function renderizarClubeEVitrine() { 
+      document.getElementById('titulo-clube-tela').textContent = appState.clubeName; 
+      document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle; 
+      document.getElementById('texto-clube-beneficios').textContent = appState.clubeBeneficios || ''; 
+      document.getElementById('vitrine-admin-bar').style.display = modoAdminAtivo ? 'block' : 'none'; 
+      
+      const c = document.getElementById('vitrine-produtos-grid-clube'); 
+      const prods = (appState.produtosClube && appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos; 
+      const orig = (appState.produtosClube && appState.produtosClube.length > 0) ? 'clube' : 'boutique'; 
+      
+      const membro = ehMembroClube();
+
+      // Botão de inserir código só aparece se não for membro
+      document.getElementById('btn-inserir-codigo-clube').style.display = membro ? 'none' : 'flex';
+
+      // Agrupar por categoria
+      const categorias = {};
+      prods.forEach((p, i) => {
+        const cat = p.categoria || 'Geral';
+        if (!categorias[cat]) categorias[cat] = [];
+        categorias[cat].push({ ...p, originalIndex: i });
+      });
+
+      let htmlFinal = '';
+
+      for (const [cat, items] of Object.entries(categorias)) {
+        htmlFinal += `<div class="section-title-nova" style="margin-top: 20px;">${esc(cat)}</div>`;
+        htmlFinal += `<div class="boutique-grid-nova">`;
+        
+        htmlFinal += items.map(p => {
+          let priceHtml = membro 
+            ? `<p class="price" style="color:var(--cor-dourada); font-size:20px; font-weight:800; text-decoration:none;">R$ ${esc(p.preco)}</p>` 
+            : `<p class="price locked-price" style="color:var(--cor-dourada); font-size:20px; font-weight:800; text-decoration:none;">R$ ${esc(p.preco)}</p><p style="font-size:10px;color:var(--cor-principal);font-weight:700;">Insira o código VIP</p>`;
+          
+          let btnHtml = membro 
+            ? `<button class="btn-comprar-direto" onclick="abrirProduto(${p.originalIndex}, '${orig}')"><i class="fa-solid fa-cart-shopping"></i> Comprar</button>`
+            : `<button class="btn-comprar-direto" onclick="pedirCodigoClube()" style="background:#9D174D;"><i class="fa-solid fa-lock"></i> Desbloquear</button>`;
+
+          // Controle de estoque
+          let stockBadge = '';
+          if (membro && p.estoque !== undefined) {
+            if (p.estoque <= 0) stockBadge = `<span class="stock-badge out">ESGOTADO</span>`;
+            else if (p.estoque <= 5) stockBadge = `<span class="stock-badge low">Últimas ${p.estoque}</span>`;
+          }
+
+          return `
+            <div class="product-card-nova" style="position:relative;">
+              ${stockBadge}
+              <div class="product-img-box-nova" style="cursor:pointer;" onclick="${membro ? `abrirProduto(${p.originalIndex}, '${orig}')` : `pedirCodigoClube()`}">
+                ${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}
+              </div>
+              <h4>${esc(p.nome)}</h4>
+              ${priceHtml}
+              ${btnHtml}
+            </div>
+          `;
+        }).join('');
+        
+        htmlFinal += `</div>`;
+      }
+
+      c.innerHTML = htmlFinal; 
+    }
+    
     function abrirCurso(id) { const c = appState.cursos.find(x => String(x.id) === String(id)); if (!c) return; window._cursoAtual = c; document.getElementById('curso-video-container').innerHTML = c.video ? gerarHTMLVideo(c.video) : ''; document.getElementById('curso-nome').textContent = c.nome; document.getElementById('curso-descricao').textContent = c.descricao || ''; document.getElementById('curso-precos').innerHTML = `<div style="font-size:26px;font-weight:700;color:var(--cor-principal);">R$ ${esc(c.preco)}</div>`; document.getElementById('curso-modulos').innerHTML = (c.modulos || []).map(m => `<li>${esc(m)}</li>`).join(''); const comprado = localStorage.getItem('cursoLiberado_' + c.id) === 'true'; document.getElementById('btn-acessar-curso').style.display = comprado ? 'flex' : 'none'; document.getElementById('btn-codigo-curso').style.display = comprado ? 'none' : 'flex'; document.getElementById('btn-comprar-curso').onclick = () => window.open(`https://wa.me/${appState.whatsapp}?text=${encodeURIComponent('Quero o curso '+c.nome)}`, '_blank'); document.getElementById('btn-codigo-curso').onclick = () => document.getElementById('modal-codigo-curso').style.display = 'flex'; document.getElementById('btn-acessar-curso').onclick = () => window.open(safeHref(c.linkAcesso), '_blank'); abrirTela('curso'); }
     async function validarCodigoCurso() { const codigo = document.getElementById('input-codigo-curso').value.trim().toUpperCase(); const c = window._cursoAtual; if (!codigo || !c) return; try { const doc = await db.collection('codigos_curso').doc(codigo).get(); if (doc.exists && String(doc.data().cursoId) === String(c.id)) { localStorage.setItem('cursoLiberado_' + c.id, 'true'); document.getElementById('modal-codigo-curso').style.display = 'none'; mostrarToast('✅ Liberado!'); abrirCurso(c.id); } else { alert('❌ Inválido.'); } } catch(e) { alert('Erro.'); } }
     
@@ -1725,14 +1937,32 @@
       const prods = (origem === 'clube' && appState.produtosClube.length > 0) ? appState.produtosClube : appState.boutiqueProdutos;
       const p = prods[index];
       if (!p) return;
-      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">` : '🛍️';
+      
+      const membro = ehMembroClube();
+      const precoFinal = (membro && p.precoClube) ? p.precoClube : p.preco;
+
+      // Correção do Tamanho da Imagem (object-fit: contain)
+      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" style="width:100%;height:100%;object-fit:contain;border-radius:22px;">` : '🛍️';
+      
       document.getElementById('produto-nome').textContent = p.nome;
-      document.getElementById('produto-preco').textContent = `R$ ${esc(p.preco)}`;
+      document.getElementById('produto-preco').textContent = `R$ ${esc(precoFinal)}`;
       document.getElementById('produto-desc').textContent = p.descricao || 'Produto exclusivo da nossa loja.';
+      
+      // Botão WhatsApp
       document.getElementById('btn-comprar-produto').onclick = () => {
-         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} (R$ ${p.preco}).`);
+         const msg = encodeURIComponent(`Olá! Gostaria de comprar o produto: ${p.nome} (R$ ${precoFinal}).`);
          window.open(`https://wa.me/${appState.whatsapp}?text=${msg}`, '_blank');
       };
+
+      // Botão Pagar Online (Link Kiwify)
+      const btnPagarOnline = document.getElementById('btn-pagar-online');
+      if (p.linkPagamento && p.linkPagamento.trim() !== '') {
+        btnPagarOnline.style.display = 'flex';
+        btnPagarOnline.onclick = () => window.open(safeHref(p.linkPagamento), '_blank');
+      } else {
+        btnPagarOnline.style.display = 'none';
+      }
+
       abrirTela('produto');
     }
 
@@ -2052,10 +2282,8 @@
       atualizarRelogioSidebar();
       setInterval(atualizarRelogioSidebar, 60000);
 
-      // 1º: carrega a clínica (white-label)
       await carregarConfigClinica();
 
-      // 2º: renderiza tudo
       renderizarHome();
       renderizarServicosClinica();
       renderizarCursos();
