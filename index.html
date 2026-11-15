@@ -1112,9 +1112,192 @@
 
     function gerarArrayHorarios(inicio, fim, intervalo) { let h = []; if (!inicio || !fim || !intervalo) return appState.horariosAgenda; let [hI, mI] = inicio.split(':').map(Number); let [hF, mF] = fim.split(':').map(Number); let a = hI * 60 + mI, lim = hF * 60 + mF; while (a < lim) { h.push(`${Math.floor(a / 60).toString().padStart(2, '0')}:${(a % 60).toString().padStart(2, '0')}`); a += Number(intervalo); } return h; }
 
-    // 👇👇👇 COLE O RESTO DO SEU CÓDIGO AQUI 👇👇👇
-    // Pegue a partir da função "function calc" do seu arquivo antigo, até o final do script, e cole exatamente aqui em cima desta linha, antes de prosseguir com o código novo.
+      // ================= FUNÇÕES RECONSTRUÍDAS =================
+    
+    async function carregarEstado() {
+      try {
+        const snap = await db.collection('clinicas').doc(CLINICA_ID).get();
+        if (snap.exists && snap.data().config) {
+          appState = Object.assign({}, estadoPadrao, snap.data().config);
+        } else {
+          appState = JSON.parse(JSON.stringify(estadoPadrao));
+        }
+      } catch(e) { console.warn('Erro ao carregar estado:', e); appState = JSON.parse(JSON.stringify(estadoPadrao)); }
+      aplicarEstadoVisual();
+      renderizarHome();
+    }
 
+    function aplicarEstadoVisual() {
+      if (appState.appName) {
+        document.getElementById('app-name').innerText = appState.appName;
+        document.getElementById('app-logo').innerText = appState.logo || 'AB';
+      }
+      const root = document.documentElement;
+      if (appState.colorPrimary) root.style.setProperty('--cor-principal', appState.colorPrimary);
+      if (appState.colorGold) root.style.setProperty('--cor-dourada', appState.colorGold);
+      if (appState.bgColor) root.style.setProperty('--cor-fundo', appState.bgColor);
+      const container = document.getElementById('app-container');
+      if (appState.bgImage) container.style.backgroundImage = `url('${appState.bgImage}')`;
+    }
+
+    function renderizarHome() {
+      const container = document.getElementById('home-sections');
+      if (!container) return;
+      
+      const ordem = appState.layoutOrder || estadoPadrao.layoutOrder;
+      const ocultas = appState.layoutHidden || [];
+      let html = '';
+
+      ordem.forEach(secao => {
+        if (ocultas.includes(secao)) return;
+        if (secao === 'banner') {
+          html += `<div class="vitrine-banner-nova"><h2>${esc(appState.vitrineTitle || 'Vitrine da Alê')}</h2><p>${esc(appState.mensagem || '')}</p></div>`;
+        }
+        if (secao === 'cta-topo') {
+          html += `<div class="cta-topo-wrap">
+            <button class="cta-topo-btn agendar" onclick="window.open('https://wa.me/${appState.whatsapp}', '_blank')"><i class="fa-brands fa-whatsapp"></i> Agendar</button>
+            <button class="cta-topo-btn clube" onclick="abrirTela('clube')"><i class="fa-solid fa-gem"></i> Clube VIP</button>
+          </div>`;
+        }
+        if (secao === 'quick-apps') {
+          html += `<div class="quick-apps-bar">
+            <button class="quick-app" onclick="abrirTela('clinica')"><div class="quick-app-icon" style="background:#9D174D"><i class="fa-solid fa-spa"></i></div><span>Clínica</span></button>
+            <button class="quick-app" onclick="abrirTela('cursos')"><div class="quick-app-icon" style="background:#7C3AED"><i class="fa-solid fa-graduation-cap"></i></div><span>Cursos</span></button>
+            <button class="quick-app" onclick="abrirTela('clube')"><div class="quick-app-icon" style="background:#D4AF37"><i class="fa-solid fa-gem"></i></div><span>Clube</span></button>
+            <button class="quick-app" onclick="abrirTela('canais')"><div class="quick-app-icon" style="background:#128C7E"><i class="fa-solid fa-bullhorn"></i></div><span>Canais</span></button>
+          </div>`;
+        }
+        if (secao === 'depoimentos' && appState.depoimentos?.length) {
+          html += `<div class="section-title-nova">O que dizem nossas clientes</div><div class="depoimentos-scroll">`;
+          appState.depoimentos.forEach(d => {
+            html += `<div class="depoimento-card"><div class="dep-avatar">${d.imagem ? `<img src="${d.imagem}">` : esc(d.nome.charAt(0))}</div><div class="dep-nome">${esc(d.nome)}</div><div class="dep-estrelas">${'★'.repeat(d.estrelas)}</div><div class="dep-texto">"${esc(d.texto)}"</div></div>`;
+          });
+          html += `</div>`;
+        }
+        if (secao === 'boutique' && appState.boutiqueProdutos?.length) {
+          html += `<div class="section-title-nova">Boutique</div><div class="boutique-grid-nova">`;
+          appState.boutiqueProdutos.forEach(p => {
+            html += `<div class="product-card-nova" onclick="abrirProduto(${p.id})">
+              <div class="product-img-box-nova">${p.imagem ? `<img src="${p.imagem}">` : '🛍️'}</div>
+              <h4>${esc(p.nome)}</h4><div class="price">R$ ${esc(p.preco)}</div>
+            </div>`;
+          });
+          html += `</div>`;
+        }
+        if (secao === 'contato') {
+          html += `<div class="section-title-nova">Fale Conosco</div><div class="contato-compacto">
+            <div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${esc(appState.contato?.endereco || '')}</div>
+            <div class="contato-info-mini"><i class="fa-solid fa-clock"></i> ${esc(appState.contato?.horario || '')}</div>
+            <div class="contato-redes"><a href="https://wa.me/${appState.whatsapp}" target="_blank" class="rede-btn wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a></div>
+          </div>`;
+        }
+      });
+      container.innerHTML = html;
+    }
+
+    function atualizarViewAgenda() {
+      if (modoAdminAtivo) {
+        document.getElementById('agenda-cliente-mural').style.display = 'none';
+        document.getElementById('calendario-container').style.display = 'block';
+        document.getElementById('agenda-admin').style.display = 'block';
+        renderizarCalendarioAdmin();
+      } else {
+        document.getElementById('agenda-cliente-mural').style.display = 'block';
+        document.getElementById('texto-mural-cliente').innerText = appState.muralAgenda || '';
+        document.getElementById('calendario-container').style.display = 'none';
+        document.getElementById('agenda-admin').style.display = 'none';
+      }
+    }
+
+    function renderizarCalendarioAdmin() {
+      const grid = document.getElementById('calendario-grid');
+      const titulo = document.getElementById('mes-ano-atual');
+      if (!grid || !titulo) return;
+      const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+      titulo.innerText = `${meses[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+      
+      const primeiroDia = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+      const diasNoMes = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+      
+      let html = '';
+      ['D','S','T','Q','Q','S','S'].forEach(d => html += `<div class="dia-semana">${d}</div>`);
+      for (let i = 0; i < primeiroDia; i++) html += `<div class="dia-btn vazio"></div>`;
+      for (let d = 1; d <= diasNoMes; d++) {
+        html += `<button class="dia-btn" onclick="selecionarDia(${d})">${d}</button>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    function mudarMes(delta) {
+      currentDate.setMonth(currentDate.getMonth() + delta);
+      renderizarCalendarioAdmin();
+    }
+
+    function selecionarDia(dia) {
+      diaSelecionado = dia;
+      document.querySelectorAll('.dia-btn').forEach(b => b.classList.remove('selecionado'));
+      event.target.classList.add('selecionado');
+      document.getElementById('horarios-container').style.display = 'block';
+      document.getElementById('titulo-horarios').innerText = `Horários para ${dia}/${currentDate.getMonth()+1}`;
+      
+      const horarios = appState.horariosAgenda || [];
+      let html = '';
+      horarios.forEach(h => {
+        html += `<button class="horario-btn admin-slot livre" onclick="abrirModalAgendar('${h}')"><b>${h}</b><span>Livre</span></button>`;
+      });
+      document.getElementById('horarios-grid').innerHTML = html;
+    }
+
+    async function verificarSenhaAdmin() {
+      const email = document.getElementById('admin-email').value.trim();
+      const pass = document.getElementById('admin-password').value;
+      const status = document.getElementById('admin-auth-status');
+      
+      if (!email || !pass) { status.innerText = 'Preencha e-mail e senha.'; return; }
+      status.innerText = 'Verificando...';
+      
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch (e) {
+        status.innerText = 'Erro ao entrar: ' + (e.code === 'auth/wrong-password' ? 'Senha incorreta.' : e.message);
+      }
+    }
+
+    async function sairAdmin() { await auth.signOut(); }
+
+    function renderizarCategoriasAdmin() {
+      const box = document.getElementById('master-categorias');
+      if (!box) return;
+      box.innerHTML = categoriasConfig.map(cat => `
+        <details class="config-category">
+          <summary><i class="fa-solid ${cat.icone}"></i> ${esc(cat.nome)}</summary>
+          <div class="config-grid">
+            ${cat.itens.map(it => `<button class="master-card" onclick="abrirConfiguracao('${it.id}')"><h4>${esc(it.nome)}</h4><span class="plus">+</span></button>`).join('')}
+          </div>
+        </details>
+      `).join('');
+    }
+
+    function abrirConfiguracao(id) {
+      mostrarToast('Abrindo configuração: ' + id);
+      // Aqui você pode colocar as funções de abrir modal de cada configuração
+    }
+
+    function mostrarToast(msg) {
+      alert(msg); // Substitua por um toast real se desejar
+    }
+
+    function abrirProduto(id) {
+      const p = appState.boutiqueProdutos.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('produto-nome').innerText = p.nome;
+      document.getElementById('produto-preco').innerText = 'R$ ' + p.preco;
+      document.getElementById('produto-desc').innerText = p.descricao || 'Produto exclusivo da nossa loja.';
+      document.getElementById('produto-img-grande').innerHTML = p.imagem ? `<img src="${p.imagem}">` : '🛍️';
+      document.getElementById('btn-comprar-produto').onclick = () => window.open(`https://wa.me/${appState.whatsapp}?text=Quero comprar: ${p.nome}`, '_blank');
+      abrirTela('produto');
+    }
+    // ================= FIM DAS FUNÇÕES RECONSTRUÍDAS =================
     // ================= NOVO JS - i18n E ONBOARDING =================
     const I18N_LANGS = ['pt', 'es'];
     const I18N_LANG_DEFAULT = 'pt';
