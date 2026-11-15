@@ -1101,19 +1101,43 @@
     function getPlanoAtual() { return appState.planoAtual || 'diamond'; }
     function podeUsar(r) { const l = LIMITES_PLANO[getPlanoAtual()]; return l ? l[r] : false; }
 
-    auth.onAuthStateChanged(async (user) => {
+       auth.onAuthStateChanged(async (user) => {
       usuarioAutenticado = user; adminAutenticado = user ? await verificarAdmin(user) : false; modoAdminAtivo = adminAutenticado;
       const boxLogin = document.getElementById('box-login-admin'), boxLogado = document.getElementById('admin-logado'), identidade = document.getElementById('admin-identidade');
-      if (adminAutenticado) { document.getElementById('app-name').innerHTML = 'Painel Admin'; document.getElementById('admin-email').value = user.email; if (identidade) identidade.textContent = user.email; if (boxLogin) boxLogin.style.display = 'none'; if (boxLogado) boxLogado.style.display = 'block'; }
-      else if (user) { document.getElementById('app-name').innerHTML = appState.appName || 'Alexandra Barros'; if (boxLogin) boxLogin.style.display = 'block'; if (boxLogado) boxLogado.style.display = 'none'; document.getElementById('admin-auth-status').textContent = 'Sua conta não tem permissão.'; auth.signOut(); }
-      else { const n = localStorage.getItem('clienteNome'); document.getElementById('app-name').innerHTML = n ? `Olá, ${esc(n.split(' ')[0])}` : (appState.appName || 'Alexandra Barros'); if (boxLogin) boxLogin.style.display = 'block'; if (boxLogado) boxLogado.style.display = 'none'; document.getElementById('admin-password').value = ''; document.getElementById('admin-auth-status').textContent = ''; const btnLogin = document.getElementById('btn-admin-login'); if (btnLogin) { btnLogin.disabled = false; btnLogin.textContent = 'Entrar como Administrador'; } }
+      
+      if (adminAutenticado) { 
+        document.getElementById('app-name').innerHTML = 'Painel Admin'; 
+        document.getElementById('admin-email').value = user.email; 
+        if (identidade) identidade.textContent = user.email; 
+        if (boxLogin) boxLogin.style.display = 'none'; 
+        if (boxLogado) boxLogado.style.display = 'block'; 
+        
+        // ISSO FAZ OS BOTÕES DO PAINEL APARECEREM AO LOGAR
+        if (typeof renderizarCategoriasAdmin === 'function') renderizarCategoriasAdmin(); 
+      }
+      else if (user) { 
+        document.getElementById('app-name').innerHTML = appState.appName || 'Alexandra Barros'; 
+        if (boxLogin) boxLogin.style.display = 'block'; 
+        if (boxLogado) boxLogado.style.display = 'none'; 
+        document.getElementById('admin-auth-status').textContent = 'Sua conta não tem permissão.'; 
+        auth.signOut(); 
+      }
+      else { 
+        const n = localStorage.getItem('clienteNome'); 
+        document.getElementById('app-name').innerHTML = n ? `Olá, ${esc(n.split(' ')[0])}` : (appState.appName || 'Alexandra Barros'); 
+        if (boxLogin) boxLogin.style.display = 'block'; 
+        if (boxLogado) boxLogado.style.display = 'none'; 
+        document.getElementById('admin-password').value = ''; 
+        document.getElementById('admin-auth-status').textContent = ''; 
+        const btnLogin = document.getElementById('btn-admin-login'); 
+        if (btnLogin) { btnLogin.disabled = false; btnLogin.textContent = 'Entrar como Administrador'; } 
+      }
       aplicarRestricoes(); atualizarViewAgenda(); carregarEstado();
     });
 
     function gerarArrayHorarios(inicio, fim, intervalo) { let h = []; if (!inicio || !fim || !intervalo) return appState.horariosAgenda; let [hI, mI] = inicio.split(':').map(Number); let [hF, mF] = fim.split(':').map(Number); let a = hI * 60 + mI, lim = hF * 60 + mF; while (a < lim) { h.push(`${Math.floor(a / 60).toString().padStart(2, '0')}:${(a % 60).toString().padStart(2, '0')}`); a += Number(intervalo); } return h; }
 
-      // ================= FUNÇÕES RECONSTRUÍDAS =================
-    
+    // ================= FUNÇÕES RECONSTRUÍDAS =================
     async function carregarEstado() {
       try {
         const snap = await db.collection('clinicas').doc(CLINICA_ID).get();
@@ -1280,11 +1304,10 @@
 
     function abrirConfiguracao(id) {
       mostrarToast('Abrindo configuração: ' + id);
-      // Aqui você pode colocar as funções de abrir modal de cada configuração
     }
 
     function mostrarToast(msg) {
-      alert(msg); // Substitua por um toast real se desejar
+      alert(msg); 
     }
 
     function abrirProduto(id) {
@@ -1297,7 +1320,7 @@
       document.getElementById('btn-comprar-produto').onclick = () => window.open(`https://wa.me/${appState.whatsapp}?text=Quero comprar: ${p.nome}`, '_blank');
       abrirTela('produto');
     }
-    // ================= FIM DAS FUNÇÕES RECONSTRUÍDAS =================
+
     // ================= NOVO JS - i18n E ONBOARDING =================
     const I18N_LANGS = ['pt', 'es'];
     const I18N_LANG_DEFAULT = 'pt';
@@ -1472,6 +1495,8 @@
       i18n._atualizarSeletor();
       
       if (typeof carregarConfigClinica === 'function') carregarConfigClinica();
+      
+      if (typeof carregarEstado === 'function') carregarEstado();
       
       setTimeout(() => {
         if (!onboarding._jaCompletou('cliente') && !modoAdminAtivo) {
