@@ -1,97 +1,180 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#9D174D">
-  <meta name="description" content="Alexandra Barros - Clínica de Estética 40+">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Alexandra Barros">
-  <meta name="mobile-web-app-capable" content="yes">
-  
-  <link rel="icon" type="image/png" href="icon-96.png" sizes="96x96" />
-  <link rel="shortcut icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" sizes="144x144" href="icon-144.png" />
-  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
-  <link rel="manifest" href="manifest.json" />
-  
-  <title>Alexandra Barros - App Oficial</title>
-  <link rel="preconnect" href="https://googleapis.com">
-  <link rel="preconnect" href="https://gstatic.com" crossorigin>
-  <link href="https://googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cloudflare.com">
-  
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-  <script src="https://cloudflare.com"></script>
+    <div class="app-content" id="app-content">
+      <div id="tela-inicio" class="tela ativa">
+        <div id="welcome-banner" class="welcome-banner">Olá, seja bem-vindo(a)!</div>
+        <div id="home-sections"></div>
+      </div>
 
-  <style>
-    :root {
-      --cor-fundo: #FFF2F6; --cor-card-fundo: #FFFFFF; --cor-principal: #9D174D;
-      --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
-      --cor-whatsapp: #25D366; --cor-instagram: #E4405F; --cor-canal: #128C7E; --cor-email: #333333;
-      --cor-header: #9D174D; --cor-nav: #9D174D; --cor-chat: #9D174D; --cor-sidebar: #9D174D;
+      <div id="tela-clinica" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" style="background: linear-gradient(135deg, #9D174D, #560021);">
+          <span class="pagina-emoji">💆‍♀️</span>
+          <h1 class="pagina-titulo">Clínica Estética</h1>
+          <p class="pagina-subtitulo">Protocolos exclusivos para mulheres 40+</p>
+        </div>
+        <button class="btn-cta-grande" onclick="window.open('https://wa.me', '_blank')">
+          <i class="fa-brands fa-whatsapp"></i> Agendar avaliação
+        </button>
+      </div>
+
+      <div id="tela-cursos" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" style="background: linear-gradient(135deg, #7C3AED, #4C1D95);">
+          <span class="pagina-emoji">🎓</span>
+          <h1 class="pagina-titulo">Cursos Online</h1>
+          <p class="pagina-subtitulo">Aprenda com a Bio Renovadora</p>
+        </div>
+      </div>
+
+      <div id="tela-clube" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" style="background: linear-gradient(135deg, #C2185B, #4C0519);">
+          <span class="pagina-emoji">🌸</span>
+          <h1 class="pagina-titulo">Clube da Ale</h1>
+          <p class="pagina-subtitulo">Vantagens exclusivas e produtos selecionados</p>
+        </div>
+        <button class="btn-cta-grande" onclick="LojaVIP.validarCodigoVIP(prompt('Digite seu código VIP:'))">
+          <i class="fa-solid fa-gem"></i> Já sou membro - Inserir código
+        </button>
+        <div class="section-title-nova">Vitrine da Alê</div>
+        <div id="vitrine-vip-container"></div>
+      </div>
+
+      <div id="tela-pontos" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" style="background: linear-gradient(135deg, #D4AF37, #9D174D);">
+          <span class="pagina-emoji">⭐</span>
+          <h1 class="pagina-titulo">Pontos XP</h1>
+          <p class="pagina-subtitulo">Cada visita vale recompensa</p>
+        </div>
+        <div id="painel-xp-container"></div>
+      </div>
+
+      <div id="tela-canais" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="pagina-hero" style="background: linear-gradient(135deg, #128C7E, #075E54);">
+          <span class="pagina-emoji">📢</span>
+          <h1 class="pagina-titulo">Canais</h1>
+          <p class="pagina-subtitulo">Siga e fique por dentro das novidades</p>
+        </div>
+      </div>
+
+      <div id="tela-agenda" class="tela">
+        <div id="agenda-cliente-mural">
+          <div class="section-title-nova" style="margin-top:0;">Mural de Avisos</div>
+          <div class="mural-box">
+            <h3>Fique por dentro!</h3>
+            <div class="mural-texto" id="texto-mural-cliente">Atendemos de segunda a sábado, das 09h às 18h.</div>
+            <button onclick="window.open('https://wa.me', '_blank')" class="btn-cta-grande" style="background:#25D366; margin-bottom:0;">
+              <i class="fa-brands fa-whatsapp"></i> Agendar pelo WhatsApp
+            </button>
+          </div>
+        </div>
+        <div id="calendario-container" style="display:none;">
+          <div class="calendario-header">
+            <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <h3 id="mes-ano-atual">Mês Atual</h3>
+            <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div class="calendario-grid" id="calendario-grid"></div>
+          <div id="horarios-container" style="display:none;">
+            <div class="horarios-grid" id="horarios-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tela-indique" class="tela">
+        <button class="back-btn" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div id="indique-qr-container"></div>
+      </div>
+
+      <div id="tela-perfil" class="tela">
+        <div class="perfil-hero">
+          <div class="perfil-avatar">AB</div>
+          <div class="perfil-nome">Acesso Restrito</div>
+          <div class="perfil-cargo">Área Administrativa</div>
+        </div>
+        <div class="painel-master-box" id="box-login-admin">
+          <input type="email" id="admin-email" placeholder="E-mail de acesso" style="width:100%;padding:14px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
+          <input type="password" id="admin-password" placeholder="Sua senha" style="width:100%;padding:14px;border:1px solid var(--cor-principal);border-radius:8px;margin-bottom:10px;">
+          <button id="btn-admin-login" onclick="verificarSenhaAdmin()" style="width:100%;padding:14px;background:var(--cor-principal);color:#fff;border:0;border-radius:8px;font-weight:700;">Entrar como Administrador</button>
+          <p id="admin-auth-status" style="font-size:13px;margin-top:10px;text-align:center;"></p>
+        </div>
+        <div id="admin-logado" style="display:none;">
+          <div style="text-align:center; margin-bottom:16px;">
+            <span id="admin-identidade" style="font-weight:700; color:var(--cor-principal);"></span>
+            <button onclick="auth.signOut()" style="margin-left:10px; padding:6px 12px; border:1px solid #9D174D; background:#fff; border-radius:8px;">Sair</button>
+          </div>
+          <div id="painel-master-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="assistente-ia-flutuante" onclick="abrirChat()"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+
+    <div id="tela-chat" class="tela">
+      <div class="chat-container">
+        <div class="chat-header">
+          <button onclick="fecharChat()" style="background:none;border:none;color:#fff;font-size:22px;"><i class="fa-solid fa-arrow-left"></i></button>
+          <h3>Atendimento & IA</h3>
+        </div>
+        <div id="chat-interno-container" style="flex:1; padding:12px;"></div>
+      </div>
+    </div>
+
+    <div id="modal-idioma" class="modal-cadastro-fixo">
+      <div class="cartao-cadastro" style="background:#fff;">
+        <h3>🌐 Selecionar idioma</h3>
+        <button class="lang-option" data-lang-option="pt" onclick="selecionarIdioma('pt')">🇧🇷 Português</button>
+        <button class="lang-option" data-lang-option="es" onclick="selecionarIdioma('es')" style="margin-top:8px;">🇪🇸 Español</button>
+        <button onclick="document.getElementById('modal-idioma').style.display='none'" style="width:100%;padding:12px;margin-top:12px;">Fechar</button>
+      </div>
+    </div>
+
+    <nav class="nav-bottom">
+      <button class="nav-item active" data-tab="inicio" onclick="trocarTela(this, 'inicio')"><i class="fa-solid fa-house"></i> Início</button>
+      <button class="nav-item" data-tab="agenda" onclick="trocarTela(this, 'agenda')"><i class="fa-regular fa-calendar"></i> Agenda</button>
+      <button class="nav-item" data-tab="indique" onclick="trocarTela(this, 'indique')"><i class="fa-solid fa-gift"></i> Indique</button>
+      <button class="nav-item" data-tab="perfil" onclick="trocarTela(this, 'perfil')"><i class="fa-regular fa-user"></i> Perfil</button>
+    </nav>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_sA-g6fCm7Zcv41DBsF1NyjQJTFvjays",
+      authDomain: "://firebaseapp.com",
+      projectId: "aleclube",
+      storageBucket: "aleclube.firebasestorage.app",
+      messagingSenderId: "1086356924442",
+      appId: "1:1086356924442:web:17fe110f263a01b57189a3"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const ADMIN_EMAILS = ['estetica.alexandria@gmail.com', 'progovcomercial@gmail.com', 'alexandra.biiestetica@gmail.com'];
+
+    function trocarTela(btn, tab) {
+      document.querySelectorAll('.nav-item, .nav-side-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll(`[data-tab="${tab}"]`).forEach(t => t.classList.add('active'));
+      abrirTela(tab);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
-    .app-container { width: 100%; max-width: 100vw; background-color: var(--cor-fundo); min-height: 100vh; position: relative; display: flex; flex-direction: column; transition: background 0.3s; background-size: cover; background-position: center; }
-    .app-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-    .tela { display: none; }
-    .tela.ativa { display: block; animation: fadeIn .25s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    function abrirTela(id) {
+      document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+      const tela = document.getElementById('tela-' + id);
+      if (tela) tela.classList.add('ativa');
+      if (id === 'clube' && window.LojaVIP) LojaVIP.carregarProdutos('vitrine-vip-container');
+      if (id === 'pontos' && window.FidelidadeChatAB) FidelidadeChatAB.renderizarPainelXP('painel-xp-container');
+      if (id === 'indique' && window.FidelidadeChatAB) FidelidadeChatAB.renderizarIndiqueGanhe('indique-qr-container');
+    }
+    function voltarInicio() { abrirTela('inicio'); }
+    function abrirChat() {
+      document.getElementById('tela-chat').style.display = 'flex';
+      if (window.FidelidadeChatAB) FidelidadeChatAB.iniciarChatInterno('chat-interno-container');
+    }
+    function fecharChat() { document.getElementById('tela-chat').style.display = 'none'; }
+    function abrirSeletorIdioma() { document.getElementById('modal-idioma').style.display = 'flex'; }
+    function selecionarIdioma(l) { localStorage.setItem('i18n_lang', l); document.getElementById('modal-idioma').style.display = 'none'; }
 
-    .app-header { background-color: var(--cor-header); padding: 20px 16px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 12px; }
-    .avatar-ab { background-color: #FFFFFF; color: var(--cor-principal); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; }
-    .avatar-ab img { width: 100%; height: 100%; object-fit: cover; }
-    .header-title { font-family: 'Playfair Display', serif; color: var(--cor-dourada); font-size: 20px; font-weight: 700; text-align: left; }
-
-    .nav-bottom { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 0; z-index: 10; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--cor-texto-mutado); font-size: 10px; font-weight: 600; gap: 4px; background: none; border: none; cursor: pointer; }
-    .nav-item.active { color: var(--cor-nav, var(--cor-principal)); }
-    .nav-item i { font-size: 18px; }
-    .nav-side { display: none; }
-
-    .welcome-banner { background: #fff; border: 1.5px solid var(--cor-dourada); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; font-weight: 700; color: var(--cor-principal); font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: none; }
-    .vitrine-banner-nova { background: linear-gradient(135deg, var(--grad-vitrine-start, #B91C1C), var(--grad-vitrine-end, #4C0519)); border-radius: 20px; padding: 24px 18px; text-align: center; color: #FFFFFF; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(157, 23, 77, 0.2); }
-    .vitrine-banner-nova h2 { font-size: 22px; color: var(--cor-dourada); margin-bottom: 6px; font-weight: 700; letter-spacing: 1.5px; }
-    .vitrine-banner-nova p { font-size: 11px; opacity: 0.92; font-weight: 600; letter-spacing: 1px; }
-    .quick-apps-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
-    .quick-app { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--cor-texto-escuro); font-size: 10px; font-weight: 600; padding: 10px 4px; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.04); cursor: pointer; }
-    .quick-app-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 19px; }
-
-    .section-title-nova { font-size: 13px; color: var(--cor-principal); text-transform: uppercase; font-weight: 700; margin: 28px 0 14px 0; display: flex; align-items: center; gap: 8px; }
-    .section-title-nova::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--cor-principal); border-radius: 2px; }
-
-    .cta-topo-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
-    .cta-topo-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 18px 12px; border-radius: 16px; border: none; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.12); transition: transform .2s; color: #fff; }
-    .cta-topo-btn:active { transform: scale(0.97); }
-    .cta-topo-btn i { font-size: 18px; }
-    .cta-topo-btn.agendar { background: linear-gradient(135deg, #25D366, #128C7E); }
-    .cta-topo-btn.clube { background: linear-gradient(135deg, #C2185B, #7C3AED); }
-
-    .depoimentos-scroll { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
-    .depoimentos-scroll::-webkit-scrollbar { display: none; }
-    .depoimento-card { flex-shrink: 0; width: 280px; scroll-snap-align: start; background: #fff; border-radius: 18px; padding: 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); border-left: 4px solid var(--cor-dourada); display: flex; flex-direction: column; }
-    .depoimento-card .dep-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--cor-principal), var(--cor-dourada)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; overflow: hidden; margin-bottom: 12px; }
-    .depoimento-card .dep-nome { font-size: 15px; font-weight: 700; color: var(--cor-principal); margin-bottom: 4px; }
-    .depoimento-card .dep-estrelas { color: #F5A623; font-size: 13px; margin-bottom: 10px; letter-spacing: 2px; }
-    .depoimento-card .dep-texto { font-size: 13px; color: #555; line-height: 1.6; font-style: italic; flex: 1; }
-
-    .planos-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px 8px; padding: 6px 20px 14px; scrollbar-width: none; }
-    .planos-scroll::-webkit-scrollbar { display: none; }
-    .plano-card { flex-shrink: 0; width: 200px; scroll-snap-align: start; background: #fff; border: 1.5px solid rgba(157, 23, 77, 0.12); border-radius: 20px; padding: 20px 15px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.05); cursor: pointer; display: flex; flex-direction: column; }
-    .plano-card.destaque { border-color: var(--cor-dourada); background: linear-gradient(160deg, #FFFCF2, #FFF2F6); }
-    .plano-card.master-gold { border: 2px solid var(--cor-dourada); background: linear-gradient(160deg, #FFFCF2, #FFF2F6); position: relative; overflow: hidden; }
-    .plano-badge { position: absolute; top: -10px; left: 12px; background: var(--cor-dourada); color: #fff; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; }
-    .master-ai-badge { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #7C3AED, #D4AF37); color: #fff; font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 999px; margin-bottom: 8px; }
-    .plano-nome { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--cor-principal); font-weight: 700; display: block; margin-bottom: 4px; }
-    .plano-preco { font-size: 22px; font-weight: 700; color: var(--cor-texto-escuro); display: block; margin-bottom: 12px; }
-    .plano-preco small { font-size: 11px; color: var(--cor-texto-mutado); font-weight: 600; }
-    .plano-features { list-style: none; font-size: 11px; color: var(--cor-texto-mutado); line-height: 1.6; margin-bottom: 16px; flex: 1; }
-    .plano-features li::before { content: "✓ "; color: var(--cor-dourada); font-weight: 700; }
-    .plano-btn { width: 100%; padding: 10px; border-radius: 9px; border: none; background: var(--cor-principal); color: #fff; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
-
-    .espacos-wrap { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
+    function renderizarHome() {
+      const box = document.getElementById('home-sections');
+      if (!box) return;
+      box.innerHTML = `
