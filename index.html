@@ -2308,6 +2308,113 @@
         });
       }
     });
+    /* =========================================================
+   SUPER PATCH DE ATUALIZAÇÃO (Salvamento, Categorias e Busca)
+   ========================================================= */
+
+// 1. Consertando o Salvamento
+async function salvarEstado() {
+  try {
+    const dadosLimpos = JSON.parse(JSON.stringify(appState));
+    await db.collection('clinicas').doc(CLINICA_ID).set({
+      config: dadosLimpos,
+      statusAssinatura: 'ativo'
+    }, { merge: true });
+    console.log('✅ Salvo no Firebase com sucesso!');
+    return true;
+  } catch (error) {
+    console.error('❌ Erro no Firebase:', error);
+    alert('❌ Erro ao salvar: ' + error.message);
+    return false;
+  }
+}
+
+// 2. Renderização da Vitrine com Categorias e Preços Ocultos
+function renderizarClubeEVitrine() {
+  document.getElementById('titulo-clube-tela').textContent = appState.clubeName;
+  document.getElementById('titulo-vitrine-clube').textContent = appState.vitrineTitle;
+  document.getElementById('texto-clube-beneficios').textContent = appState.clubeBeneficios || '';
+  document.getElementById('vitrine-admin-bar').style.display = modoAdminAtivo ? 'block' : 'none';
+
+  const grid = document.getElementById('vitrine-produtos-grid-clube');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const isMembro = localStorage.getItem('clube_membro') === 'true';
+  const produtos = appState.produtosClube || [];
+  
+  if (produtos.length === 0) {
+    grid.innerHTML = '<p style="text-align:center; color:#666; width:100%; grid-column:1/-1;">Nenhum produto cadastrado na loja ainda.</p>';
+    return;
+  }
+
+  const grupos = {};
+  produtos.forEach(p => {
+    const cat = p.categoria || 'Geral';
+    if (!grupos[cat]) grupos[cat] = [];
+    grupos[cat].push(p);
+  });
+
+  for (const [nomeCategoria, itens] of Object.entries(grupos)) {
+    grid.innerHTML += `<div style="grid-column: 1 / -1; margin-top: 10px;"><h3 class="section-title-nova" style="margin:0;">${nomeCategoria}</h3></div>`;
+    
+    itens.forEach(produto => {
+      const precoHTML = isMembro 
+        ? `<span class="price-clube">R$ ${produto.precoClube}</span>` 
+        : `<span class="price-clube locked-price">R$ ${produto.precoClube}</span>`;
+
+      let estoqueHTML = '';
+      if (produto.estoque <= 0) estoqueHTML = '<span class="stock-badge out">Esgotado</span>';
+      else if (produto.estoque <= 5) estoqueHTML = `<span class="stock-badge low">Últimas ${produto.estoque}</span>`;
+
+      grid.innerHTML += `
+        <div class="product-card-nova">
+          ${estoqueHTML}
+          <div class="product-img-box-nova">${produto.imagem ? `<img src="${safeImgSrc(produto.imagem)}">` : '🛍️'}</div>
+          <h4>${esc(produto.nome)}</h4>
+          <span class="price">R$ ${produto.preco}</span>
+          ${precoHTML}
+          <button class="btn-comprar-direto" onclick="abrirCheckout(${produto.id})" ${produto.estoque <= 0 ? 'disabled' : ''}>Comprar</button>
+        </div>
+      `;
+    });
+  }
+}
+
+// 3. Barra de Pesquisa de Clientes (Para achar a cliente rápido e liberar VIP)
+function filtrarClientesVip(termo) {
+  const termoBusca = termo.toLowerCase().trim();
+  const container = document.getElementById('lista-clientes-html');
+  if (!container) return;
+
+  const filtrados = (window._listaClientesCache || []).filter(c => 
+    (c.nome && c.nome.toLowerCase().includes(termoBusca)) || 
+    (c.telefone && c.telefone.includes(termoBusca))
+  );
+
+  container.innerHTML = filtrados.map(c => `
+    <div style="background:#fff; padding:12px; border-radius:8px; margin-bottom:10px; border-left:4px solid var(--cor-principal); display:flex; justify-content:space-between; align-items:center;">
+      <div><strong>${esc(c.nome)}</strong><br><span style="font-size:12px; color:#666;">${c.telefone || 'Sem telefone'}</span></div>
+      <button onclick="liberarAcessoVip('${c.id}')" style="padding:8px 12px; background:var(--cor-principal); color:#fff; border:none; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">Liberar VIP</button>
+    </div>
+  `).join('');
+}
+
+// 4. Dando baixa no estoque na hora da compra
+const _oldFinalizarCompra = window.finalizarCompraDireta;
+window.finalizarCompraDireta = async function() {
+  if (_produtoCheckout) {
+    const produto = (appState.produtosClube || []).find(p => p.id === _produtoCheckout.id) || 
+                    (appState.boutiqueProdutos || []).find(p => p.id === _produtoCheckout.id);
+    if (produto && produto.estoque > 0) {
+        produto.estoque -= 1; 
+        await salvarEstado(); 
+    }
+  }
+  if (typeof _oldFinalizarCompra === 'function') {
+    _oldFinalizarCompra();
+  }
+};
   </script>
 </body>
 </html>
