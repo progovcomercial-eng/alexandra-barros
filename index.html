@@ -1255,12 +1255,11 @@
           <p style="font-size:11px; color:#999; margin-bottom:6px;">Cód: ${esc(p.codigo || '---')}</p>
           
           <!-- Correção dos Preços -->
-                    <div style="margin-top: auto;">
-            ${(!membro && !temClube) ? `<p class="price" style="font-size:12px; text-decoration:line-through; color:#999; margin-bottom:2px;">De: R$ ${esc(p.preco)}</p>` : ''}
-            <p class="price-clube" style="font-size:18px; color:var(--cor-dourada); font-weight:800; margin-bottom:4px;">
-              R$ ${esc(precoMostrar)}
-            </p>
-            ${membro ? '<span style="font-size:10px; color:#10A37F; font-weight:700;">Preço VIP Ativo</span>' : (temClube ? '<span style="font-size:10px; color:#777;">Seja VIP e economize</span>' : '')}
+                             <!-- Bloco de Preço Corrigido -->
+          <div style="background: #FFFCF2; border: 1px dashed var(--cor-dourada); border-radius: 8px; padding: 10px; margin: 10px 0; text-align: center;">
+            <p style="font-size: 11px; text-decoration: line-through; color: #999; margin-bottom: 2px;">De: R$ ${esc(p.preco)}</p>
+            <p style="font-size: 22px; color: var(--cor-principal); font-weight: 800; margin-bottom: 4px;">R$ ${esc(precoMostrar)}</p>
+            <span style="font-size: 9px; color: var(--cor-dourada); font-weight: 700; text-transform: uppercase;">💎 Assine o Clube e economize</span>
           </div>
 
           <button class="btn-comprar-direto" onclick="abrirCheckout(${idx})" ${btnDisabled ? 'disabled' : ''} style="margin-top:10px;">
@@ -3050,7 +3049,41 @@ window.finalizarCompraDireta = async function() {
 
     console.log('[Melhorias] Patch 5 aplicado: Design e Grid de Estoque!');
 
-    
+    // ===== FUNÇÃO DE ESTOQUE CORRIGIDA =====
+window.renderizarEstoqueAdmin = function() {
+    console.log("Renderizando estoque...");
+    const container = document.getElementById('lista-estoque-admin');
+    if (!container) {
+        console.error("Container 'lista-estoque-admin' não encontrado no HTML.");
+        return;
+    }
+
+    let html = '';
+    const produtos = appState.boutiqueProdutos || [];
+
+    if (produtos.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:20px; color:#777;">Nenhum produto cadastrado.</p>';
+        return;
+    }
+
+    produtos.forEach(p => {
+        const corEstoque = p.estoque > 5 ? '#2e7d32' : (p.estoque > 0 ? '#f59e0b' : '#ef4444');
+        html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee;">
+                <div style="flex: 1; text-align: left;">
+                    <div style="font-weight: 700; font-size: 14px; color: #333;">${esc(p.nome)}</div>
+                    <div style="font-size: 11px; color: #777;">Cód: ${esc(p.codigo || '---')}</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 14px; font-weight: 800; color: ${corEstoque};">
+                        ${p.estoque || 0} un.
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+};
 </script>
 </body>
 </html>
