@@ -2872,6 +2872,120 @@ window.finalizarCompraDireta = async function() {
         _oldRenderizarEstoqueAdmin();
       }
     };
+    // =========================================================
+    // PATCH 5: DESIGN DA VITRINE, LIMPEZA DE MENU E ESTOQUE
+    // =========================================================
+
+    // 1. MELHORAR OS CARDS DA VITRINE (Home) PARA VENDER O CLUBE
+    const _oldRenderizarHome5 = window.renderizarHome;
+    window.renderizarHome = function() {
+      if (typeof _oldRenderizarHome5 === 'function') _oldRenderizarHome5();
+      
+      setTimeout(() => {
+        const cards = document.querySelectorAll('#home-sections .product-card-nova');
+        cards.forEach(card => {
+          const priceTag = card.querySelector('.price-clube');
+          if (priceTag) {
+            // Remove os preços antigos duplicados para não ficar repetido
+            const antigos = card.querySelectorAll('.preco-riscado-patch, .price');
+            antigos.forEach(el => el.remove());
+
+            // Pega o preço original pelo nome do produto
+            const nomeProduto = card.querySelector('h4')?.innerText;
+            const produto = appState.boutiqueProdutos.find(p => p.nome === nomeProduto);
+            
+            if (produto && produto.preco) {
+              // Cria a estrutura bonita: De R$ X por R$ Y
+              const divPreco = document.createElement('div');
+              divPreco.style.cssText = 'margin-top: 8px; margin-bottom: 12px; text-align: center; background: #FFF8FA; padding: 10px; border-radius: 8px; border: 1px dashed var(--cor-dourada);';
+              divPreco.innerHTML = `
+                <p style="font-size: 11px; color: #777; text-decoration: line-through; margin-bottom: 4px;">De: R$ ${produto.preco}</p>
+                <p style="font-size: 18px; color: var(--cor-principal); font-weight: 800; margin: 0; line-height: 1;">R$ ${produto.precoClube || produto.preco}</p>
+                <p style="font-size: 10px; color: var(--cor-dourada); font-weight: 700; margin-top: 5px; text-transform: uppercase;"><i class="fa-solid fa-gem"></i> Assine o Clube e economize</p>
+              `;
+              
+              // Esconde a tag de preço feia original e insere a nova
+              priceTag.style.display = 'none';
+              priceTag.parentNode.insertBefore(divPreco, priceTag.nextSibling);
+            }
+          }
+        });
+      }, 600);
+    };
+
+    // 2. LIMPAR OS MENUS DUPLICADOS E GARANTIR O VISUAL LADO A LADO
+    const _oldAplicarRestricoes5 = window.aplicarRestricoes;
+    window.aplicarRestricoes = function() {
+      if (typeof _oldAplicarRestricoes5 === 'function') _oldAplicarRestricoes5();
+      
+      // Remove o botão velho de estoque (do Patch 1) e deixa só o V2
+      const btnVelho = document.getElementById('btn-estoque-master');
+      if (btnVelho) btnVelho.closest('details').remove();
+    };
+
+    // 3. FORÇAR O ESTOQUE A MOSTRAR AS 3 COLUNAS LADO A LADO
+    window.renderizarEstoqueAdmin = function() {
+      const div = document.getElementById('lista-estoque-admin');
+      if (!div) return;
+
+      const loja = (appState.boutiqueProdutos || []).filter(p => !p.dropship);
+      const clube = appState.produtosClube || [];
+      const drop = (appState.boutiqueProdutos || []).filter(p => p.dropship === true);
+
+      const renderCard = (p, tipo) => {
+        if (!p) return '';
+        return `
+          <div style="background:#fff; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #eee; box-shadow:0 2px 4px rgba(0,0,0,0.04);">
+            <div style="font-weight:700; font-size:12px; margin-bottom:8px; color:#333; line-height: 1.2;">${esc(p.nome)}</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div>
+                <label style="font-size:10px; color:#666; display:block; margin-bottom:2px;">Qtd em Estoque</label>
+                <input type="number" value="${p.estoque || 0}" onchange="atualizarEstoqueSeparado('${p.id}', 'estoque', this.value, '${tipo}')" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:13px;">
+              </div>
+              ${tipo !== 'drop' ? `
+              <div>
+                <label style="font-size:10px; color:#666; display:block; margin-bottom:2px;">Preço Venda</label>
+                <input type="text" value="${p.preco || ''}" onchange="atualizarEstoqueSeparado('${p.id}', 'preco', this.value, '${tipo}')" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:13px;">
+              </div>` : ''}
+              ${tipo === 'clube' ? `
+              <div>
+                <label style="font-size:10px; color:#B8852E; display:block; margin-bottom:2px; font-weight:700;">Preço VIP</label>
+                <input type="text" value="${p.precoClube || ''}" onchange="atualizarEstoqueSeparado('${p.id}', 'precoClube', this.value, '${tipo}')" style="width:100%; padding:8px; border:2px solid #D4AF37; border-radius:6px; font-size:13px; background:#FFFDF5;">
+              </div>` : ''}
+            </div>
+          </div>
+        `;
+      };
+
+      div.innerHTML = `
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:20px;">
+          
+          <!-- COLUNA LOJA -->
+          <div style="background:#f9f9f9; padding:10px; border-radius:10px; border-top:4px solid var(--cor-principal);">
+            <h4 style="font-size:13px; color:var(--cor-principal); margin-bottom:10px; text-align:center;"><i class="fa-solid fa-store"></i> Loja</h4>
+            ${loja.map(p => renderCard(p, 'loja')).join('') || '<p style="font-size:11px; color:#999; text-align:center;">Vazio</p>'}
+          </div>
+
+          <!-- COLUNA CLUBE -->
+          <div style="background:#FFF8FA; padding:10px; border-radius:10px; border-top:4px solid var(--cor-dourada);">
+            <h4 style="font-size:13px; color:#B8852E; margin-bottom:10px; text-align:center;"><i class="fa-solid fa-gem"></i> Clube</h4>
+            ${clube.map(p => renderCard(p, 'clube')).join('') || '<p style="font-size:11px; color:#999; text-align:center;">Nenhum produto adicionado na Loja do Clube.</p>'}
+          </div>
+
+          <!-- COLUNA DROP -->
+          <div style="background:#E3F2FD; padding:10px; border-radius:10px; border-top:4px solid #1565C0;">
+            <h4 style="font-size:13px; color:#1565C0; margin-bottom:10px; text-align:center;"><i class="fa-solid fa-truck-fast"></i> Dropship</h4>
+            ${drop.map(p => renderCard(p, 'drop')).join('') || '<p style="font-size:11px; color:#999; text-align:center;">Vazio</p>'}
+          </div>
+
+        </div>
+        
+        <button class="btn-enviar-cadastro" onclick="salvarEstoqueMelhoria()" style="margin-top:20px; background:var(--cor-principal);">Salvar Todas as Alterações</button>
+      `;
+    };
+
+    console.log('[Melhorias] Patch 5 aplicado: Design e Grid de Estoque!');
+
     
 </script>
 </body>
