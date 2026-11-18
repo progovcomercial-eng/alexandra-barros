@@ -2604,6 +2604,104 @@ window.finalizarCompraDireta = async function() {
     };
 
     console.log('[Melhorias] Estoque, VIP e Lightbox carregados com sucesso!');
+     // =========================================================
+    // PATCH 2: CORREÇÃO DE VALORES, BUSCA VIP E CONTATOS DO CLUBE
+    // =========================================================
+
+    // 1. FORÇAR A EXIBIÇÃO DOS DOIS VALORES NA VITRINE (Home)
+    const _oldRenderizarHome2 = window.renderizarHome;
+    window.renderizarHome = function() {
+      if (typeof _oldRenderizarHome2 === 'function') _oldRenderizarHome2();
+      
+      setTimeout(() => {
+        // Procura todos os cards de produto na vitrine
+        const cards = document.querySelectorAll('#home-sections .product-card-nova');
+        cards.forEach(card => {
+          // Se achar a tag de preço clube, injeta o preço normal riscado antes dele
+          const priceTag = card.querySelector('.price-clube');
+          if (priceTag && !card.querySelector('.preco-riscado-patch')) {
+            // Tenta achar o produto correspondente no appState pelo nome
+            const nomeProduto = card.querySelector('h4')?.innerText;
+            const produto = appState.boutiqueProdutos.find(p => p.nome === nomeProduto);
+            
+            if (produto && produto.preco) {
+              const precoRiscado = document.createElement('p');
+              precoRiscado.className = 'preco-riscado-patch';
+              precoRiscado.style.cssText = 'font-size:12px; color:#999; text-decoration:line-through; margin-bottom: 2px;';
+              precoRiscado.innerText = `De: R$ ${produto.preco}`;
+              priceTag.parentNode.insertBefore(precoRiscado, priceTag);
+            }
+          }
+        });
+      }, 500);
+    };
+
+    // 2. CORRIGIR A TELA DO CLUBE VIP (Adicionar botão de WhatsApp e Inserir Código)
+    const _oldAbrirTela2 = window.abrirTela;
+    window.abrirTela = function(id, empilhar) {
+      _oldAbrirTela2(id, empilhar);
+      
+      if (id === 'clube') {
+        setTimeout(() => {
+          const telaClube = document.getElementById('tela-clube');
+          if (telaClube && !document.getElementById('btn-whats-clube-patch')) {
+            const botaoAntigo = document.getElementById('btn-inserir-codigo-clube');
+            
+            // Cria uma caixa de contatos abaixo do botão de inserir código
+            const boxContatos = document.createElement('div');
+            boxContatos.id = 'btn-whats-clube-patch';
+            boxContatos.style.cssText = 'margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 12px; border: 1px dashed var(--cor-dourada); text-align: center;';
+            boxContatos.innerHTML = `
+              <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Dúvidas ou problemas para acessar o Clube?</p>
+              <button onclick="window.open('https://wa.me/${appState.whatsapp || '5511997450293'}?text=Olá! Preciso de ajuda com o meu acesso ao Clube.', '_blank')" style="width: 100%; padding: 12px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">
+                <i class="fa-brands fa-whatsapp"></i> Falar com o Suporte
+              </button>
+            `;
+            
+            // Insere a caixa depois do botão de inserir código (ou no topo se o botão não existir)
+            if (botaoAntigo) {
+              botaoAntigo.parentNode.insertBefore(boxContatos, botaoAntigo.nextSibling);
+            } else {
+              telaClube.appendChild(boxContatos);
+            }
+          }
+        }, 200);
+      }
+    };
+
+    // 3. FORÇAR A BUSCA VIP A APARECER NO TOPO DO GERENCIAR CLUBE
+    const _oldAbrirConfiguracao2 = window.abrirConfiguracao;
+    window.abrirConfiguracao = function(id) {
+      _oldAbrirConfiguracao2(id);
+      
+      if (id === 'vip') {
+        setTimeout(() => {
+          const editor = document.getElementById('editor-content');
+          if (editor) {
+            // Remove a busca antiga se existir para não duplicar
+            const oldBusca = document.getElementById('busca-vip-admin');
+            if (oldBusca) oldBusca.remove();
+            
+            // Cria a nova busca no TOPO da tela
+            const divBusca = document.createElement('div');
+            divBusca.id = 'busca-vip-admin';
+            divBusca.style.cssText = 'margin-bottom: 20px; background: #FFF8FA; padding: 15px; border-radius: 10px; border: 1.5px solid var(--cor-dourada);';
+            divBusca.innerHTML = `
+              <label style="font-size:14px; font-weight:700; color:var(--cor-principal);"><i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente VIP</label>
+              <input type="text" id="input-busca-vip" placeholder="Nome, e-mail ou telefone..." oninput="buscarClienteVIP(this.value)" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; margin-top:10px; margin-bottom:10px; font-size:15px;">
+              <div id="resultado-busca-vip" style="max-height: 250px; overflow-y: auto;"></div>
+            `;
+            
+            // Coloca a busca como o PRIMEIRO item dentro do editor
+            editor.insertBefore(divBusca, editor.firstChild);
+          }
+        }, 150);
+      }
+    };
+
+    console.log('[Melhorias] Patch 2 aplicado com sucesso!');
+  
+  
   </script>
 </body>
 </html>
