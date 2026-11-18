@@ -2568,34 +2568,92 @@ window.finalizarCompraDireta = async function() {
     };
 
     // 4. FUNÇÕES DE ESTOQUE
-    window.renderizarEstoqueAdmin = function() {
-      const loja = appState.boutiqueProdutos || [];
-      const clube = appState.produtosClube || [];
-      const todos = [...loja, ...clube];
-      const div = document.getElementById('lista-estoque-admin');
-      if (!div) return;
-
-      // Remove duplicatas (pelo ID)
-      const unicos = [];
-      const map = new Set();
-      todos.forEach(p => {
-        if (!map.has(p.id)) { map.add(p.id); unicos.push(p); }
-      });
-
-      div.innerHTML = unicos.map(p => `
-        <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border-left:4px solid var(--cor-principal);">
-          <div style="font-weight:700; font-size:14px; margin-bottom:8px;">${esc(p.nome)}</div>
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-            <label style="font-size:12px;">Qtd:</label>
-            <input type="number" value="${p.estoque || 0}" onchange="atualizarEstoque('${p.id}', 'estoque', this.value)" style="width:60px; padding:5px; border:1px solid #ccc; border-radius:4px;">
-            <label style="font-size:12px; margin-left:10px;">Preço Loja:</label>
-            <input type="text" value="${p.preco || ''}" onchange="atualizarEstoque('${p.id}', 'preco', this.value)" style="width:80px; padding:5px; border:1px solid #ccc; border-radius:4px;">
-            <label style="font-size:12px; margin-left:10px;">Preço Clube:</label>
-            <input type="text" value="${p.precoClube || ''}" onchange="atualizarEstoque('${p.id}', 'precoClube', this.value)" style="width:80px; padding:5px; border:1px solid #ccc; border-radius:4px;">
-          </div>
+      // ===== ESTRUTURA DAS ABAS =====
+    let htmlAbas = `
+        <div style="display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;">
+            <button onclick="mudarAbaEstoque('loja')" id="btn-aba-loja" style="flex:1; padding:10px; border:none; background:var(--cor-principal); color:#fff; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">🛍️ Loja</button>
+            <button onclick="mudarAbaEstoque('clube')" id="btn-aba-clube" style="flex:1; padding:10px; border:none; background:#f0f0f0; color:#333; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">💎 Clube</button>
+            <button onclick="mudarAbaEstoque('drop')" id="btn-aba-drop" style="flex:1; padding:10px; border:none; background:#f0f0f0; color:#333; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">📦 Drop</button>
         </div>
-      `).join('') || '<p style="text-align:center; font-size:13px; color:#999;">Nenhum produto cadastrado.</p>';
-    };
+        <div id="conteudo-estoque" style="max-height: 50vh; overflow-y: auto; padding: 5px;"></div>
+    `;
+    div.innerHTML = htmlAbas;
+
+    // Renderiza a aba inicial
+    renderizarAbaEstoque('loja');
+};
+
+// Função para trocar de aba
+window.mudarAbaEstoque = function(aba) {
+    document.getElementById('btn-aba-loja').style.background = aba === 'loja' ? 'var(--cor-principal)' : '#f0f0f0';
+    document.getElementById('btn-aba-loja').style.color = aba === 'loja' ? '#fff' : '#333';
+    document.getElementById('btn-aba-clube').style.background = aba === 'clube' ? 'var(--cor-principal)' : '#f0f0f0';
+    document.getElementById('btn-aba-clube').style.color = aba === 'clube' ? '#fff' : '#333';
+    document.getElementById('btn-aba-drop').style.background = aba === 'drop' ? 'var(--cor-principal)' : '#f0f0f0';
+    document.getElementById('btn-aba-drop').style.color = aba === 'drop' ? '#fff' : '#333';
+    
+    renderizarAbaEstoque(aba);
+};
+
+// Função que desenha os produtos na aba escolhida
+window.renderizarAbaEstoque = function(aba) {
+    const container = document.getElementById('conteudo-estoque');
+    if (!container) return;
+
+    let produtos = appState.boutiqueProdutos || [];
+    
+    if (aba === 'drop') {
+        produtos = produtos.filter(p => p.dropship === true);
+    } else if (aba === 'clube') {
+        produtos = produtos.filter(p => p.dropship !== true && p.precoClube);
+    } else {
+        produtos = produtos.filter(p => p.dropship !== true);
+    }
+
+    if (produtos.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:20px; color:#777;">Nenhum produto nesta seção.</p>';
+        return;
+    }
+
+    let html = '';
+    produtos.forEach(p => {
+        const corEstoque = p.estoque > 5 ? '#2e7d32' : (p.estoque > 0 ? '#f59e0b' : '#ef4444');
+        const precoExibir = aba === 'clube' && p.precoClube ? p.precoClube : p.preco;
+        
+        html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #fff; margin-bottom: 5px; border-radius: 8px;">
+                <div style="flex: 1; text-align: left;">
+                    <div style="font-weight: 700; font-size: 14px; color: #333;">${esc(p.nome)}</div>
+                    <div style="font-size: 11px; color: #777;">Cód: ${esc(p.codigo || '---')} | R$ ${esc(precoExibir)}</div>
+                </div>
+                <div style="display: flex; gap: 5px; align-items: center;">
+                    <input type="number" id="estoque-input-${p.id}" value="${p.estoque || 0}" style="width: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 6px; text-align: center; font-weight: bold; color: ${corEstoque};">
+                    <button onclick="salvarEstoqueRapido(${p.id})" style="background: var(--cor-principal); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">OK</button>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+};
+
+// Função para salvar o estoque rapidamente
+window.salvarEstoqueRapido = function(id) {
+    const input = document.getElementById(`estoque-input-${id}`);
+    if (!input) return;
+    
+    const novoEstoque = parseInt(input.value);
+    if (isNaN(novoEstoque)) {
+        alert("Por favor, digite um número válido.");
+        return;
+    }
+
+    const produto = appState.boutiqueProdutos.find(p => p.id === id);
+    if (produto) {
+        produto.estoque = novoEstoque;
+        alert(`Estoque de "${produto.nome}" atualizado para ${novoEstoque}.`);
+        renderizarAbaEstoque(document.querySelector('#btn-aba-loja').style.background === 'var(--cor-principal)' ? 'loja' : (document.querySelector('#btn-aba-clube').style.background === 'var(--cor-principal)' ? 'clube' : 'drop'));
+    }
+};
 
     window.atualizarEstoque = function(id, campo, valor) {
       const num = campo === 'estoque' ? Number(valor) : valor;
