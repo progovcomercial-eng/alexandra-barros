@@ -2811,6 +2811,68 @@ window.finalizarCompraDireta = async function() {
     };
 
     console.log('[Melhorias] Patch 3 (Estoque Separado) aplicado!');
+
+        // =========================================================
+    // PATCH 4: FORÇAR NOVA TELA DE ESTOQUE E LIMPAR CACHE
+    // =========================================================
+
+    // 1. Adiciona um novo botão no menu para não dar conflito com o antigo
+    const _oldAplicarRestricoes3 = window.aplicarRestricoes;
+    window.aplicarRestricoes = function() {
+      if (typeof _oldAplicarRestricoes3 === 'function') _oldAplicarRestricoes3();
+      
+      const container = document.getElementById('master-categorias');
+      if (container && modoAdminAtivo) {
+        if (!document.getElementById('btn-estoque-novo')) {
+          const div = document.createElement('details');
+          div.className = 'config-category';
+          div.innerHTML = `
+            <summary><i class="fa-solid fa-boxes-stacked" style="color:var(--cor-principal);"></i> Gestão Avançada (NOVO)</summary>
+            <div class="config-grid">
+              <button id="btn-estoque-novo" class="master-card" onclick="abrirConfiguracao('estoque-novo')"><h4>📦 Controle de Estoque V2</h4><span class="plus">+</span></button>
+            </div>
+          `;
+          container.appendChild(div);
+        }
+      }
+    };
+
+    // 2. Intercepta a abertura para carregar a tela nova
+    const _oldAbrirConfiguracao3 = window.abrirConfiguracao;
+    window.abrirConfiguracao = function(id) {
+      if (id === 'estoque-novo') {
+        document.getElementById('editor-titulo').textContent = '📦 Gestão de Estoque V2';
+        const editor = document.getElementById('editor-content');
+        editor.innerHTML = `<div id="estoque-v2-container"></div>`;
+        document.getElementById('modal-editor').style.display = 'flex';
+        
+        // Chama a renderização nova (que está no Patch 3)
+        if (typeof window.renderizarEstoqueAdmin === 'function') {
+          window.renderizarEstoqueAdmin();
+        } else {
+          alert('Erro: Função do Patch 3 não encontrada. Verifique se colou corretamente.');
+        }
+        return;
+      }
+      _oldAbrirConfiguracao3(id);
+    };
+
+    // 3. Ajuste fino para garantir que o HTML gerado vá para o lugar certo
+    const _oldRenderizarEstoqueAdmin = window.renderizarEstoqueAdmin;
+    window.renderizarEstoqueAdmin = function() {
+      // Redireciona o ID do container para o novo
+      let divAntigo = document.getElementById('lista-estoque-admin');
+      if (!divAntigo) {
+          divAntigo = document.createElement('div');
+          divAntigo.id = 'lista-estoque-admin';
+          const containerV2 = document.getElementById('estoque-v2-container');
+          if (containerV2) containerV2.appendChild(divAntigo);
+      }
+      if (typeof _oldRenderizarEstoqueAdmin === 'function') {
+        _oldRenderizarEstoqueAdmin();
+      }
+    };
+    
 </script>
 </body>
 </html>
