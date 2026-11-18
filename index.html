@@ -2568,7 +2568,8 @@ window.finalizarCompraDireta = async function() {
     };
 
     // 4. FUNÇÕES DE ESTOQUE
-   window.renderizarEstoqueAdmin = function() {
+// ===== FUNÇÃO DE ESTOQUE BLINDADA =====
+window.renderizarEstoqueAdmin = function() {
     const div = document.getElementById('lista-estoque-admin');
     if (!div) return;
 
@@ -2581,24 +2582,26 @@ window.finalizarCompraDireta = async function() {
         <div id="conteudo-estoque" style="max-height: 50vh; overflow-y: auto; padding: 5px;"></div>
     `;
     div.innerHTML = htmlAbas;
-
-    // Renderiza a aba inicial
     renderizarAbaEstoque('loja');
 };
 
-// Função para trocar de aba
 window.mudarAbaEstoque = function(aba) {
-    document.getElementById('btn-aba-loja').style.background = aba === 'loja' ? 'var(--cor-principal)' : '#f0f0f0';
-    document.getElementById('btn-aba-loja').style.color = aba === 'loja' ? '#fff' : '#333';
-    document.getElementById('btn-aba-clube').style.background = aba === 'clube' ? 'var(--cor-principal)' : '#f0f0f0';
-    document.getElementById('btn-aba-clube').style.color = aba === 'clube' ? '#fff' : '#333';
-    document.getElementById('btn-aba-drop').style.background = aba === 'drop' ? 'var(--cor-principal)' : '#f0f0f0';
-    document.getElementById('btn-aba-drop').style.color = aba === 'drop' ? '#fff' : '#333';
+    const btnLoja = document.getElementById('btn-aba-loja');
+    const btnClube = document.getElementById('btn-aba-clube');
+    const btnDrop = document.getElementById('btn-aba-drop');
+    
+    if (btnLoja) btnLoja.style.background = (aba === 'loja') ? 'var(--cor-principal)' : '#f0f0f0';
+    if (btnLoja) btnLoja.style.color = (aba === 'loja') ? '#fff' : '#333';
+    
+    if (btnClube) btnClube.style.background = (aba === 'clube') ? 'var(--cor-principal)' : '#f0f0f0';
+    if (btnClube) btnClube.style.color = (aba === 'clube') ? '#fff' : '#333';
+    
+    if (btnDrop) btnDrop.style.background = (aba === 'drop') ? 'var(--cor-principal)' : '#f0f0f0';
+    if (btnDrop) btnDrop.style.color = (aba === 'drop') ? '#fff' : '#333';
     
     renderizarAbaEstoque(aba);
 };
 
-// Função que desenha os produtos na aba escolhida
 window.renderizarAbaEstoque = function(aba) {
     const container = document.getElementById('conteudo-estoque');
     if (!container) return;
@@ -2620,18 +2623,16 @@ window.renderizarAbaEstoque = function(aba) {
 
     let html = '';
     produtos.forEach(p => {
-        const corEstoque = p.estoque > 5 ? '#2e7d32' : (p.estoque > 0 ? '#f59e0b' : '#ef4444');
-        const precoExibir = aba === 'clube' && p.precoClube ? p.precoClube : p.preco;
+        const corEstoque = (p.estoque > 5) ? '#2e7d32' : ((p.estoque > 0) ? '#f59e0b' : '#ef4444');
         
         html += `
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #fff; margin-bottom: 5px; border-radius: 8px;">
                 <div style="flex: 1; text-align: left;">
                     <div style="font-weight: 700; font-size: 14px; color: #333;">${esc(p.nome)}</div>
-                    <div style="font-size: 11px; color: #777;">Cód: ${esc(p.codigo || '---')} | R$ ${esc(precoExibir)}</div>
+                    <div style="font-size: 11px; color: #777;">Cód: ${esc(p.codigo || '---')}</div>
                 </div>
                 <div style="display: flex; gap: 5px; align-items: center;">
                     <input type="number" id="estoque-input-${p.id}" value="${p.estoque || 0}" style="width: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 6px; text-align: center; font-weight: bold; color: ${corEstoque};">
-                    <button onclick="salvarEstoqueRapido(${p.id})" style="background: var(--cor-principal); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">OK</button>
                 </div>
             </div>
         `;
