@@ -2568,7 +2568,10 @@ window.finalizarCompraDireta = async function() {
     };
 
     // 4. FUNÇÕES DE ESTOQUE
-      // ===== ESTRUTURA DAS ABAS =====
+   window.renderizarEstoqueAdmin = function() {
+    const div = document.getElementById('lista-estoque-admin');
+    if (!div) return;
+
     let htmlAbas = `
         <div style="display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;">
             <button onclick="mudarAbaEstoque('loja')" id="btn-aba-loja" style="flex:1; padding:10px; border:none; background:var(--cor-principal); color:#fff; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">🛍️ Loja</button>
