@@ -2906,7 +2906,14 @@ window.finalizarCompraDireta = async function() {
       if (id === 'estoque-novo') {
         document.getElementById('editor-titulo').textContent = '📦 Gestão de Estoque V2';
         const editor = document.getElementById('editor-content');
-        editor.innerHTML = `<div id="estoque-v2-container"></div>`;
+               editor.innerHTML = `
+            <div style="max-height: 60vh; overflow-y: auto; padding: 10px;">
+                <div id="lista-estoque-admin"></div>
+            </div>
+            <button class="btn-enviar-cadastro" onclick="salvarEstoqueMelhoria()" style="margin-top: 20px; background: var(--cor-principal);">
+                💾 Salvar Alterações
+            </button>
+        `;
         document.getElementById('modal-editor').style.display = 'flex';
         
         // Chama a renderização nova (que está no Patch 3)
