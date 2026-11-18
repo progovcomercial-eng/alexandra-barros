@@ -2415,6 +2415,195 @@ window.finalizarCompraDireta = async function() {
     _oldFinalizarCompra();
   }
 };
+        // =========================================================
+    // MELHORIAS: ESTOQUE, BUSCA VIP, LIGHTBOX E CATEGORIAS
+    // =========================================================
+
+    // 1. CRIAR O MODAL DE LIGHTBOX (FOTO CHEIA)
+    const lbDiv = document.createElement('div');
+    lbDiv.id = 'lightbox-img';
+    lbDiv.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:99999; display:none; align-items:center; justify-content:center; padding:16px; cursor:zoom-out;';
+    lbDiv.onclick = function(e) { if(e.target.id === 'lightbox-img') fecharLightbox(); };
+    lbDiv.innerHTML = `
+      <button onclick="fecharLightbox()" style="position:absolute; top:20px; right:20px; background:#fff; color:#333; border:none; width:44px; height:44px; border-radius:50%; font-size:20px; cursor:pointer; font-weight:700;">✕</button>
+      <img id="lightbox-img-el" src="" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:12px;">
+    `;
+    document.body.appendChild(lbDiv);
+
+    window.abrirLightbox = function(src) {
+      if (!src) return;
+      document.getElementById('lightbox-img-el').src = src;
+      document.getElementById('lightbox-img').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+    window.fecharLightbox = function() {
+      document.getElementById('lightbox-img').style.display = 'none';
+      document.body.style.overflow = '';
+    };
+
+    // 2. PATCH: ADICIONAR O BOTÃO "ESTOQUE" E "BUSCA VIP" NO PAINEL MASTER
+    const _oldAplicarRestricoes = window.aplicarRestricoes;
+    window.aplicarRestricoes = function() {
+      if (typeof _oldAplicarRestricoes === 'function') _oldAplicarRestricoes();
+      
+      // Adiciona as novas categorias no menu master
+      const container = document.getElementById('master-categorias');
+      if (container && modoAdminAtivo) {
+        // Evita duplicar se já existir
+        if (!document.getElementById('btn-estoque-master')) {
+          const div = document.createElement('details');
+          div.className = 'config-category';
+          div.innerHTML = `
+            <summary><i class="fa-solid fa-boxes-stacked" style="color:var(--cor-principal);"></i> Gestão Avançada</summary>
+            <div class="config-grid">
+              <button id="btn-estoque-master" class="master-card" onclick="abrirConfiguracao('estoque-avancado')"><h4>Controle de Estoque</h4><span class="plus">+</span></button>
+            </div>
+          `;
+          container.appendChild(div);
+        }
+      }
+    };
+
+    // 3. PATCH: INTERCEPTAR O PAINEL DE CONFIGURAÇÃO
+    const _oldAbrirConfiguracao = window.abrirConfiguracao;
+    window.abrirConfiguracao = function(id) {
+      if (id === 'estoque-avancado') {
+        document.getElementById('editor-titulo').textContent = '📦 Gestão de Estoque';
+        const editor = document.getElementById('editor-content');
+        editor.innerHTML = `
+          <div style="margin-bottom:20px;">
+            <h4 style="color:var(--cor-principal); margin-bottom:10px;">Loja & Clube (Gêmeos)</h4>
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Alterar a quantidade ou o preço aqui atualiza em ambos.</p>
+            <div id="lista-estoque-admin"></div>
+          </div>
+        `;
+        document.getElementById('modal-editor').style.display = 'flex';
+        renderizarEstoqueAdmin();
+        return;
+      }
+
+      if (id === 'vip') {
+        _oldAbrirConfiguracao(id); // Chama o original
+        setTimeout(() => {
+          const editor = document.getElementById('editor-content');
+          if (editor && !document.getElementById('busca-vip-admin')) {
+             const div = document.createElement('div');
+             div.id = 'busca-vip-admin';
+             div.style.cssText = 'margin-top:20px; border-top:1px solid #ddd; padding-top:20px;';
+             div.innerHTML = `
+                <label style="font-size:13px; font-weight:700;">🔍 Busca Rápida de Cliente VIP</label>
+                <input type="text" id="input-busca-vip" placeholder="Nome, e-mail ou telefone..." oninput="buscarClienteVIP(this.value)" style="width:100%; padding:12px; border:1.5px solid var(--cor-dourada); border-radius:8px; margin:10px 0;">
+                <div id="resultado-busca-vip"></div>
+             `;
+             editor.appendChild(div);
+          }
+        }, 200);
+        return;
+      }
+
+      _oldAbrirConfiguracao(id); // Para todas as outras, faz o normal
+    };
+
+    // 4. FUNÇÕES DE ESTOQUE
+    window.renderizarEstoqueAdmin = function() {
+      const loja = appState.boutiqueProdutos || [];
+      const clube = appState.produtosClube || [];
+      const todos = [...loja, ...clube];
+      const div = document.getElementById('lista-estoque-admin');
+      if (!div) return;
+
+      // Remove duplicatas (pelo ID)
+      const unicos = [];
+      const map = new Set();
+      todos.forEach(p => {
+        if (!map.has(p.id)) { map.add(p.id); unicos.push(p); }
+      });
+
+      div.innerHTML = unicos.map(p => `
+        <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; border-left:4px solid var(--cor-principal);">
+          <div style="font-weight:700; font-size:14px; margin-bottom:8px;">${esc(p.nome)}</div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label style="font-size:12px;">Qtd:</label>
+            <input type="number" value="${p.estoque || 0}" onchange="atualizarEstoque('${p.id}', 'estoque', this.value)" style="width:60px; padding:5px; border:1px solid #ccc; border-radius:4px;">
+            <label style="font-size:12px; margin-left:10px;">Preço Loja:</label>
+            <input type="text" value="${p.preco || ''}" onchange="atualizarEstoque('${p.id}', 'preco', this.value)" style="width:80px; padding:5px; border:1px solid #ccc; border-radius:4px;">
+            <label style="font-size:12px; margin-left:10px;">Preço Clube:</label>
+            <input type="text" value="${p.precoClube || ''}" onchange="atualizarEstoque('${p.id}', 'precoClube', this.value)" style="width:80px; padding:5px; border:1px solid #ccc; border-radius:4px;">
+          </div>
+        </div>
+      `).join('') || '<p style="text-align:center; font-size:13px; color:#999;">Nenhum produto cadastrado.</p>';
+    };
+
+    window.atualizarEstoque = function(id, campo, valor) {
+      const num = campo === 'estoque' ? Number(valor) : valor;
+      const pLoja = (appState.boutiqueProdutos || []).find(x => String(x.id) === String(id));
+      const pClube = (appState.produtosClube || []).find(x => String(x.id) === String(id));
+      if (pLoja) pLoja[campo] = num;
+      if (pClube) pClube[campo] = num;
+    };
+
+    // 5. FUNÇÕES DA BUSCA VIP
+    window.buscarClienteVIP = async function(termo) {
+      const div = document.getElementById('resultado-busca-vip');
+      if (!div) return;
+      if (!termo || termo.length < 2) { div.innerHTML = ''; return; }
+
+      try {
+        const snap = await db.collection('clientes').get();
+        const clientes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const filtrados = clientes.filter(c => 
+          (c.nome || '').toLowerCase().includes(termo.toLowerCase()) || 
+          (c.email || '').toLowerCase().includes(termo.toLowerCase()) ||
+          (c.telefone || '').includes(termo)
+        ).slice(0, 10);
+
+        if (filtrados.length === 0) { div.innerHTML = '<p style="font-size:12px; color:#777;">Nenhum cliente encontrado.</p>'; return; }
+
+        div.innerHTML = filtrados.map(c => `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:10px; border:1px solid #eee; border-radius:6px; margin-bottom:5px;">
+            <div><strong style="font-size:13px;">${esc(c.nome)}</strong><br><span style="font-size:11px; color:#666;">${esc(c.telefone)}</span></div>
+            ${c.codigoAcesso 
+              ? `<span style="font-size:11px; background:#e8f5e9; color:#2e7d32; padding:4px 8px; border-radius:4px; font-weight:700;">VIP: ${c.codigoAcesso}</span>` 
+              : `<button onclick="liberarAcessoVIP('${c.id}')" style="background:var(--cor-principal); color:#fff; border:none; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Liberar VIP</button>`
+            }
+          </div>
+        `).join('');
+      } catch(e) { console.error(e); }
+    };
+
+    // 6. PATCH: CORRIGIR OS PREÇOS E ADICIONAR O LIGHTBOX NA LOJA
+    const _oldRenderizarHome = window.renderizarHome;
+    window.renderizarHome = function() {
+      if (typeof _oldRenderizarHome === 'function') _oldRenderizarHome();
+      
+      // Após renderizar a home original, adicionamos o evento de clique nas fotos da vitrine
+      setTimeout(() => {
+        document.querySelectorAll('.product-img-box-nova img').forEach(img => {
+          img.style.cursor = 'zoom-in';
+          img.onclick = function(e) { 
+            e.stopPropagation(); 
+            abrirLightbox(this.src); 
+          };
+        });
+      }, 500);
+    };
+
+    const _oldAbrirProduto = window.abrirProduto;
+    window.abrirProduto = function(idx, origem) {
+      if (typeof _oldAbrirProduto === 'function') _oldAbrirProduto(idx, origem);
+      
+      // Adiciona o clique para abrir a imagem cheia na tela do produto
+      setTimeout(() => {
+        const box = document.getElementById('produto-img-grande');
+        const img = box ? box.querySelector('img') : null;
+        if (img) {
+          img.style.cursor = 'zoom-in';
+          img.onclick = () => abrirLightbox(img.src);
+        }
+      }, 100);
+    };
+
+    console.log('[Melhorias] Estoque, VIP e Lightbox carregados com sucesso!');
   </script>
 </body>
 </html>
