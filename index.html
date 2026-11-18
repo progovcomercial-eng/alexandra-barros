@@ -2702,6 +2702,115 @@ window.finalizarCompraDireta = async function() {
     console.log('[Melhorias] Patch 2 aplicado com sucesso!');
   
   
-  </script>
+    // =========================================================
+    // PATCH 3: CONTROLE DE ESTOQUE SEPARADO (LOJA, CLUBE, DROP)
+    // =========================================================
+
+    // Sobrescreve a função do Estoque que criamos no Patch 1
+    window.renderizarEstoqueAdmin = function() {
+      const div = document.getElementById('lista-estoque-admin');
+      if (!div) return;
+
+      const produtosLoja = appState.boutiqueProdutos || [];
+      const produtosClube = appState.produtosClube || [];
+      const produtosDrop = produtosLoja.filter(p => p.dropship === true);
+
+      // Função auxiliar para não repetir código
+      const renderizarLinha = (p, origem) => {
+        // Verifica se é gêmeo (Loja e Clube têm o mesmo ID)
+        const isGemeo = origem === 'loja' || origem === 'clube';
+        
+        return `
+          <div style="background:#fff; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #eee; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+            <div style="font-weight:700; font-size:13px; margin-bottom:8px; color:var(--cor-principal);">${esc(p.nome)}</div>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <div>
+                <label style="font-size:10px; color:#666; display:block;">Qtd</label>
+                <input type="number" value="${p.estoque || 0}" onchange="atualizarEstoqueSeparado('${p.id}', 'estoque', this.value, '${origem}')" style="width:60px; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:13px;">
+              </div>
+              ${origem !== 'drop' ? `
+              <div>
+                <label style="font-size:10px; color:#666; display:block;">Preço Venda</label>
+                <input type="text" value="${p.preco || ''}" onchange="atualizarEstoqueSeparado('${p.id}', 'preco', this.value, '${origem}')" style="width:80px; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:13px;">
+              </div>
+              ` : ''}
+              ${origem === 'clube' ? `
+              <div>
+                <label style="font-size:10px; color:#666; display:block;">Preço Clube</label>
+                <input type="text" value="${p.precoClube || ''}" onchange="atualizarEstoqueSeparado('${p.id}', 'precoClube', this.value, '${origem}')" style="width:80px; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:13px;">
+              </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      };
+
+      const htmlLoja = produtosLoja.filter(p => !p.dropship).map(p => renderizarLinha(p, 'loja')).join('') || '<p style="font-size:12px; color:#999;">Vazio</p>';
+      const htmlClube = produtosClube.map(p => renderizarLinha(p, 'clube')).join('') || '<p style="font-size:12px; color:#999;">Vazio</p>';
+      const htmlDrop = produtosDrop.map(p => renderizarLinha(p, 'drop')).join('') || '<p style="font-size:12px; color:#999;">Vazio</p>';
+
+      div.innerHTML = `
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+          
+          <!-- COLUNA LOJA -->
+          <div style="background:#f9f9f9; padding:15px; border-radius:10px; border-top:4px solid var(--cor-principal);">
+            <h4 style="font-size:14px; color:var(--cor-principal); margin-bottom:10px;"><i class="fa-solid fa-store"></i> Loja Normal</h4>
+            <p style="font-size:10px; color:#777; margin-bottom:10px;">A Qtd é sincronizada com o Clube.</p>
+            ${htmlLoja}
+          </div>
+
+          <!-- COLUNA CLUBE -->
+          <div style="background:#FFF8FA; padding:15px; border-radius:10px; border-top:4px solid var(--cor-dourada);">
+            <h4 style="font-size:14px; color:#B8852E; margin-bottom:10px;"><i class="fa-solid fa-gem"></i> Clube da Ale</h4>
+            <p style="font-size:10px; color:#777; margin-bottom:10px;">Preço exclusivo para membros.</p>
+            ${htmlClube}
+          </div>
+
+        </div>
+
+        <!-- COLUNA DROPSHIP -->
+        <div style="background:#E3F2FD; padding:15px; border-radius:10px; border-top:4px solid #1565C0;">
+          <h4 style="font-size:14px; color:#1565C0; margin-bottom:10px;"><i class="fa-solid fa-truck-fast"></i> Dropship</h4>
+          <p style="font-size:10px; color:#777; margin-bottom:10px;">Estoque e valores totalmente independentes.</p>
+          ${htmlDrop}
+        </div>
+        
+        <button class="btn-enviar-cadastro" onclick="salvarEstoqueMelhoria()" style="margin-top:20px; background:var(--cor-principal);">Salvar Todas as Alterações</button>
+      `;
+    };
+
+    // Lógica para atualizar os valores corretamente
+    window.atualizarEstoqueSeparado = function(id, campo, valor, origem) {
+      const num = (campo === 'estoque') ? Number(valor) : valor;
+      
+      const pLoja = (appState.boutiqueProdutos || []).find(x => String(x.id) === String(id));
+      const pClube = (appState.produtosClube || []).find(x => String(x.id) === String(id));
+
+      if (origem === 'loja') {
+        if (pLoja) pLoja[campo] = num;
+        // Se for Qtd, muda no clube também. Se for preço, NÃO muda.
+        if (campo === 'estoque' && pClube) pClube.estoque = num;
+      } 
+      else if (origem === 'clube') {
+        if (pClube) pClube[campo] = num;
+        // Se for Qtd, muda na loja também. Se for preço, NÃO muda.
+        if (campo === 'estoque' && pLoja) pLoja.estoque = num;
+      } 
+      else if (origem === 'drop') {
+        // Drop é individual, só altera ele mesmo
+        if (pLoja) pLoja[campo] = num;
+      }
+
+      // Atualiza as caixinhas na tela na hora, sem precisar recarregar
+      const cards = document.querySelectorAll(`input[onchange*="'${id}'"]`);
+      cards.forEach(input => {
+         if (input.getAttribute('onchange').includes(`'${campo}'`)) {
+             input.value = valor;
+         }
+      });
+    };
+
+    console.log('[Melhorias] Patch 3 (Estoque Separado) aplicado!');
+</script>
 </body>
 </html>
