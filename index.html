@@ -1241,25 +1241,32 @@
               else { stockHtml = `<span class="stock-badge ok">${p.estoque} em estoque</span>`; }
             }
 
-            return `
-              <div class="product-card-nova" style="position:relative;">
-                ${p.dropship ? '<span class="dropship-badge" style="right:auto; left:8px;">🚚 DROPSHIP</span>' : ''}
-                ${!membro && temClube ? '<span class="tag-clube">🌟 PREÇO CLUBE</span>' : ''}
-                ${stockHtml}
-                <div class="product-img-box-nova" onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">
-                  ${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '🛍️'}
-                </div>
-                <h4 onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">${esc(p.nome)}</h4>
-                <p style="font-size:11px; color:#999; margin-bottom:6px;">Cód: ${esc(p.codigo || '---')}</p>
-                
-                ${(!membro && temClube) ? `<p class="price" style="font-size:12px;">De: R$ ${esc(p.preco)}</p>` : ''}
-                <p class="price-clube">R$ ${esc(precoMostrar)} ${membro ? '<small>Preço VIP Ativo</small>' : (temClube ? '<small>Seja VIP e economize</small>' : '')}</p>
-                
-                <button class="btn-comprar-direto" onclick="abrirCheckout(${idx})" ${btnDisabled ? 'disabled' : ''}>
-                  <i class="fa-solid fa-cart-shopping"></i> ${btnDisabled ? 'Esgotado' : 'Comprar Agora'}
-                </button>
-              </div>`; 
-          }).join(''); 
+                 return `
+        <div class="product-card-nova" style="position:relative;">
+          ${p.dropship ? '<span class="dropship-badge" style="right:auto; left:8px;">📦 DROPSHIP</span>' : ''}
+          ${!membro && !temClube ? '<span class="tag-clube">✨ PREÇO CLUBE</span>' : ''}
+          
+          <div class="product-img-box-nova" onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">
+            ${p.imagem ? `<img src="${esc(safeImgSrc(p.imagem))}" loading="lazy">` : '📦'}
+          </div>
+          
+          <h4 onclick="abrirProduto(${idx}, 'boutique')" style="cursor:pointer;">${esc(p.nome)}</h4>
+          <p style="font-size:11px; color:#999; margin-bottom:6px;">Cód: ${esc(p.codigo || '---')}</p>
+          
+          <!-- Correção dos Preços -->
+                    <div style="margin-top: auto;">
+            ${(!membro && !temClube) ? `<p class="price" style="font-size:12px; text-decoration:line-through; color:#999; margin-bottom:2px;">De: R$ ${esc(p.preco)}</p>` : ''}
+            <p class="price-clube" style="font-size:18px; color:var(--cor-dourada); font-weight:800; margin-bottom:4px;">
+              R$ ${esc(precoMostrar)}
+            </p>
+            ${membro ? '<span style="font-size:10px; color:#10A37F; font-weight:700;">Preço VIP Ativo</span>' : (temClube ? '<span style="font-size:10px; color:#777;">Seja VIP e economize</span>' : '')}
+          </div>
+
+          <button class="btn-comprar-direto" onclick="abrirCheckout(${idx})" ${btnDisabled ? 'disabled' : ''} style="margin-top:10px;">
+            <i class="fa-solid fa-cart-shopping"></i> ${btnDisabled ? 'Esgotado' : 'Comprar Agora'}
+          </button>
+        </div>`;
+    }).join('');
           if (filtrados.length > 0) html = `<div class="section-title-nova">Destaques</div><div class="boutique-grid-nova">${pH}</div>`; 
         }
         else if (secao === 'contato') { const c = appState.contato || {}; let rH = (c.redesSociais || []).map(r => { const ico = r.icone || 'fa-link'; const marcas = ['fa-whatsapp','fa-instagram','fa-telegram','fa-facebook','fa-tiktok','fa-youtube']; const ehM = marcas.some(m => ico === m); return `<a href="${esc(safeHref(r.link))}" target="_blank" rel="noopener" class="rede-btn ${esc(r.classe || 'custom')}"><i class="${ehM ? 'fa-brands' : 'fa-solid'} ${esc(ico)}"></i> ${esc(r.nome)}</a>`; }).join(''); if (c.canais?.length) rH += `<button onclick="abrirTelaCanais()" class="rede-btn canal"><i class="fa-solid fa-bullhorn"></i> Canais (${c.canais.length})</button>`; html = `<div class="section-title-nova">Contato</div><div class="contato-compacto"><div class="contato-info-mini"><i class="fa-solid fa-location-dot"></i> ${esc(c.endereco)}</div><div class="contato-info-mini"><i class="fa-regular fa-clock"></i> ${esc(c.horario)}</div><div class="contato-info-mini"><i class="fa-solid fa-phone"></i> ${esc(c.telefone)}</div><button class="btn-maps" onclick="abrirGoogleMaps()"><i class="fa-solid fa-map-location-dot"></i> Como Chegar (Google Maps)</button><div class="contato-redes">${rH}</div></div><div style="text-align:center;margin:30px 0 20px;padding:20px;background:linear-gradient(135deg,#FFF8FA,#FFFBF8);border-radius:16px;border:1px dashed rgba(157,23,77,0.2);"><p style="font-size:12px;color:#777;margin-bottom:10px;">💼 Você tem uma clínica, salão ou loja?</p><a href="landing.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,var(--cor-principal),var(--cor-dourada));color:#fff;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none;"><i class="fa-solid fa-rocket"></i> Conheça a Plataforma</a></div>`; }
