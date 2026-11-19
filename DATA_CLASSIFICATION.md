@@ -77,3 +77,8 @@ Sugestão de destino: documentos privados vinculados ao UID da administradora/fu
 ## Critério para encerrar a migração
 
 Nenhum visitante anônimo consegue ler clientes, agendamentos completos, equipe, permissões, códigos VIP ou segredos; cada fluxo público funciona sem acesso direto a dados privados; ações administrativas são autorizadas no backend/regras; os testes passam; e o proprietário aprova a publicação.
+
+
+## Revisão do HTML atual da main
+
+No HTML atual, o array `funcionarios` contém nomes e cores, sem senhas de acesso. Não foi encontrada a propriedade `iaApiKey` nesta versão. Foi confirmado, porém, que `senhaFinanceiro` (com padrão `1234`) integra o estado geral persistido em `appData/estadoGlobal`; portanto, deve ser retirada desse documento e protegida no backend antes de qualquer regra pública de leitura.
