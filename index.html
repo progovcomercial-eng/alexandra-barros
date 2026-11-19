@@ -30,10 +30,10 @@
 
   <style>
     :root {
-      --cor-fundo: #FFF2F6; --cor-card-fundo: #FFFFFF; --cor-principal: #9D174D;
-      --cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
-      --cor-whatsapp: #25D366; --cor-instagram: #E4405F; --cor-canal: #128C7E; --cor-email: #333333;
-      --cor-header: #9D174D; --cor-nav: #9D174D; --cor-chat: #9D174D; --cor-sidebar: #1e293b;
+      \--cor-fundo: #FFF2F6; --cor-card-fundo: #FFFFFF; --cor-principal: #9D174D;
+      \--cor-dourada: #D4AF37; --cor-texto-escuro: #333333; --cor-texto-mutado: #777777;
+      \--cor-whatsapp: #25D366; --cor-instagram: #E4405F; --cor-canal: #128C7E; --cor-email: #333333;
+      \--cor-header: #9D174D; --cor-nav: #9D174D; --cor-chat: #9D174D; --cor-sidebar: #1e293b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Montserrat', sans-serif; background-color: #E8DCE0; color: var(--cor-texto-escuro); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
@@ -1028,7 +1028,7 @@
     ];
 
     const estadoPadrao = {
-      appName: 'Alexandra Barros', logo: 'AB', logoImage: null, colorPrimary: '#9D174D', colorGold: '#D4AF37', colorText: '#333333', bgColor: '#FFF2F6', bgGradient: null, bgImage: null, video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', whatsapp: '5511997450293', mensagem: 'Cuidado especializado para a mulher que chegou aos 40',
+      appName: 'Alexandra Barros', logo: 'AB', logoImage: null, colorPrimary: '#9D174D', colorGold: '#D4AF37', colorText: '#333333', bgColor: '#FFF2F6', bgGradient: null, bgImage: null, video: '', whatsapp: '5511997450293', mensagem: 'Cuidado especializado para a mulher que chegou aos 40',
       vitrineTitle: 'Vitrine da Alê', clubeName: 'Clube da Ale', clubeColor: '#C2185B', clubeImage: null, clubeLink: null,
       clubeBeneficios: 'Como membro do Clube, você garante até 50% de desconto em todos os protocolos e produtos da Vitrine.',
       renovaseName: 'Renova-se', renovaseColor: '#B8852E', renovaseImage: null, renovaseLink: null, boutiqueName: 'Boutique do Alê',
@@ -2222,7 +2222,26 @@
     function editarAgendamentoLista(id, dataStr) { const [y, m, d] = dataStr.split('-'); currentDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d)); gerarCalendarioReal(); setTimeout(() => { const btn = document.querySelector(`.dia-btn[onclick*="${dataStr}"]`); if (btn) { selecionarDiaReal(dataStr, btn); document.getElementById('horarios-container').scrollIntoView({behavior:'smooth'}); setTimeout(() => abrirRemarcarAdmin(id), 500); } }, 100); }
     async function gerarProposta() { const a = new Date().getFullYear(); if (!appState.propostaContador || appState.propostaContador.ano !== a) appState.propostaContador = { ano: a, ultimo: 0 }; appState.propostaContador.ultimo = (appState.propostaContador.ultimo || 0) + 1; await salvarEstado(); return `R${String(appState.propostaContador.ultimo).padStart(2, '0')}-${a}`; }
     async function fecharServicoAgendamento(id) { const ag = window._agsCache[id]; if (!ag) return; if (ag.proposta) return alert('Já fechado.'); if (!confirm('Fechar?')) return; try { const n = await gerarProposta(); await db.collection('agendamentos').doc(id).update({ proposta: n, statusConfirmacao: 'concluido' }); mostrarToast('✅ Fechado: ' + n); if (diaSelecionado) selecionarDiaReal(diaSelecionado, document.querySelector(`.dia-btn[onclick*="${diaSelecionado}"]`)); carregarAgendamentosAdmin(); } catch(e) {} }
-    function buscarPorProposta(t) { const c = document.getElementById('resultado-busca-proposta'); if (!c) return; c.innerHTML = 'Buscando...'; }
+    async function buscarPorProposta(t) {
+      const c = document.getElementById('resultado-busca-proposta');
+      if (!c) return;
+      const termo = String(t || '').trim().toUpperCase();
+      if (!termo) { c.innerHTML = '<p style="color:#777;text-align:center;">Digite o número da proposta.</p>'; return; }
+      c.innerHTML = '<p style="color:#777;text-align:center;">Buscando...</p>';
+      try {
+        const snap = await db.collection('agendamentos').where('proposta', '==', termo).limit(10).get();
+        if (snap.empty) { c.innerHTML = '<p style="color:#777;text-align:center;">Nenhuma proposta encontrada.</p>'; return; }
+        const itens = [];
+        snap.forEach(doc => {
+          const a = doc.data() || {};
+          itens.push(`<div class="admin-agenda-card"><strong>${esc(a.proposta || termo)}</strong><div>${esc(a.nome || 'Cliente')}</div><div>${esc(a.servico || '')}</div><div>${esc(a.data || '')} ${esc(a.horaInicio || '')}</div><div>${esc(a.telefone || '')}</div></div>`);
+        });
+        c.innerHTML = itens.join('');
+      } catch (e) {
+        console.error('Busca de proposta:', e);
+        c.innerHTML = '<p style="color:#b91c1c;">Não foi possível pesquisar. Verifique a conexão e as permissões do Firebase.</p>';
+      }
+    }
     function carregarDadosFinanceiros() { const dash = document.getElementById('dashboard-financeiro'), lista = document.getElementById('lista-financeiro'); if (!dash) return; db.collection('financeiro').orderBy('data', 'desc').get().then(snap => { let t = []; snap.forEach(d => t.push({ id: d.id, ...d.data() })); window._listaFinanceiroCache = t; filtrarFinanceiro(filtroFinanceiroAtual, true); }); }
     
     function filtrarFinanceiro(caixa, init = false) { 
@@ -2324,20 +2343,72 @@
       if (elSaldo) elSaldo.textContent = `R$ ${(entradas - saidas).toFixed(2).replace('.', ',')}`;
     }
 
-    function abrirFechamentoCaixa() {}
+    function abrirFechamentoCaixa() {
+      const itens = window._listaFinanceiroCache || [];
+      const entradas = itens.filter(x => x.tipo === 'entrada').reduce((s, x) => s + (Number(x.valor) || 0), 0);
+      const saidas = itens.filter(x => x.tipo === 'saida').reduce((s, x) => s + (Number(x.valor) || 0), 0);
+      alert(`Resumo financeiro\\nEntradas: R$ ${entradas.toFixed(2).replace('.', ',')}\\nSaídas: R$ ${saidas.toFixed(2).replace('.', ',')}\\nSaldo: R$ ${(entradas - saidas).toFixed(2).replace('.', ',')}`);
+    }
     async function salvarLancamentoFinanceiro() { const c = document.getElementById('fin-caixa').value, t = document.getElementById('fin-tipo').value, d = document.getElementById('fin-data').value, desc = document.getElementById('fin-desc').value, v = parseFloat(document.getElementById('fin-valor').value); if (!d || !desc || isNaN(v)) return alert('Preencha'); await db.collection('financeiro').add({ caixa: c, tipo: t, data: d, descricao: desc, valor: v }); carregarDadosFinanceiros(); }
     async function deletarLancamentoFinanceiro(id) { if (confirm('Apagar?')) { await db.collection('financeiro').doc(id).delete(); carregarDadosFinanceiros(); } }
     function verificarSenhaFinanceiro() { if (document.getElementById('fin-senha-acesso').value === (appState.senhaFinanceiro || '1234')) { window._acessoFinanceiroLiberado = true; abrirConfiguracao('financeiro'); } else { document.getElementById('fin-senha-status').textContent = 'Errado'; } }
     function bloquearFinanceiro() { window._acessoFinanceiroLiberado = false; abrirConfiguracao('financeiro'); }
-    function alterarSenhaFinanceiro() {}
+    function alterarSenhaFinanceiro() {
+      if (!adminAutenticado) return mostrarToast('Apenas administradores podem alterar o PIN.');
+      const atual = prompt('Digite o PIN atual:');
+      if (atual === null) return;
+      if (atual !== String(appState.senhaFinanceiro || '1234')) return alert('PIN atual incorreto.');
+      const nova = prompt('Digite o novo PIN (4 a 8 números):');
+      if (nova === null) return;
+      if (!/^\\d{4,8}$/.test(nova)) return alert('O PIN deve ter de 4 a 8 números.');
+      appState.senhaFinanceiro = nova;
+      salvarEstado().then(ok => { if (ok) mostrarToast('PIN atualizado.'); });
+    }
     function abrirProntuario(id, nome) { window._prontuarioClienteAtual = id; document.getElementById('prontuario-titulo').innerHTML = `Prontuário: <span style="color:var(--cor-dourada);">${esc(nome)}</span>`; document.getElementById('modal-prontuario').style.display = 'flex'; carregarHistoricoProntuario(); }
-    function carregarHistoricoProntuario() { const c = document.getElementById('prontuario-historico'); if (!c) return; db.collection('prontuarios').where('clienteId', '==', window._prontuarioClienteAtual).get().then(snap => { let r = []; snap.forEach(d => r.push(d.data())); c.innerHTML = r.map(x => `<div>${x.data} - ${x.procedimento}</div>`).join(''); }); }
+    function carregarHistoricoProntuario() { const c = document.getElementById('prontuario-historico'); if (!c) return; db.collection('prontuarios').where('clienteId', '==', window._prontuarioClienteAtual).get().then(snap => { let r = []; snap.forEach(d => r.push({id:d.id, ...d.data()})); r.sort((a,b) => String(b.data || '').localeCompare(String(a.data || ''))); c.innerHTML = r.map(x => `<div style="padding:10px;border-bottom:1px solid #eee;"><strong>${esc(x.data || '')} - ${esc(x.procedimento || '')}</strong><p>${esc(x.anotacoes || '')}</p><button class="btn-del" onclick="deletarProntuario('${esc(x.id)}')">Excluir</button></div>`).join('') || '<p style="color:#777;">Nenhum registro.</p>'; }).catch(e => { console.error(e); c.innerHTML = '<p style="color:#b91c1c;">Erro ao carregar o prontuário.</p>'; }); }
     async function salvarProntuario() { const d = document.getElementById('pront-data').value, p = document.getElementById('pront-procedimento').value, a = document.getElementById('pront-anotacoes').value; if (!d || !p) return; await db.collection('prontuarios').add({ clienteId: window._prontuarioClienteAtual, data: d, procedimento: p, anotacoes: a }); carregarHistoricoProntuario(); alert('Salvo'); }
-    function deletarProntuario(id) {}
+    async function deletarProntuario(id) {
+      if (!adminAutenticado || !id || !confirm('Excluir este registro do prontuário?')) return;
+      try { await db.collection('prontuarios').doc(id).delete(); carregarHistoricoProntuario(); mostrarToast('Registro excluído.'); }
+      catch (e) { console.error(e); alert('Não foi possível excluir o registro.'); }
+    }
     function renderizarListaClientes() { const c = document.getElementById('lista-clientes-container'); if (!c) return; db.collection('clientes').get().then(snap => { let cl = []; snap.forEach(d => cl.push({id: d.id, ...d.data()})); c.innerHTML = cl.map(x => `<div style="padding:15px;background:#f9f9f9;margin-bottom:10px;border-radius:8px;"><strong>${esc(x.nome)}</strong><br>${esc(x.telefone)}<br><button onclick="abrirProntuario('${x.id}', '${esc(x.nome)}')" style="margin-top:10px;background:var(--cor-principal);color:#fff;padding:8px;border-radius:6px;border:none;">Prontuário</button></div>`).join(''); }); }
-    function filtrarClientes(v) {}
-    function verificarConfirmacoesAmanha() {}
-    function responderConfirmacao(s) { alert(s); document.getElementById('modal-confirmacao-cliente').style.display = 'none'; }
+    function filtrarClientes(v) {
+      const termo = String(v || '').trim().toLocaleLowerCase('pt-BR');
+      const c = document.getElementById('lista-clientes-container');
+      if (!c) return;
+      const lista = (window._listaClientesCache || []).filter(x =>
+        [x.nome, x.telefone, x.email].some(valor => String(valor || '').toLocaleLowerCase('pt-BR').includes(termo))
+      );
+      c.innerHTML = lista.length ? lista.map(x => `<div style="padding:15px;background:#f9f9f9;margin-bottom:10px;border-radius:8px;"><strong>${esc(x.nome || 'Cliente')}</strong><br>${esc(x.telefone || '')}<br>${esc(x.email || '')}<br><button onclick="abrirProntuario('${esc(x.id)}', '${esc(x.nome || 'Cliente')}')" style="margin-top:10px;background:var(--cor-principal);color:#fff;padding:8px;border-radius:6px;border:none;">Prontuário</button></div>`).join('') : '<p style="text-align:center;color:#777;padding:20px;">Nenhum cliente encontrado.</p>';
+    }
+    async function verificarConfirmacoesAmanha() {
+      if (!adminAutenticado || window._verifConfirmando) return;
+      window._verifConfirmando = true;
+      try {
+        const amanha = new Date(); amanha.setDate(amanha.getDate() + 1);
+        const data = `${amanha.getFullYear()}-${String(amanha.getMonth()+1).padStart(2,'0')}-${String(amanha.getDate()).padStart(2,'0')}`;
+        const snap = await db.collection('agendamentos').where('data', '==', data).get();
+        const pendentes = [];
+        snap.forEach(doc => { const a = doc.data() || {}; if (a.statusConfirmacao !== 'confirmado' && a.statusConfirmacao !== 'cancelado') pendentes.push(a); });
+        if (pendentes.length) mostrarToast(`${pendentes.length} agendamento(s) para amanhã aguardando confirmação.`);
+      } catch (e) { console.warn('Verificação de confirmações:', e); }
+      finally { window._verifConfirmando = false; }
+    }
+    async function responderConfirmacao(s) {
+      const id = window._agendamentoParaConfirmar;
+      const status = document.getElementById('confirm-status');
+      if (!id) { if (status) status.textContent = 'Link de confirmação inválido.'; return; }
+      if (status) status.textContent = 'Registrando resposta...';
+      try {
+        await db.collection('agendamentos').doc(id).update({ statusConfirmacao: s, atualizadoEm: firebase.firestore.FieldValue.serverTimestamp() });
+        if (status) status.textContent = s === 'confirmado' ? 'Presença confirmada. Obrigada!' : 'Sua solicitação foi registrada.';
+        window._agendamentoParaConfirmar = null;
+      } catch (e) {
+        console.error('Confirmação de agendamento:', e);
+        if (status) status.textContent = 'Não foi possível registrar. Entre em contato pelo WhatsApp.';
+      }
+    }
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('btn-instalar-app').style.display = 'block'; });
 
@@ -2567,22 +2638,6 @@ window.finalizarCompraDireta = async function() {
       _oldAbrirConfiguracao(id); // Para todas as outras, faz o normal
     };
 
-    // 4. FUNÇÕES DE ESTOQUE
-      // ===== ESTRUTURA DAS ABAS =====
-    let htmlAbas = `
-        <div style="display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;">
-            <button onclick="mudarAbaEstoque('loja')" id="btn-aba-loja" style="flex:1; padding:10px; border:none; background:var(--cor-principal); color:#fff; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">🛍️ Loja</button>
-            <button onclick="mudarAbaEstoque('clube')" id="btn-aba-clube" style="flex:1; padding:10px; border:none; background:#f0f0f0; color:#333; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">💎 Clube</button>
-            <button onclick="mudarAbaEstoque('drop')" id="btn-aba-drop" style="flex:1; padding:10px; border:none; background:#f0f0f0; color:#333; border-radius:8px 8px 0 0; font-weight:bold; cursor:pointer;">📦 Drop</button>
-        </div>
-        <div id="conteudo-estoque" style="max-height: 50vh; overflow-y: auto; padding: 5px;"></div>
-    `;
-    div.innerHTML = htmlAbas;
-
-    // Renderiza a aba inicial
-    renderizarAbaEstoque('loja');
-};
-
 // Função para trocar de aba
 window.mudarAbaEstoque = function(aba) {
     document.getElementById('btn-aba-loja').style.background = aba === 'loja' ? 'var(--cor-principal)' : '#f0f0f0';
@@ -2596,7 +2651,13 @@ window.mudarAbaEstoque = function(aba) {
 };
 
 // Função que desenha os produtos na aba escolhida
-window.renderizarAbaEstoque = function(aba) {
+window.salvarEstoqueMelhoria = async function() {
+      if (!adminAutenticado) { mostrarToast('Entre como administrador para salvar.'); return; }
+      const ok = await salvarEstado();
+      if (ok) { mostrarToast('Estoque salvo com sucesso.'); renderizarHome(); }
+    };
+
+    window.renderizarAbaEstoque = function(aba) {
     const container = document.getElementById('conteudo-estoque');
     if (!container) return;
 
