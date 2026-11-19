@@ -39,3 +39,21 @@ Base: `main` (código mais recente no início da revisão)
 ## Limitações desta auditoria
 
 A verificação JavaScript é estática. Ainda não foram executados testes de navegador, Firebase Emulator, regras Firestore, autenticação real, App Check, pagamentos ou notificações.
+
+
+## Achados adicionais na revisão do HTML atual da main
+
+A revisão do `index.html` mais recente identificou pontos que precisam ser tratados antes de produção:
+
+- `appData/estadoGlobal` é carregado pelo cliente sem aguardar autenticação. O mesmo objeto contém `senhaFinanceiro`, com valor padrão `1234`, e a função `salvarEstado` grava o objeto inteiro. Esse PIN não deve permanecer no documento usado pela interface pública.
+- A verificação de administrador no frontend usa uma lista de e-mails permitidos e/ou o campo `usuarios/{uid}.isAdmin`. As Cloud Functions preparadas exigem custom claim `admin: true`. Esses modelos precisam ser reconciliados; o servidor deve ser a autoridade final.
+- Não encontrei `iaApiKey` nem senhas de funcionários no HTML atual da `main`. Os documentos herdados da branch antiga descrevem um estado anterior e não devem ser interpretados como confirmação desses campos na versão atual.
+- O array `funcionarios` atual contém nomes e cores. Ainda é necessário decidir se essa informação fica pública ou se será movida para uma coleção privada.
+- O frontend ainda consulta e grava diretamente coleções operacionais, incluindo `clientes`, `agendamentos`, `codigos_clube`, `vendas`, `financeiro` e `prontuarios`.
+- `enviarPush()` mostra uma confirmação de envio, mas o próprio código marca a ação como simulação.
+- O checkout registra uma venda pendente e orienta a cliente a continuar pelo WhatsApp; não foi identificada confirmação automática de pagamento por gateway neste fluxo.
+- A lista de e-mails administrativos no HTML não substitui autorização validada no servidor.
+
+## Ajuste de interpretação dos documentos herdados
+
+Os relatórios de segurança trazidos da branch anterior foram escritos sobre uma versão anterior do aplicativo. Para a revisão atual, considerar como confirmados somente os achados reproduzidos no `index.html` atual. Em especial, a presença de `iaApiKey` e de senhas de funcionários não foi confirmada nesta versão.
