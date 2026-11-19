@@ -77,3 +77,10 @@ A correção só será considerada concluída quando:
 - cada operação administrativa for autorizada no servidor;
 - os fluxos públicos e administrativos forem testados;
 - o proprietário aprovar explicitamente a publicação.
+
+
+## Atualização da revisão — código atual da main
+
+O HTML atual foi revisado novamente na branch de trabalho. Os relatórios herdados da branch anterior descrevem uma versão mais antiga. No código atual, não foi encontrada a propriedade `iaApiKey` nem senha de funcionário no array `funcionarios`. Em contrapartida, foi confirmado que `senhaFinanceiro` permanece no objeto `appState`, com padrão `1234`, e é persistida junto com `appData/estadoGlobal`. O fluxo de autorização administrativa no frontend usa lista de e-mails e/ou `usuarios/{uid}.isAdmin`, enquanto as funções de backend exigem custom claim `admin: true`. Essa divergência deve ser resolvida antes de ativar as funções.
+
+O HTML atual também continua usando operações diretas no Firestore para clientes, agenda, VIP, vendas, financeiro e prontuários. O push está explicitamente simulado e o checkout ainda direciona a continuidade do pagamento pelo WhatsApp. Nenhuma dessas rotas deve ser considerada protegida apenas por verificações JavaScript.
