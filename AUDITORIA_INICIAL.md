@@ -57,3 +57,14 @@ A revisão do `index.html` mais recente identificou pontos que precisam ser trat
 ## Ajuste de interpretação dos documentos herdados
 
 Os relatórios de segurança trazidos da branch anterior foram escritos sobre uma versão anterior do aplicativo. Para a revisão atual, considerar como confirmados somente os achados reproduzidos no `index.html` atual. Em especial, a presença de `iaApiKey` e de senhas de funcionários não foi confirmada nesta versão.
+
+
+## Compatibilidade da agenda: ajuste necessário antes da integração
+
+O modelo de agenda do HTML atual é diferente do contrato da primeira versão de Cloud Functions herdada da branch antiga:
+
+- O HTML atual grava `horaInicio` e `horaFim`, além de `funcionarioId`, `funcionarioNome`, `servico` e `statusConfirmacao`.
+- A primeira versão das funções foi escrita para um modelo simples com um único campo `hora` e sem profissional/duração.
+- Portanto, não é seguro conectar a agenda atual diretamente a essas funções. O backend precisa ser adaptado para intervalos de horário, profissional, criação, remarcação, cancelamento e listagem administrativa.
+- A checagem de conflito por `hora` não cobre por si só o modelo atual de intervalos. A agenda permanece em modo de preparação até essa adaptação e os testes concorrentes.
+
