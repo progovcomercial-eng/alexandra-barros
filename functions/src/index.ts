@@ -11,7 +11,6 @@ const MAX_NAME = 120;
 const MAX_EMAIL = 254;
 const MAX_PHONE = 20;
 const MAX_CODE_LENGTH = 32;
-const DEFAULT_HOURS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
 
 type JsonRecord = Record<string, unknown>;
 
@@ -111,15 +110,6 @@ function overlaps(startA: string, endA: string, startB: string, endB: string): b
     timeToMinutes(startB) < timeToMinutes(endA);
 }
 
-async function configuredHours(): Promise<string[]> {
-  const snap = await db.collection("appData").doc("estadoGlobal").get();
-  const state = snap.data() ?? {};
-  const hours = Array.isArray(state.horariosAgenda)
-    ? state.horariosAgenda.filter((item): item is string =>
-      typeof item === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(item))
-    : DEFAULT_HOURS;
-  return [...new Set(hours)].sort();
-}
 
 /**
  * Cadastro público. O visitante pode criar um cadastro, mas não listar nem
