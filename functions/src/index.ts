@@ -85,8 +85,30 @@ function requireAppCheck(request: CallableRequest<unknown>): void {
   }
 }
 
-function slotDocumentId(date: string, time: string): string {
-  return `${date}_${time.replace(":", "-")}`;
+function timeToMinutes(value: string): number {
+  const [hours, minutes] = value.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+function normalizeInterval(body: JsonRecord): { start: string; end: string } {
+  const start = normalizeTime(body.horaInicio);
+  const end = normalizeTime(body.horaFim);
+  if (timeToMinutes(end) <= timeToMinutes(start)) {
+    throw new HttpsError("invalid-argument", "O horário final deve ser depois do horário inicial.");
+  }
+  if (timeToMinutes(end) - timeToMinutes(start) > 8 * 60) {
+    throw new HttpsError("invalid-argument", "A duração do agendamento excede o limite permitido.");
+  }
+  return { start, end };
+}
+
+function isCancelled(data: JsonRecord): boolean {
+  return data.status === "cancelado" || data.statusConfirmacao === "cancelado";
+}
+
+function overlaps(startA: string, endA: string, startB: string, endB: string): boolean {
+  return timeToMinutes(startA) < timeToMinutes(endB) &&
+    timeToMinutes(startB) < timeToMinutes(endA);
 }
 
 async function configuredHours(): Promise<string[]> {
@@ -137,41 +159,25 @@ export const getAvailability = onCall(
     requireAppCheck(request);
     const body = asRecord(request.data);
     const date = normalizeDate(body.data);
-    const hours = await configuredHours();
-
-    const appointments = await db.collection("agendamentos")
-      .where("data", "==", date)
-      .get();
-    const occupied = new Set<string>();
-    appointments.forEach((doc) => {
-      const hour = doc.get("hora");
-      if (typeof hour === "string") occupied.add(hour);
+    const { start, end } = normalizeInterval(body);
+    const employeeId = requiredText(body.funcionarioId, "profissional", 128);
+    const appointments = await db.collection("agendamentos").where("data", "==", date).get();
+    const available = appointments.docs.every((doc) => {
+      const appointment = asRecord(doc.data());
+      if (isCancelled(appointment)) return true;
+      if (String(appointment.funcionarioId || "f1") !== employeeId) return true;
+      const existingStart = typeof appointment.horaInicio === "string" ? appointment.horaInicio : typeof appointment.hora === "string" ? appointment.hora : null;
+      const existingEnd = typeof appointment.horaFim === "string" ? appointment.horaFim : existingStart;
+      if (!existingStart || !existingEnd) return true;
+      return !overlaps(start, end, existingStart, existingEnd);
     });
-
-    // Também considera reservas criadas pelo novo backend.
-    const slotRefs = hours.map((hour) =>
-      db.collection("agenda_slots").doc(slotDocumentId(date, hour)));
-    if (slotRefs.length) {
-      const slots = await db.getAll(...slotRefs);
-      slots.forEach((slot) => {
-        if (slot.exists && slot.get("status") === "booked") {
-          const hour = slot.get("hora");
-          if (typeof hour === "string") occupied.add(hour);
-        }
-      });
-    }
-
-    return {
-      data: date,
-      horarios: hours.map((hora) => ({ hora, disponivel: !occupied.has(hora) }))
-    };
+    return { data: date, funcionarioId: employeeId, horaInicio: start, horaFim: end, disponivel: available };
   }
 );
 
 /**
- * Reserva atômica. agenda_slots impede duas reservas novas para o mesmo
- * horário. A coleção agendamentos continua recebendo o formato legado para
- * facilitar a transição da tela administrativa existente.
+ * Reserva pública no formato da agenda atual: intervalo e profissional.
+ * Considera conflitos de horário e ignora agendamentos cancelados.
  */
 export const createAppointment = onCall(
   { enforceAppCheck: true },
@@ -180,74 +186,34 @@ export const createAppointment = onCall(
     const body = asRecord(request.data);
     const name = requiredText(body.nome, "nome", MAX_NAME);
     const phone = normalizePhone(body.telefone);
+    const service = requiredText(body.servico, "serviço", 160);
     const date = normalizeDate(body.data);
-    const time = normalizeTime(body.hora);
-    const hours = await configuredHours();
-
-    if (!hours.includes(time)) {
-      throw new HttpsError("invalid-argument", "Esse horário não está disponível para agendamento.");
-    }
-
-    // Comparação no fuso da clínica; Cloud Functions normalmente executa em UTC.
-    const nowParts = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "America/Sao_Paulo",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23"
-    }).formatToParts(new Date());
+    const { start, end } = normalizeInterval(body);
+    const employeeId = requiredText(body.funcionarioId, "profissional", 128);
+    const employeeName = requiredText(body.funcionarioNome, "nome do profissional", MAX_NAME);
+    const nowParts = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
     const nowValues = Object.fromEntries(nowParts.map((part) => [part.type, part.value]));
     const clinicNow = `${nowValues.year}-${nowValues.month}-${nowValues.day} ${nowValues.hour}:${nowValues.minute}`;
-    if (`${date} ${time}` <= clinicNow) {
-      throw new HttpsError("failed-precondition", "Escolha uma data e horário futuros.");
-    }
-
-    const slotRef = db.collection("agenda_slots").doc(slotDocumentId(date, time));
+    if (`${date} ${start}` <= clinicNow) throw new HttpsError("failed-precondition", "Escolha uma data e horário futuros.");
+    const appointmentsQuery = db.collection("agendamentos").where("data", "==", date);
     const appointmentRef = db.collection("agendamentos").doc();
-
-    const legacyQuery = db.collection("agendamentos")
-      .where("data", "==", date)
-      .where("hora", "==", time);
-
     await db.runTransaction(async (transaction) => {
-      const [slot, legacyAppointments] = await Promise.all([
-        transaction.get(slotRef),
-        transaction.get(legacyQuery)
-      ]);
-      const hasActiveLegacyAppointment = legacyAppointments.docs.some((appointment) => {
-        const status = appointment.get("status");
-        const confirmation = appointment.get("statusConfirmacao");
-        return status !== "cancelado" && confirmation !== "cancelado";
+      const existingAppointments = await transaction.get(appointmentsQuery);
+      const conflict = existingAppointments.docs.some((doc) => {
+        const existing = asRecord(doc.data());
+        if (isCancelled(existing)) return false;
+        if (String(existing.funcionarioId || "f1") !== employeeId) return false;
+        const existingStart = typeof existing.horaInicio === "string" ? existing.horaInicio : typeof existing.hora === "string" ? existing.hora : null;
+        const existingEnd = typeof existing.horaFim === "string" ? existing.horaFim : existingStart;
+        return Boolean(existingStart && existingEnd && overlaps(start, end, existingStart, existingEnd));
       });
-      if ((slot.exists && slot.get("status") === "booked") || hasActiveLegacyAppointment) {
-        throw new HttpsError("already-exists", "Esse horário acabou de ser reservado. Escolha outro.");
-      }
-
-      const appointment = {
-        data: date,
-        hora: time,
-        nome: name,
-        telefone: phone,
-        criadoEm: FieldValue.serverTimestamp()
-      };
-
-      transaction.set(slotRef, {
-        data: date,
-        hora: time,
-        status: "booked",
-        appointmentId: appointmentRef.id,
-        criadoEm: FieldValue.serverTimestamp()
-      });
-      transaction.set(appointmentRef, appointment);
+      if (conflict) throw new HttpsError("already-exists", "Esse profissional já possui um agendamento nesse intervalo.");
+      transaction.create(appointmentRef, { data: date, horaInicio: start, horaFim: end, nome: name, telefone: phone, servico: service, funcionarioId: employeeId, funcionarioNome: employeeName, statusConfirmacao: "pendente", avisoEnviado: false, criadoEm: FieldValue.serverTimestamp() });
     });
-
-    logger.info("Agendamento criado pelo backend", { appointmentId: appointmentRef.id, date, time });
+    logger.info("Agendamento criado pelo backend", { appointmentId: appointmentRef.id, date, employeeId });
     return { success: true, appointmentId: appointmentRef.id };
   }
 );
-
 /**
  * Valida um código VIP sem revelar titular, telefone ou outros dados.
  * Compatível com códigos legados que ainda não possuem os novos campos
